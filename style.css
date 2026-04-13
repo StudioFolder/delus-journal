@@ -1,0 +1,115 @@
+/* ============================================================
+   Delus Journal — style.css
+   Structural skeleton only. Design values (fonts, colours,
+   spacing, animations) to be filled in once Figma is final.
+   ============================================================ */
+
+/* --- Reset ------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Root variables (TODO: update with real design tokens) - */
+:root {
+  /* Typography */
+  --font-body: sans-serif;          /* TODO: replace with final typeface */
+  --font-size-base: 1rem;
+  --line-height-base: 1.5;
+
+  /* Colours */
+  --color-bg: #ffffff;              /* TODO */
+  --color-text: #111111;            /* TODO */
+  --color-accent: #000000;          /* TODO */
+  --color-muted: #888888;           /* TODO */
+
+  /* Layout */
+  --max-width: 720px;
+  --spacing-section: 4rem;
+  --spacing-page: 2rem;
+}
+
+/* --- Base -------------------------------------------------- */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:hover {
+  opacity: 0.6;
+}
+
+p + p {
+  margin-top: 1em;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* --- Page wrapper ------------------------------------------ */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-page);
+}
+
+/* --- Header ------------------------------------------------ */
+.site-header {
+  padding-bottom: var(--spacing-section);
+}
+
+.site-title {
+  font-size: var(--font-size-base);  /* TODO: adjust */
+  font-weight: 400;
+  letter-spacing: 0;                 /* TODO */
+}
+
+/* --- Main -------------------------------------------------- */
+.site-main {
+  flex: 1;
+  max-width: var(--max-width);
+}
+
+/* --- Sections ---------------------------------------------- */
+.section {
+  margin-bottom: var(--spacing-section);
+}
+
+/* CTA — make the link feel like a button if needed */
+.section--cta a {
+  display: inline-block;
+  /* TODO: style as button once design is clear */
+}
+
+/* --- Footer ------------------------------------------------ */
+.site-footer {
+  margin-top: auto;
+  padding-top: var(--spacing-section);
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+/* --- Responsive -------------------------------------------- */
+@media (max-width: 600px) {
+  :root {
+    --spacing-section: 2.5rem;
+    --spacing-page: 1.25rem;
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "delus-journal",
+  "version": "1.0.0",
+  "description": "Delus Journal — holding page",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StudioFolder/delus-journal.git"
+  },
+  "keywords": [],
+  "author": "Studio Folder",
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^17.0.3"
+  }
+}

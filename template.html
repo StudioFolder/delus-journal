@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Delus Journal — Open Call">
+  <meta name="author" content="Delus Journal">
+  <meta property="og:title" content="Delus Journal">
+  <meta property="og:description" content="Delus Journal — Open Call">
+  <meta property="og:url" content="https://delusjournal.com">
+  <meta property="og:type" content="website">
+  <!-- <meta property="og:image" content="https://delusjournal.com/assets/og-image.jpg"> -->
+  <title>Delus Journal</title>
+
+  <!-- TODO: add real typefaces once design is finalised -->
+  <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+  <!-- <link rel="stylesheet" href="..."> -->
+
+  <link rel="stylesheet" href="style.css">
+  <!-- <link rel="icon" type="image/svg+xml" href="favicon.svg"> -->
+  <link rel="canonical" href="https://delusjournal.com">
+
+  <noscript>
+    <style>
+      .page { opacity: 1 !important; animation: none !important; }
+    </style>
+  </noscript>
+
+  <!-- Analytics — add once live -->
+  <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="TODO"></script> -->
+  <!-- <script defer src="/_vercel/insights/script.js"></script> -->
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="site-header">
+      <span class="site-title">Delus Journal</span>
+    </header>
+
+    <main class="site-main">
+
+      <section class="section section--intro">
+        {{INTRO}}
+      </section>
+
+      <section class="section section--open-call">
+        {{OPEN_CALL}}
+      </section>
+
+      <section class="section section--dates">
+        {{DATES}}
+      </section>
+
+      <section class="section section--cta">
+        {{CTA}}
+      </section>
+
+      <section class="section section--contact">
+        {{CONTACT}}
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      {{FOOTER}}
+    </footer>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Open all external links in a new tab
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('mailto:')) {
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noopener noreferrer');
+        }
+      });
+
+      // TODO: add animations/transitions once design is finalised
+
+    });
+  </script>
+
+</body>
+</html>
