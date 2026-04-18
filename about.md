@@ -8,5 +8,10 @@ Situated at the intersection of architecture, landscape, and urban studies, DELU
 
 ## service
 
+<h1><a href="#" data-view="home">Open call</a></h1>
+
 **Editors**
 Sara Frikech, Johanna Just
+
+**Art direction**
+Studio Folder

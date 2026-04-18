@@ -49,6 +49,7 @@
   --font-size-base: clamp(1.15rem, 1rem + 0.3vw, 1.5rem);
   --font-size-ui: clamp(0.9rem, 0.8rem + 0.2vw, 1.25rem);
   --line-height-base: 1.5;
+  --transition-view: 900ms ease-in-out;
 
   /* Colours */
   --color-bg: #E2E2DD;
@@ -137,9 +138,8 @@ strong {
   display: flex;
   gap: 1.5rem; /* TODO: tune */
 }
-.site-nav a { font-family: var(--font-sans); font-weight: 400; text-decoration: none; cursor: default; }
+.site-nav a { font-family: var(--font-sans); font-weight: 400; text-decoration: none; }
 .site-nav a:hover { opacity: 1; }
-.site-nav a[data-view] { cursor: pointer; }
 .site-nav a[aria-current="page"] { text-decoration: underline; }
 .masthead[data-view] { cursor: pointer; }
 
@@ -158,6 +158,22 @@ strong {
   font-size: var(--font-size-ui);
 }
 
+/* --- Views (SPA swap) -------------------------------------- */
+.site-main,
+.site-service { display: grid; }
+
+.view {
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-view);
+}
+
+.view--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* --- Footnote tooltip -------------------------------------- */
 .footnote {
   font-family: var(--font-sans);
@@ -165,14 +181,17 @@ strong {
   font-style: normal;   /* override italic from blockquote parent */
   font-size: 0.6em;
   line-height: 0;       /* prevent superscript from stretching parent line-height */
+  cursor: default;
+  padding: 0.4em 0.3em; /* larger hit area */
 }
 
 .tooltip {
   position: fixed;
   pointer-events: none;
   z-index: 100;
-  background-color: var(--color-bg);
-  border: 1px solid currentColor;
+  background-color: rgba(226, 226, 221, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 4px;
   padding: 0.5rem 0.75rem;
   font-family: var(--font-sans);
@@ -180,6 +199,33 @@ strong {
   font-weight: 400;
   line-height: 1.3;
   max-width: 20rem;
+}
+
+/* Align first body paragraph with the home blockquote — same spacing as blockquote margin-top */
+.site-main .view[data-view="about"] h1 + p,
+.site-main .view[data-view="donate"] h1 + p {
+  margin-top: 1.5rem;
+}
+
+
+/* --- Image tooltip (issue covers) -------------------------- */
+.image-tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: image-tooltip-in 300ms ease-out both;
+}
+
+@keyframes image-tooltip-in {
+  from { opacity: 0; translate: 0 6px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+.image-tooltip img {
+  display: block;
+  width: 240px;
+  height: auto;
 }
 
 /* --- Main column text styles ------------------------------- */
@@ -196,7 +242,52 @@ strong {
 /* .site-main em inherits family/weight; italic handled by the em tag's default font-style and Louize-Italic @font-face */
 
 /* --- Service column text styles ---------------------------- */
-.site-service h1 { font-family: var(--font-sans); font-size: inherit; font-weight: 500; text-transform: uppercase; }
+/* Zero-height baseline anchor: same font metrics as the h1 so the page grid's
+   align-items: first baseline still works even though the h1 is position: absolute */
+.site-service::before {
+  content: '\200B';
+  grid-area: 1 / 1;
+  align-self: start;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-ui);
+  line-height: var(--line-height-base);
+  height: 0;
+  overflow: visible;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.site-service h1 a { text-decoration: none; }
+
+.site-service .view:not([data-view="home"]) h1::before {
+  content: '←';
+  position: absolute;
+  right: 100%;
+  top: 0;
+  padding-right: 0.4em;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.site-service .view:not([data-view="home"]) h1:hover::before {
+  opacity: 1;
+}
+.site-service h1 {
+  font-family: var(--font-sans);
+  font-size: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+}
+
+.site-service .view {
+  position: relative;
+  padding-top: calc(var(--line-height-base) * 2 * var(--font-size-base) - 0.6rem);
+}
 .site-service p  { font-family: var(--font-sans); font-weight: 400; margin-top: 1em; }
 
 .site-service strong {
@@ -210,15 +301,20 @@ strong {
   margin: 0;
 }
 
+
 /* --- Sections ---------------------------------------------- */
 .section {
   margin-bottom: var(--spacing-section);
 }
 
-/* CTA — make the link feel like a button if needed */
+/* CTA */
 .section--cta a {
   display: inline-block;
-  /* TODO: style as button once design is clear */
+  font-family: var(--font-sans);
+  font-size: var(--font-size-ui);
+  font-weight: 400;
+  text-transform: uppercase;
+  text-decoration: none;
 }
 
 /* --- Footer ------------------------------------------------ */

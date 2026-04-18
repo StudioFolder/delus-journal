@@ -43,28 +43,28 @@
       </div>
       <nav class="site-nav">
         <a href="#" data-view="about">About</a>
-        <a href="#">Issue 00</a>
-        <a href="#">Issue 01</a>
+        <a href="https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-00.png">Issue 0</a>
+        <a href="https://www.hatjecantz.com/products/77075-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-01.png">Issue 1</a>
         <a href="#" data-view="donate">Donate</a>
       </nav>
     </header>
 
     <main class="site-main">
-      <article class="view" data-view="home">
+      <article class="view view--active" data-view="home">
         <section class="section section--intro">{{INTRO}}</section>
         <section class="section section--open-call">{{OPEN_CALL}}</section>
         <section class="section section--cta">{{CTA}}</section>
       </article>
-      <article class="view" data-view="about" hidden>{{ABOUT_MAIN}}</article>
-      <article class="view" data-view="donate" hidden>{{DONATE_MAIN}}</article>
+      <article class="view" data-view="about" inert>{{ABOUT_MAIN}}</article>
+      <article class="view" data-view="donate" inert>{{DONATE_MAIN}}</article>
     </main>
 
     <aside class="site-service">
-      <article class="view" data-view="home">
+      <article class="view view--active" data-view="home">
         <section class="section section--dates">{{DATES}}</section>
       </article>
-      <article class="view" data-view="about" hidden>{{ABOUT_SERVICE}}</article>
-      <article class="view" data-view="donate" hidden>{{DONATE_SERVICE}}</article>
+      <article class="view" data-view="about" inert>{{ABOUT_SERVICE}}</article>
+      <article class="view" data-view="donate" inert>{{DONATE_SERVICE}}</article>
     </aside>
 
     <footer class="site-footer">
@@ -85,7 +85,7 @@
         }
       });
 
-      // Custom footnote tooltips
+      // Custom footnote tooltips — follows cursor
       let activeTip = null;
       document.querySelectorAll('.footnote[data-tooltip]').forEach(el => {
         el.addEventListener('mouseenter', () => {
@@ -93,31 +93,67 @@
           activeTip.className = 'tooltip';
           activeTip.innerHTML = el.dataset.tooltip;
           document.body.appendChild(activeTip);
-          const rect = el.getBoundingClientRect();
-          activeTip.style.left = rect.left + 'px';
-          activeTip.style.top  = (rect.bottom + 6) + 'px';
+        });
+        el.addEventListener('mousemove', (e) => {
+          if (!activeTip) return;
+          activeTip.style.left = e.clientX + 12 + 'px';
+          activeTip.style.top  = e.clientY + 12 + 'px';
         });
         el.addEventListener('mouseleave', () => {
           if (activeTip) { activeTip.remove(); activeTip = null; }
         });
       });
 
-      // View-swap handler
-      document.querySelectorAll('.site-nav [data-view], .masthead[data-view]').forEach(trigger => {
+      // Image tooltips for issue links
+      let activeImageTip = null;
+      document.querySelectorAll('[data-image]').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          activeImageTip = document.createElement('div');
+          activeImageTip.className = 'image-tooltip';
+          const img = document.createElement('img');
+          img.src = el.dataset.image;
+          img.alt = '';
+          activeImageTip.appendChild(img);
+          document.body.appendChild(activeImageTip);
+          const rect = el.getBoundingClientRect();
+          activeImageTip.style.right = (window.innerWidth - rect.right) + 'px';
+          activeImageTip.style.top  = (rect.bottom + 12) + 'px';
+        });
+        el.addEventListener('mouseleave', () => {
+          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
+        });
+      });
+
+      // View-swap handler — fade out, then fade in
+      document.querySelectorAll('.site-nav [data-view], .masthead[data-view], .site-service [data-view]').forEach(trigger => {
         trigger.addEventListener('click', (e) => {
           e.preventDefault();
           const target = trigger.dataset.view;
-          document.querySelectorAll('.view').forEach(v => {
-            v.hidden = v.dataset.view !== target;
-          });
+          const outgoing = [...document.querySelectorAll('.view--active')];
+          if (!outgoing.length || outgoing[0].dataset.view === target) return;
+
           document.querySelectorAll('.site-nav a').forEach(a => {
             if (a.dataset.view === target) a.setAttribute('aria-current', 'page');
             else a.removeAttribute('aria-current');
           });
+
+          let pending = outgoing.length;
+          outgoing.forEach(v => {
+            v.classList.remove('view--active');
+            v.addEventListener('transitionend', function handler(e) {
+              if (e.target !== v || e.propertyName !== 'opacity') return;
+              v.removeEventListener('transitionend', handler);
+              v.setAttribute('inert', '');
+              if (--pending === 0) {
+                document.querySelectorAll(`.view[data-view="${target}"]`).forEach(nv => {
+                  nv.removeAttribute('inert');
+                  nv.classList.add('view--active');
+                });
+              }
+            });
+          });
         });
       });
-
-      // TODO: add animations/transitions once design is finalised
 
     });
   </script>

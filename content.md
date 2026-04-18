@@ -10,11 +10,11 @@ This issue brings together researchers and practitioners across architecture, ur
 
 ## cta
 
-[Submit your proposal →](mailto:placeholder@delusjournal.com)
+[Submit your proposal](mailto:delus@arch.ethz.ch)
 
 ## dates
 
-# issue 02 (winter 2026)
+# open call <br> issue 2, autumn 2026
 
 **Submission guidelines**
 All submissions must clearly state their relation to the theme of this issue of DELUS. Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.
