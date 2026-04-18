@@ -18,6 +18,8 @@
 
   <link rel="preload" href="assets/fonts/Louize-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/StyreneB-Regular.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="assets/images/issue-00.png" as="image">
+  <link rel="preload" href="assets/images/issue-01.png" as="image">
   <link rel="stylesheet" href="style.css">
   <!-- <link rel="icon" type="image/svg+xml" href="favicon.svg"> -->
   <link rel="canonical" href="https://delusjournal.com">
@@ -34,12 +36,47 @@
 </head>
 <body>
 
-  <div class="page">
+  <div id="weather-bg" class="weather-bg"></div>
+  <script src="assets/js/sketch-loop.js"></script>
+  <script>
+    SketchLoop.mount('#weather-bg', {
+      threshold:   0.75,
+      clumpSize:   80,
+      turbulence:  0.75,
+      fallSpeed:   0.1,
+      angle:       -6,
+      strokeLen:   18,
+      strokeWidth: 2.1,
+      wobble:      1,
+      drawTime:    6000,
+      scale:       0.8,
+      taperBottom: 0.55,  // bottom 55% of the canvas thins out into nothing
+      taperCurve:  1.6,   // soft start, clean finish
+    });
+    // Size the weather-bg to end a bit past the home view's main h1 —
+    // the extension is the region that tapers out.
+    (function () {
+      var bg = document.getElementById('weather-bg');
+      var EXTRA_PX = 220; // how far past the h1's bottom edge to extend; taper happens within this band
+      function sizeWeather() {
+        var h1 = document.querySelector('.site-main .view[data-view="home"] h1');
+        if (!bg || !h1) return;
+        var r = h1.getBoundingClientRect();
+        bg.style.height = Math.max(0, r.bottom + EXTRA_PX) + 'px';
+      }
+      sizeWeather();
+      window.addEventListener('load', sizeWeather);
+      window.addEventListener('resize', sizeWeather);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeWeather);
+    })();
+  </script>
+
+  <div class="page" data-current-view="home">
 
     <header class="site-header">
       <div class="masthead" data-view="home">
         <span class="masthead__title">DELUS</span>
-        <span class="masthead__subtitle">Journal for Landscape and Urban Studies</span>
+        <span class="masthead__subtitle">Journal for Landscape<br class="mobile-only"> and Urban Studies</span>
       </div>
       <nav class="site-nav">
         <a href="#" data-view="about">About</a>
@@ -47,6 +84,7 @@
         <a href="https://www.hatjecantz.com/products/77075-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-01.png">Issue 1</a>
         <a href="#" data-view="donate">Donate</a>
       </nav>
+      <a href="#" class="site-nav-back" data-view="home">Open call</a>
     </header>
 
     <main class="site-main">
@@ -59,17 +97,17 @@
 <p>This issue brings together researchers and practitioners across architecture, urban design, landscape architecture, and the arts to examine how seasonal knowledge—once grounded in cycles of cultivation, migration, and celebration—is being reconfigured across disciplines and geographies. Through writing, drawing, and documentation, contributors are invited to trace what it means to inhabit a world in which seasons no longer arrive as expected.</p>
 </section>
         <section class="section section--open-call"></section>
-        <section class="section section--cta"><p><a href="mailto:delus@arch.ethz.ch">Submit your proposal</a></p>
+        <section class="section section--cta desktop-cta"><p><a href="mailto:delus@arch.ethz.ch">Submit your proposal</a></p>
 </section>
       </article>
       <article class="view" data-view="about" inert><section class="section"><h1>About</h1>
 <p>DELUS began its journey in 2021, born from a shared vision between the LUS doctoral fellows Sara Frikech and Johanna Just to highlight the research endeavours of the Institute and establish a platform to establish dialogues on pressing topics within the field of landscape and urban studies.</p>
 <p>Situated at the intersection of architecture, landscape, and urban studies, DELUS seeks to become a platform for exchange. It co-operates with research based at LUS and far beyond, connecting designers, artists, scientists, scholars, and students; dealing with landscape and urban questions; and giving visibility to emerging topics, concepts, and projects in these fields.</p>
-</section><section class="section section--cta"><p><a href="https://www.instagram.com/delusjournal/">Follow DELUS</a></p>
+</section><section class="section section--cta desktop-cta"><p><a href="https://www.instagram.com/delusjournal/">Follow DELUS</a></p>
 </section></article>
-      <article class="view" data-view="donate" inert><section class="section"><h1>Support DELUS</h1>
+      <article class="view" data-view="donate" inert><section class="section"><h1>Support</h1>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam viverra erat eu nibh finibus eleifend. Nam eu mi eget urna pellentesque consequat vel in nisi. In sagittis facilisis cursus. Quisque consectetur turpis a interdum interdum. Aenean mollis tristique erat, quis.</p>
-</section><section class="section section--cta"><p><a href="https://www.instagram.com/delusjournal/">Donate</a></p>
+</section><section class="section section--cta desktop-cta"><p><a href="https://www.instagram.com/delusjournal/">Donate</a></p>
 </section></article>
     </main>
 
@@ -114,6 +152,15 @@ CH00 0000 0000 0000 0000 0</p>
 </article>
     </aside>
 
+    <div class="site-cta">
+      <div class="view view--active" data-view="home"><section class="section section--cta"><p><a href="mailto:delus@arch.ethz.ch">Submit your proposal</a></p>
+</section></div>
+      <div class="view" data-view="about" inert><section class="section section--cta"><p><a href="https://www.instagram.com/delusjournal/">Follow DELUS</a></p>
+</section></div>
+      <div class="view" data-view="donate" inert><section class="section section--cta"><p><a href="https://www.instagram.com/delusjournal/">Donate</a></p>
+</section></div>
+    </div>
+
     <footer class="site-footer">
       <p>© 2026 Delus Journal. Design by <a href="https://studiofolder.it">Studio Folder</a>.</p>
 
@@ -154,18 +201,55 @@ CH00 0000 0000 0000 0000 0</p>
 
       // Image tooltips for issue links
       let activeImageTip = null;
-      document.querySelectorAll('[data-image]').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          activeImageTip = document.createElement('div');
-          activeImageTip.className = 'image-tooltip';
-          const img = document.createElement('img');
-          img.src = el.dataset.image;
-          img.alt = '';
-          activeImageTip.appendChild(img);
-          document.body.appendChild(activeImageTip);
-          const rect = el.getBoundingClientRect();
+
+      function createImageTip(el, centered) {
+        if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
+        activeImageTip = document.createElement('div');
+        activeImageTip.className = 'image-tooltip';
+        const img = document.createElement('img');
+        img.src = el.dataset.image;
+        img.alt = '';
+        activeImageTip.appendChild(img);
+        if (centered) {
+          const buy = document.createElement('a');
+          buy.className = 'image-tooltip__buy';
+          buy.href = el.href;
+          buy.target = '_blank';
+          buy.rel = 'noopener noreferrer';
+          buy.textContent = 'Buy at Hatje Cantz Verlag';
+          activeImageTip.appendChild(buy);
+        }
+        document.body.appendChild(activeImageTip);
+        const rect = el.getBoundingClientRect();
+        if (centered) {
+          activeImageTip.style.left      = (rect.left + rect.width / 2) + 'px';
+          activeImageTip.style.transform = 'translateX(-50%)';
+        } else {
           activeImageTip.style.right = (window.innerWidth - rect.right) + 'px';
-          activeImageTip.style.top  = (rect.bottom + 12) + 'px';
+        }
+        activeImageTip.style.top = (rect.bottom + 12) + 'px';
+      }
+
+      // Dismiss on tap outside tooltip or issue link
+      document.addEventListener('click', (e) => {
+        if (activeImageTip && !e.target.closest('[data-image]') && !e.target.closest('.image-tooltip')) {
+          activeImageTip.remove();
+          activeImageTip = null;
+        }
+      });
+
+      document.querySelectorAll('[data-image]').forEach(el => {
+        // Mobile: tap toggles tooltip + buy box; link does not navigate
+        el.addEventListener('click', (e) => {
+          if (!window.matchMedia('(hover: none)').matches) return;
+          e.preventDefault();
+          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; return; }
+          createImageTip(el, true);
+        });
+        // Desktop: hover shows image only
+        el.addEventListener('mouseenter', () => {
+          if (window.matchMedia('(hover: none)').matches) return;
+          createImageTip(el, false);
         });
         el.addEventListener('mouseleave', () => {
           if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
@@ -173,17 +257,26 @@ CH00 0000 0000 0000 0000 0</p>
       });
 
       // View-swap handler — fade out, then fade in
-      document.querySelectorAll('.site-nav [data-view], .masthead[data-view], .site-service [data-view]').forEach(trigger => {
+      const header = document.querySelector('.site-header');
+      const footer = document.querySelector('.site-footer');
+      document.querySelectorAll('.site-nav [data-view], .masthead[data-view], .site-service [data-view], .site-nav-back[data-view]').forEach(trigger => {
         trigger.addEventListener('click', (e) => {
           e.preventDefault();
           const target = trigger.dataset.view;
           const outgoing = [...document.querySelectorAll('.view--active')];
           if (!outgoing.length || outgoing[0].dataset.view === target) return;
+          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
+          document.querySelector('.page').dataset.currentView = target;
 
           document.querySelectorAll('.site-nav a').forEach(a => {
             if (a.dataset.view === target) a.setAttribute('aria-current', 'page');
             else a.removeAttribute('aria-current');
           });
+
+          header.classList.add('header--fading');
+          footer.classList.add('footer--fading');
+          const page = document.querySelector('.page');
+          page.style.minHeight = page.offsetHeight + 'px';
 
           let pending = outgoing.length;
           outgoing.forEach(v => {
@@ -197,6 +290,9 @@ CH00 0000 0000 0000 0000 0</p>
                   nv.removeAttribute('inert');
                   nv.classList.add('view--active');
                 });
+                header.classList.remove('header--fading');
+                footer.classList.remove('footer--fading');
+                page.style.minHeight = '';
               }
             });
           });

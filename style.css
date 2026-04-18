@@ -97,7 +97,20 @@ strong {
 }
 
 /* --- Page wrapper ------------------------------------------ */
+.weather-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 50vh; /* fallback until JS sizes to h1.bottom + extra */
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
 .page {
+  position: relative;
+  z-index: 1;
   height: 100vh;
   overflow: hidden;
   display: grid;
@@ -120,6 +133,17 @@ strong {
   align-items: flex-start;
 }
 
+.site-nav,
+.site-nav-back {
+  transition: opacity var(--transition-view);
+}
+
+.header--fading .site-nav,
+.header--fading .site-nav-back {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* --- Masthead ---------------------------------------------- */
 .masthead {
   display: flex;
@@ -138,10 +162,16 @@ strong {
   display: flex;
   gap: 1.5rem; /* TODO: tune */
 }
+
+.site-nav-back {
+  display: none;
+  text-decoration: none;
+}
 .site-nav a { font-family: var(--font-sans); font-weight: 400; text-decoration: none; }
 .site-nav a:hover { opacity: 1; }
 .site-nav a[aria-current="page"] { text-decoration: underline; }
 .masthead[data-view] { cursor: pointer; }
+.mobile-only { display: none; }
 
 /* --- Main -------------------------------------------------- */
 .site-main {
@@ -211,10 +241,7 @@ strong {
 /* --- Image tooltip (issue covers) -------------------------- */
 .image-tooltip {
   position: fixed;
-  pointer-events: none;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  animation: image-tooltip-in 300ms ease-out both;
 }
 
 @keyframes image-tooltip-in {
@@ -226,6 +253,26 @@ strong {
   display: block;
   width: 240px;
   height: auto;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15));
+  animation: image-tooltip-in 300ms ease-out both;
+}
+
+.image-tooltip__buy {
+  display: block;
+  margin-top: 0.5rem;
+  animation: image-tooltip-in 300ms ease-out 200ms both;
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(226, 226, 221, 0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-header-mobile, var(--font-size-ui));
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-text);
 }
 
 /* --- Main column text styles ------------------------------- */
@@ -308,6 +355,8 @@ strong {
 }
 
 /* CTA */
+.site-cta { display: none; }
+
 .section--cta a {
   display: inline-block;
   font-family: var(--font-sans);
@@ -323,6 +372,12 @@ strong {
   padding-top: var(--spacing-section);
   color: var(--color-muted);
   font-size: 0.85rem;
+  transition: opacity var(--transition-view);
+}
+
+.footer--fading {
+  opacity: 0;
+  pointer-events: none;
 }
 .site-footer a { text-decoration: none; }
 
@@ -331,17 +386,43 @@ strong {
   :root {
     --spacing-section: 2.5rem;
     --spacing-page: 1.25rem;
+    --font-size-header-mobile: calc(var(--font-size-ui) * 1.2);
+    --transition-view: 400ms ease-in-out;
   }
 
   .page {
     grid-template-columns: 1fr;
     grid-template-rows: none;
+    column-gap: 0;
     height: auto;
     overflow: visible;
   }
 
-  .site-header  { order: 1; }
-  .site-main    { order: 2; grid-column: 1; }
-  .site-service { order: 3; }
-  .site-footer  { order: 4; grid-column: 1; }
+  .site-header  {
+    order: 1; grid-column: 1; grid-row: auto;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  .masthead { flex-direction: column; align-items: center; gap: 0.15rem; }
+  .mobile-only { display: inline; }
+  .site-header { font-size: var(--font-size-header-mobile); }
+  .site-nav { justify-content: center; }
+  .page:not([data-current-view="home"]) .site-nav { display: none; }
+  .page:not([data-current-view="home"]) .site-nav-back { display: block; }
+  .view:not(.view--active) { height: 0; overflow: hidden; }
+  .site-service .view[data-view="home"] h1 { text-align: center; }
+  .site-service .view[data-view="about"] h1,
+  .site-service .view[data-view="donate"] h1 { display: none; }
+  .site-service .view { padding-top: 0; position: static; }
+  .site-service h1 { position: static; margin-bottom: 1em; }
+  .site-service::before { display: none; }
+  .site-main    { order: 2; grid-column: 1; grid-row: auto; }
+  .site-service { order: 3; grid-column: 1; grid-row: auto; }
+  .site-cta     { order: 4; grid-column: 1; grid-row: auto; display: grid; }
+  .site-footer  { order: 5; grid-column: 1; grid-row: auto; }
+  .desktop-cta  { display: none; }
 }
