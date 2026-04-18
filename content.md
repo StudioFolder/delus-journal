@@ -23,7 +23,7 @@ All submissions must clearly state their relation to the theme of this issue of 
 - Proposed title
 - Abstract (max. 250 words)
 - Name and contact information
-- 50-word bio
+- Bio (50 words)
 - Up to 3 images
 - 1 writing sample
 
@@ -31,7 +31,7 @@ All submissions must clearly state their relation to the theme of this issue of 
 - Proposed title
 - Abstract (max. 200 words)
 - Name and contact information
-- 50-word bio
+- Bio (50 words)
 - Up to 10 images
 - 1 visual work sample
 

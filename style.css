@@ -46,9 +46,9 @@
   /* Typography */
   --font-sans:  "Styrene B", system-ui, -apple-system, sans-serif;
   --font-serif: "Louize", Georgia, "Times New Roman", serif;
-  --font-size-base: clamp(1.15rem, 1rem + 0.3vw, 1.5rem);
-  --font-size-ui: clamp(0.9rem, 0.8rem + 0.2vw, 1.25rem);
-  --line-height-base: 1.5;
+  --font-size-base: clamp(1.2rem, 1.15rem + 0.3vw, 1.75rem);
+  --font-size-ui: clamp(0.9rem, 0.8rem + 0.2vw, 1.2rem);
+  --line-height-base: 1.4;
   --transition-view: 900ms ease-in-out;
 
   /* Colours */
@@ -229,14 +229,14 @@ strong {
 }
 
 /* --- Main column text styles ------------------------------- */
-.site-main h1         { font-family: var(--font-serif); font-weight: 400; }
+.site-main h1         { font-family: var(--font-serif); font-weight: 400; font-size: 1.5em; }
 .site-main blockquote {
   font-family: var(--font-serif);
   font-weight: 400;
   font-style: italic;
   font-size: 1.125em;                    /* slight bump over body */
   padding-left: 1.25rem;
-  margin: 1.5rem 0;                      /* breathing room above and below */
+  margin: 2rem 0;                      /* breathing room above and below */
 }
 .site-main p          { font-family: var(--font-serif); font-weight: 400; }
 /* .site-main em inherits family/weight; italic handled by the em tag's default font-style and Louize-Italic @font-face */
