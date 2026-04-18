@@ -11,23 +11,56 @@
   padding: 0;
 }
 
+/* --- Web fonts --------------------------------------------- */
+@font-face {
+  font-family: "Styrene B";
+  src: url("assets/fonts/StyreneB-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Styrene B";
+  src: url("assets/fonts/StyreneB-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Louize";
+  src: url("assets/fonts/Louize-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Louize";
+  src: url("assets/fonts/Louize-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* --- Root variables (TODO: update with real design tokens) - */
 :root {
   /* Typography */
-  --font-body: sans-serif;          /* TODO: replace with final typeface */
-  --font-size-base: 1rem;
+  --font-sans:  "Styrene B", system-ui, -apple-system, sans-serif;
+  --font-serif: "Louize", Georgia, "Times New Roman", serif;
+  --font-size-base: clamp(1.15rem, 1rem + 0.3vw, 1.5rem);
+  --font-size-ui: clamp(0.9rem, 0.8rem + 0.2vw, 1.25rem);
   --line-height-base: 1.5;
 
   /* Colours */
-  --color-bg: #ffffff;              /* TODO */
+  --color-bg: #E2E2DD;
   --color-text: #111111;            /* TODO */
   --color-accent: #000000;          /* TODO */
   --color-muted: #888888;           /* TODO */
 
   /* Layout */
-  --max-width: 720px;
+  --max-width-page: 1400px;
   --spacing-section: 4rem;
   --spacing-page: 2rem;
+  --spacing-columns: 4rem;
 }
 
 /* --- Base -------------------------------------------------- */
@@ -38,7 +71,7 @@ html {
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   background-color: var(--color-bg);
@@ -59,32 +92,122 @@ p + p {
 }
 
 strong {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* --- Page wrapper ------------------------------------------ */
 .page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: auto 1fr auto;
+  column-gap: var(--spacing-columns);
+  align-items: first baseline;
+  max-width: var(--max-width-page);
+  margin-inline: auto;
   padding: var(--spacing-page);
 }
 
 /* --- Header ------------------------------------------------ */
 .site-header {
+  grid-column: 1 / -1;
   padding-bottom: var(--spacing-section);
+  font-size: var(--font-size-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
-.site-title {
-  font-size: var(--font-size-base);  /* TODO: adjust */
-  font-weight: 400;
-  letter-spacing: 0;                 /* TODO */
+/* --- Masthead ---------------------------------------------- */
+.masthead {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 1.5rem; /* TODO: tune */
 }
+.masthead__title,
+.masthead__subtitle {
+  font-family: var(--font-sans);
+  font-weight: 400;
+}
+
+/* --- Nav --------------------------------------------------- */
+.site-nav {
+  display: flex;
+  gap: 1.5rem; /* TODO: tune */
+}
+.site-nav a { font-family: var(--font-sans); font-weight: 400; text-decoration: none; cursor: default; }
+.site-nav a:hover { opacity: 1; }
+.site-nav a[data-view] { cursor: pointer; }
+.site-nav a[aria-current="page"] { text-decoration: underline; }
+.masthead[data-view] { cursor: pointer; }
 
 /* --- Main -------------------------------------------------- */
 .site-main {
-  flex: 1;
-  max-width: var(--max-width);
+  grid-column: 2;
+  grid-row: 2;
+  min-height: 0;
+}
+
+/* --- Service sidebar --------------------------------------- */
+.site-service {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 0;
+  font-size: var(--font-size-ui);
+}
+
+/* --- Footnote tooltip -------------------------------------- */
+.footnote {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-style: normal;   /* override italic from blockquote parent */
+  font-size: 0.6em;
+  line-height: 0;       /* prevent superscript from stretching parent line-height */
+}
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  background-color: var(--color-bg);
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.3;
+  max-width: 20rem;
+}
+
+/* --- Main column text styles ------------------------------- */
+.site-main h1         { font-family: var(--font-serif); font-weight: 400; }
+.site-main blockquote {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.125em;                    /* slight bump over body */
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;                      /* breathing room above and below */
+}
+.site-main p          { font-family: var(--font-serif); font-weight: 400; }
+/* .site-main em inherits family/weight; italic handled by the em tag's default font-style and Louize-Italic @font-face */
+
+/* --- Service column text styles ---------------------------- */
+.site-service h1 { font-family: var(--font-sans); font-size: inherit; font-weight: 500; text-transform: uppercase; }
+.site-service p  { font-family: var(--font-sans); font-weight: 400; margin-top: 1em; }
+
+.site-service strong {
+  /* TODO: sub-title treatment (block-level, weight, spacing) */
+  display: block;
+}
+
+.site-service ul {
+  list-style: "– ";
+  padding-left: 1em;
+  margin: 0;
 }
 
 /* --- Sections ---------------------------------------------- */
@@ -100,16 +223,29 @@ strong {
 
 /* --- Footer ------------------------------------------------ */
 .site-footer {
-  margin-top: auto;
+  grid-column: 1 / -1;
   padding-top: var(--spacing-section);
   color: var(--color-muted);
   font-size: 0.85rem;
 }
+.site-footer a { text-decoration: none; }
 
 /* --- Responsive -------------------------------------------- */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   :root {
     --spacing-section: 2.5rem;
     --spacing-page: 1.25rem;
   }
+
+  .page {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    height: auto;
+    overflow: visible;
+  }
+
+  .site-header  { order: 1; }
+  .site-main    { order: 2; grid-column: 1; }
+  .site-service { order: 3; }
+  .site-footer  { order: 4; grid-column: 1; }
 }

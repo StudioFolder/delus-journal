@@ -22,14 +22,6 @@ const markdown = fs.readFileSync('content.md', 'utf-8');
 
 const sections = parseSections(markdown);
 
-// Expected sections: intro, open-call, dates, cta, contact, footer
-const required = ['intro', 'open-call', 'dates', 'cta', 'contact', 'footer'];
-required.forEach(slug => {
-  if (!sections[slug]) {
-    console.warn(`⚠  Missing section: "${slug}" in content.md`);
-  }
-});
-
 let output = template;
 
 // Inject all sections as {{SLUG}} placeholders (slugs uppercased with hyphens→underscores)
@@ -37,6 +29,21 @@ Object.entries(sections).forEach(([slug, html]) => {
   const placeholder = `{{${slug.toUpperCase().replace(/-/g, '_')}}}`;
   output = output.replaceAll(placeholder, html);
 });
+
+// Inject page-specific md files (about.md, donate.md) into named placeholders
+const pages = [
+  { file: 'about.md',  prefix: 'ABOUT' },
+  { file: 'donate.md', prefix: 'DONATE' },
+];
+pages.forEach(({ file, prefix }) => {
+  if (!fs.existsSync(file)) return;
+  const pageSections = parseSections(fs.readFileSync(file, 'utf-8'));
+  if (pageSections['main'])    output = output.replaceAll(`{{${prefix}_MAIN}}`,    pageSections['main']);
+  if (pageSections['service']) output = output.replaceAll(`{{${prefix}_SERVICE}}`, pageSections['service']);
+});
+
+// Strip any unmatched {{PLACEHOLDER}} tags (e.g., section removed from content.md)
+output = output.replace(/\{\{[A-Z_]+\}\}/g, '');
 
 fs.writeFileSync('index.html', output);
 console.log('✓ Built index.html from content.md');
