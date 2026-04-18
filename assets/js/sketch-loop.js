@@ -73,6 +73,11 @@
     scale:       1.0,  // uniform spatial scale — <1 shrinks clumps, strokes, grid, wobble proportionally
     taperBottom: 0,    // 0..1 fraction of canvas height (from the bottom) over which ink pools thin out
     taperCurve:  1.5,  // >1 = softer start, sharper finish of the taper; <1 = sharper start, softer finish
+    clearRadius:   0,   // px radius around the cursor where ink clears. 0 disables the effect.
+    clearStrength: 1,   // 0..1 — how fully ink is suppressed at the cursor center. 1 = fully cleared.
+    clearCurve:    1.5, // shape of the radial falloff. Same semantics as taperCurve.
+    clearUndrawBoost: 5,// multiplier on un-draw speed inside the clear zone — higher = snappier clear.
+    clearAlpha:    1,   // 0..1 — how much alpha fading is applied inside the clear zone. 0 = no alpha effect (only threshold + un-draw), 1 = full fade.
   };
 
   // ---------- Mount ----------
@@ -107,6 +112,11 @@
     var tZ = 0, scrollY = 0, scrollX = 0;
     var lastT = performance.now();
     var rafId = 0, running = true;
+    // Cursor-clear state. -9999 = offscreen / no effect.
+    var mouseX = -9999, mouseY = -9999;
+    // Desktop-only: skip hover logic on touch-only devices (no hover media or coarse pointer).
+    var isDesktop = !window.matchMedia
+      || window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     function rand(a, b) { return a + Math.random() * (b - a); }
 
@@ -199,6 +209,13 @@
       var taper = Math.min(1, Math.max(0, state.taperBottom || 0));
       var taperCurve = state.taperCurve || 1;
       var taperStartY = taper > 0 ? H * (1 - taper) : H + 1;
+      // Cursor-clear: same mechanic, radial. Raise threshold + fade alpha inside
+      // the clear radius, and boost the un-draw rate so clearing feels snappy.
+      var clearR = state.clearRadius || 0;
+      var clearR2 = clearR * clearR;
+      var clearStrength = state.clearStrength == null ? 1 : state.clearStrength;
+      var clearCurve = state.clearCurve || 1;
+      var undrawBoost = state.clearUndrawBoost || 1;
       ctx.clearRect(0, 0, W, H);
       for (var si = 0; si < strokes.length; si++) {
         var s = strokes[si];
@@ -206,6 +223,7 @@
         // Effective threshold at this stroke's y position
         var thr = state.threshold;
         var fade = 1;
+        var undrawMul = 1;
         if (taper > 0 && s.y > taperStartY) {
           var t = (s.y - taperStartY) / Math.max(0.001, (H - taperStartY));
           t = Math.min(1, Math.max(0, t));
@@ -214,6 +232,23 @@
           thr = state.threshold + (1 - state.threshold) * t;
           fade = 1 - t;
         }
+        if (clearR > 0) {
+          var ddx = s.x - mouseX, ddy = s.y - mouseY;
+          var d2 = ddx * ddx + ddy * ddy;
+          if (d2 < clearR2) {
+            // 1 at cursor center, 0 at radius edge
+            var c = 1 - Math.sqrt(d2) / clearR;
+            c = Math.pow(c, clearCurve) * clearStrength;
+            // Raise threshold toward 1, optionally fade alpha toward 0, speed up un-draw.
+            // The alpha fade can be reduced/disabled independently via clearAlpha —
+            // with clearAlpha=0 the only clearing mechanism is the reverse-trace un-draw,
+            // which preserves the hand-drawn feel (no translucent strokes).
+            var clearAlpha = state.clearAlpha == null ? 1 : state.clearAlpha;
+            thr = thr + (1 - thr) * c;
+            fade *= (1 - c * clearAlpha);
+            undrawMul = 1 + (undrawBoost - 1) * c;
+          }
+        }
         var above = n >= thr;
         if (above) {
           var r = (dtMs / state.drawTime) * s.speedMul;
@@ -221,7 +256,7 @@
           var t01 = (n - thr) / Math.max(0.001, (1 - thr));
           s.intensity = Math.min(1, 0.4 + t01 * 1.3);
         } else {
-          var re = (dtMs / (state.drawTime * 1.35)) * s.speedMul;
+          var re = (dtMs / (state.drawTime * 1.35)) * s.speedMul * undrawMul;
           s.progress = Math.max(0, s.progress - re);
         }
         if (s.progress < 0.015) continue;
@@ -233,6 +268,17 @@
     }
 
     function onResize() { resize(); buildStrokes(); }
+
+    // Cursor-tracking. Listen on window so we catch the cursor everywhere
+    // — the wrapper has pointer-events: none and shouldn't intercept events.
+    // Coords are converted to canvas-local on each move so scrolling / layout
+    // shifts don't desync the clear zone.
+    function onMouseMove(e) {
+      var r = canvas.getBoundingClientRect();
+      mouseX = e.clientX - r.left;
+      mouseY = e.clientY - r.top;
+    }
+    function onMouseLeave() { mouseX = -9999; mouseY = -9999; }
 
     // init
     resize();
@@ -246,6 +292,13 @@
     if (window.ResizeObserver) {
       ro = new ResizeObserver(onResize);
       ro.observe(host);
+    }
+    if (isDesktop) {
+      window.addEventListener('mousemove', onMouseMove);
+      // If the cursor leaves the viewport we also want to reset — otherwise
+      // the last-known position keeps a phantom hole in the ink.
+      document.addEventListener('mouseleave', onMouseLeave);
+      window.addEventListener('blur', onMouseLeave);
     }
     rafId = requestAnimationFrame(frame);
 
@@ -273,6 +326,11 @@
         running = false;
         cancelAnimationFrame(rafId);
         window.removeEventListener('resize', onResize);
+        if (isDesktop) {
+          window.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseleave', onMouseLeave);
+          window.removeEventListener('blur', onMouseLeave);
+        }
         if (ro) ro.disconnect();
         if (createdCanvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
       },

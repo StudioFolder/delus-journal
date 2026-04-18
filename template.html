@@ -50,8 +50,13 @@
       wobble:      1,
       drawTime:    6000,
       scale:       0.8,
-      taperBottom: 0.55,  // bottom 55% of the canvas thins out into nothing
-      taperCurve:  1.6,   // soft start, clean finish
+      taperBottom: 0.55,
+      taperCurve:  1.6,
+      clearRadius:   140,  // cursor-clear radius in px (desktop only)
+      clearStrength: 1,    // how fully ink is suppressed at the cursor center
+      clearCurve:    1.5,  // falloff shape
+      clearUndrawBoost: 15,// un-draw rate multiplier inside the clear zone
+      clearAlpha:    0,    // 0 = no translucency, only reverse-trace un-draw clears the zone
     });
     // Size the weather-bg to end a bit past the home view's main h1 —
     // the extension is the region that tapers out.
