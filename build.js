@@ -39,6 +39,7 @@ pages.forEach(({ file, prefix }) => {
   if (!fs.existsSync(file)) return;
   const pageSections = parseSections(fs.readFileSync(file, 'utf-8'));
   if (pageSections['main'])    output = output.replaceAll(`{{${prefix}_MAIN}}`,    pageSections['main']);
+  if (pageSections['cta'])     output = output.replaceAll(`{{${prefix}_CTA}}`,     pageSections['cta']);
   if (pageSections['service']) output = output.replaceAll(`{{${prefix}_SERVICE}}`, pageSections['service']);
 });
 
