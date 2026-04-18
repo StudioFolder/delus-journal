@@ -39,7 +39,7 @@
   <div id="weather-bg" class="weather-bg"></div>
   <script src="assets/js/sketch-loop.js"></script>
   <script>
-    SketchLoop.mount('#weather-bg', {
+    window.weatherLoop = SketchLoop.mount('#weather-bg', {
       threshold:   0.75,
       clumpSize:   80,
       turbulence:  0.75,
@@ -66,8 +66,11 @@
       function sizeWeather() {
         var h1 = document.querySelector('.site-main .view[data-view="home"] h1');
         if (!bg || !h1) return;
+        // Document-relative bottom edge — resilient to page scroll (e.g. loading with a #hash).
         var r = h1.getBoundingClientRect();
-        bg.style.height = Math.max(0, r.bottom + EXTRA_PX) + 'px';
+        var pageY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        var docBottom = r.bottom + pageY;
+        bg.style.height = Math.max(0, docBottom + EXTRA_PX) + 'px';
       }
       sizeWeather();
       window.addEventListener('load', sizeWeather);
@@ -126,6 +129,13 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+      // Collapse all inactive views on load so the page sizes to the active
+      // view's content only (not the tallest view in the stack). The swap
+      // handler below toggles this class around fade transitions.
+      document.querySelectorAll('.view:not(.view--active)').forEach(v => {
+        v.classList.add('view--collapsed');
+      });
 
       // Open all external links in a new tab
       document.querySelectorAll('a[href]').forEach(link => {
@@ -216,14 +226,63 @@
       // View-swap handler — fade out, then fade in
       const header = document.querySelector('.site-header');
       const footer = document.querySelector('.site-footer');
+
+      // Ramp suppress from `from` to `to` over durationMs using ease-in quadratic.
+      // Slow start so the first strokes emerge tentatively; density fills in afterwards.
+      function rampWeatherSuppress(from, to, durationMs) {
+        if (!window.weatherLoop) return;
+        if (window._weatherRampRAF) cancelAnimationFrame(window._weatherRampRAF);
+        var start = performance.now();
+        function step() {
+          if (!window.weatherLoop) return;
+          var elapsed = performance.now() - start;
+          var t = Math.min(1, elapsed / durationMs);
+          var eased = t * t;
+          window.weatherLoop.update({ suppress: from + (to - from) * eased });
+          if (t < 1) {
+            window._weatherRampRAF = requestAnimationFrame(step);
+          } else {
+            window._weatherRampRAF = null;
+          }
+        }
+        window._weatherRampRAF = requestAnimationFrame(step);
+      }
+
       document.querySelectorAll('.site-nav [data-view], .masthead[data-view], .site-service [data-view], .site-nav-back[data-view]').forEach(trigger => {
         trigger.addEventListener('click', (e) => {
           e.preventDefault();
           const target = trigger.dataset.view;
           const outgoing = [...document.querySelectorAll('.view--active')];
           if (!outgoing.length || outgoing[0].dataset.view === target) return;
+
+          // View-aware wither: suppress animation when leaving home, resume on return.
+          // 1500ms timeout: at drawTime:6000, clearUndrawBoost:15, worst-case speedMul:0.6,
+          // a stroke takes at most 6000*1.35/15/0.6 ≈ 900ms to un-draw — 1500ms is the margin.
+          const wasHome = outgoing[0].dataset.view === 'home';
+          if (target === 'home') {
+            clearTimeout(window._weatherPauseTimer);
+            if (window.weatherLoop) {
+              window.weatherLoop.resume();
+              rampWeatherSuppress(1, 0, 2000);
+            }
+          } else if (wasHome) {
+            if (window.weatherLoop) window.weatherLoop.update({ suppress: 1 });
+            clearTimeout(window._weatherPauseTimer);
+            window._weatherPauseTimer = setTimeout(function () {
+              if (window.weatherLoop) window.weatherLoop.pause();
+            }, 1500);
+          }
+
           if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
           document.querySelector('.page').dataset.currentView = target;
+
+          // Strip any #hash left by mobile anchor links (e.g. #open-call-section).
+          // Without this, refreshing on a view leaves the hash in the URL; on reload
+          // the browser jump-scrolls to the anchor and the weather-bg height
+          // collapses (its height is derived from the home h1's position).
+          if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
 
           document.querySelectorAll('.site-nav a').forEach(a => {
             if (a.dataset.view === target) a.setAttribute('aria-current', 'page');
@@ -239,9 +298,16 @@
           function finishSwap() {
             if (finished) return;
             finished = true;
-            outgoing.forEach(v => v.setAttribute('inert', ''));
+            // Outgoing has finished its opacity fade — now pull it out of
+            // layout sizing so the grid cell can shrink to the incoming view.
+            outgoing.forEach(v => {
+              v.setAttribute('inert', '');
+              v.classList.add('view--collapsed');
+            });
+            // Incoming: expand (remove collapsed) before activating (fade-in).
             document.querySelectorAll(`.view[data-view="${target}"]`).forEach(nv => {
               nv.removeAttribute('inert');
+              nv.classList.remove('view--collapsed');
               nv.classList.add('view--active');
             });
             header.classList.remove('header--fading');

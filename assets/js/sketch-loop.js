@@ -78,6 +78,7 @@
     clearCurve:    1.5, // shape of the radial falloff. Same semantics as taperCurve.
     clearUndrawBoost: 5,// multiplier on un-draw speed inside the clear zone — higher = snappier clear.
     clearAlpha:    1,   // 0..1 — how much alpha fading is applied inside the clear zone. 0 = no alpha effect (only threshold + un-draw), 1 = full fade.
+    suppress:      0,   // 0..1 global suppression. Raises effective threshold toward 1 and boosts un-draw rate everywhere. Used for view-aware withering.
   };
 
   // ---------- Mount ----------
@@ -106,6 +107,21 @@
 
     var ctx = canvas.getContext('2d');
     var state = Object.assign({}, DEFAULTS, options || {});
+
+    // Pre-built strokeStyle strings, keyed by alpha bucketed to 0.02 steps.
+    // Replaces a per-pass `'rgba(' + state.inkColor + ',' + passA + ')'` concat
+    // that allocated thousands of strings per frame. inkColor is ~always static,
+    // and alpha resolution is well below perceptual threshold for ink strokes.
+    var STROKE_STYLE_BUCKETS = 51; // 0.00, 0.02, ..., 1.00
+    var strokeStyleCache = new Array(STROKE_STYLE_BUCKETS);
+    var cachedInkColor = null;
+    function rebuildStrokeStyleCache() {
+      cachedInkColor = state.inkColor;
+      for (var i = 0; i < STROKE_STYLE_BUCKETS; i++) {
+        strokeStyleCache[i] = 'rgba(' + cachedInkColor + ',' + (i / (STROKE_STYLE_BUCKETS - 1)) + ')';
+      }
+    }
+    rebuildStrokeStyleCache();
 
     var W = 0, H = 0, dpr = 1;
     var strokes = [];
@@ -171,7 +187,9 @@
         else if (pass === 1) { offX = s.passOffX; offY = s.passOffY; passA = alpha * 0.55; lw = s.lw * 0.8; }
         else { offX = s.passOffX2; offY = s.passOffY2; passA = alpha * 0.35; lw = s.lw * 0.7; }
         if (passA <= 0.01) continue;
-        ctx.strokeStyle = 'rgba(' + state.inkColor + ',' + Math.min(1, passA) + ')';
+        // Bucketed alpha lookup — cached string, no per-pass allocation.
+        var bIdx = passA >= 1 ? STROKE_STYLE_BUCKETS - 1 : Math.round(passA * (STROKE_STYLE_BUCKETS - 1));
+        ctx.strokeStyle = strokeStyleCache[bIdx];
         ctx.lineWidth = lw * state.strokeWidth;
         ctx.beginPath();
         var endT = Math.min(1, progress);
@@ -249,6 +267,11 @@
             undrawMul = 1 + (undrawBoost - 1) * c;
           }
         }
+        var supp = state.suppress || 0;
+        if (supp > 0) {
+          thr = thr + (1 - thr) * supp;
+          undrawMul = Math.max(undrawMul, 1 + ((state.clearUndrawBoost || 1) - 1) * supp);
+        }
         var above = n >= thr;
         if (above) {
           var r = (dtMs / state.drawTime) * s.speedMul;
@@ -308,8 +331,10 @@
           (newOpts.spacing && newOpts.spacing !== state.spacing) ||
           (newOpts.scale != null && newOpts.scale !== state.scale)
         ));
+        var inkChanged = !!(newOpts && newOpts.inkColor && newOpts.inkColor !== state.inkColor);
         Object.assign(state, newOpts || {});
         if (rebuild) buildStrokes();
+        if (inkChanged) rebuildStrokeStyleCache();
       },
       pause: function () {
         running = false;
