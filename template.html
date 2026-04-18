@@ -170,7 +170,8 @@
           buy.href = el.href;
           buy.target = '_blank';
           buy.rel = 'noopener noreferrer';
-          buy.textContent = 'Buy at Hatje Cantz Verlag';
+          buy.textContent = 'Buy at Hatje Cantz';
+          buy.addEventListener('click', (e) => e.stopPropagation());
           activeImageTip.appendChild(buy);
         }
         document.body.appendChild(activeImageTip);
@@ -232,24 +233,39 @@
           const page = document.querySelector('.page');
           page.style.minHeight = page.offsetHeight + 'px';
 
-          let pending = outgoing.length;
-          outgoing.forEach(v => {
-            v.classList.remove('view--active');
-            v.addEventListener('transitionend', function handler(e) {
-              if (e.target !== v || e.propertyName !== 'opacity') return;
-              v.removeEventListener('transitionend', handler);
-              v.setAttribute('inert', '');
-              if (--pending === 0) {
-                document.querySelectorAll(`.view[data-view="${target}"]`).forEach(nv => {
-                  nv.removeAttribute('inert');
-                  nv.classList.add('view--active');
-                });
-                header.classList.remove('header--fading');
-                footer.classList.remove('footer--fading');
-                page.style.minHeight = '';
-              }
+          let finished = false;
+          function finishSwap() {
+            if (finished) return;
+            finished = true;
+            outgoing.forEach(v => v.setAttribute('inert', ''));
+            document.querySelectorAll(`.view[data-view="${target}"]`).forEach(nv => {
+              nv.removeAttribute('inert');
+              nv.classList.add('view--active');
             });
-          });
+            header.classList.remove('header--fading');
+            footer.classList.remove('footer--fading');
+            page.style.minHeight = '';
+          }
+
+          // Only views that are actually rendered will fire transitionend.
+          // Views inside display:none ancestors (e.g. .site-cta on desktop)
+          // never transition, so exclude them from the pending count.
+          const animated = outgoing.filter(v => v.offsetParent !== null);
+          let pending = animated.length;
+          outgoing.forEach(v => v.classList.remove('view--active'));
+          if (pending === 0) {
+            finishSwap();
+          } else {
+            animated.forEach(v => {
+              v.addEventListener('transitionend', function handler(e) {
+                if (e.target !== v || e.propertyName !== 'opacity') return;
+                v.removeEventListener('transitionend', handler);
+                if (--pending === 0) finishSwap();
+              });
+            });
+            // Safety net: if transitionend is swallowed for any reason, still finish.
+            setTimeout(finishSwap, 1200);
+          }
         });
       });
 
