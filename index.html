@@ -106,8 +106,8 @@
 </section>
       </article>
       <article class="view" data-view="about" inert><section class="section"><h1>About</h1>
-<p>DELUS began its journey in 2021, born from a shared vision between the LUS doctoral fellows Sara Frikech and Johanna Just to highlight the research endeavours of the Institute and establish a platform to establish dialogues on pressing topics within the field of landscape and urban studies.</p>
-<p>Situated at the intersection of architecture, landscape, and urban studies, DELUS seeks to become a platform for exchange. It co-operates with research based at LUS and far beyond, connecting designers, artists, scientists, scholars, and students; dealing with landscape and urban questions; and giving visibility to emerging topics, concepts, and projects in these fields.</p>
+<p><em>DELUS</em> began its journey in 2021, born from a shared vision between the LUS doctoral fellows Sara Frikech and Johanna Just to highlight the research endeavours of the Institute and establish a platform to establish dialogues on pressing topics within the field of landscape and urban studies.</p>
+<p>Situated at the intersection of architecture, landscape, and urban studies, <em>DELUS</em> seeks to become a platform for exchange. It co-operates with research based at LUS and far beyond, connecting designers, artists, scientists, scholars, and students; dealing with landscape and urban questions; and giving visibility to emerging topics, concepts, and projects in these fields.</p>
 </section><section class="section section--cta desktop-cta"><p><a href="https://www.instagram.com/delusjournal/">Follow DELUS</a></p>
 </section></article>
       <article class="view" data-view="donate" inert><section class="section"><h1>Support</h1>
@@ -116,11 +116,13 @@
 </section></article>
     </main>
 
-    <aside class="site-service">
+    <a href="#open-call-section" class="mobile-open-call-pill">Open call</a>
+
+    <aside id="open-call-section" class="site-service">
       <article class="view view--active" data-view="home">
-        <section class="section section--dates"><h1>open call <br> issue 2, autumn 2026</h1>
+        <section class="section section--dates"><h1>issue 2 — autumn 2026 <br> open call</h1>
 <p><strong>Submission guidelines</strong>
-All submissions must clearly state their relation to the theme of this issue of DELUS. Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.</p>
+Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. All submissions must clearly state their relation to the theme of this issue of DELUS. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.</p>
 <p><strong>For a 3000-word article</strong></p>
 <ul>
 <li>Proposed title</li>
@@ -147,14 +149,12 @@ June 1st, 2026</p>
 
 <p><strong>Editors</strong>
 Sara Frikech, Johanna Just</p>
-<p><strong>Art direction</strong>
+<p><strong>Graphic Design</strong>
 Studio Folder</p>
+<p><strong>Publisher</strong>
+Hatje Cantz</p>
 </article>
-      <article class="view" data-view="donate" inert><h1><a href="#" data-view="home">Open call</a></h1>
-
-<p><strong>IBAN</strong>
-CH00 0000 0000 0000 0000 0</p>
-</article>
+      <article class="view" data-view="donate" inert><h1><a href="#" data-view="home">Open call</a></h1></article>
     </aside>
 
     <div class="site-cta">
@@ -319,6 +319,15 @@ CH00 0000 0000 0000 0000 0</p>
           }
         });
       });
+
+      // Mobile open-call pill: hide when side column scrolls into view
+      const pill = document.querySelector('.mobile-open-call-pill');
+      const openCallSection = document.getElementById('open-call-section');
+      if (pill && openCallSection) {
+        new IntersectionObserver((entries) => {
+          pill.classList.toggle('is-hidden', entries[0].isIntersecting);
+        }, { threshold: 0 }).observe(openCallSection);
+      }
 
     });
   </script>

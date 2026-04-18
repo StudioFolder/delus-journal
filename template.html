@@ -102,7 +102,9 @@
       <article class="view" data-view="donate" inert><section class="section">{{DONATE_MAIN}}</section><section class="section section--cta desktop-cta">{{DONATE_CTA}}</section></article>
     </main>
 
-    <aside class="site-service">
+    <a href="#open-call-section" class="mobile-open-call-pill">Open call</a>
+
+    <aside id="open-call-section" class="site-service">
       <article class="view view--active" data-view="home">
         <section class="section section--dates">{{DATES}}</section>
       </article>
@@ -268,6 +270,15 @@
           }
         });
       });
+
+      // Mobile open-call pill: hide when side column scrolls into view
+      const pill = document.querySelector('.mobile-open-call-pill');
+      const openCallSection = document.getElementById('open-call-section');
+      if (pill && openCallSection) {
+        new IntersectionObserver((entries) => {
+          pill.classList.toggle('is-hidden', entries[0].isIntersecting);
+        }, { threshold: 0 }).observe(openCallSection);
+      }
 
     });
   </script>

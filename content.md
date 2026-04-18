@@ -14,10 +14,10 @@ This issue brings together researchers and practitioners across architecture, ur
 
 ## dates
 
-# open call <br> issue 2, autumn 2026
+# issue 2 — autumn 2026 <br> open call
 
 **Submission guidelines**
-All submissions must clearly state their relation to the theme of this issue of DELUS. Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.
+Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. All submissions must clearly state their relation to the theme of this issue of DELUS. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.
 
 **For a 3000-word article**
 - Proposed title
