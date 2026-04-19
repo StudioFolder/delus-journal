@@ -54,7 +54,6 @@
   /* Colours */
   --color-bg: #E2E2DD;
   --color-text: #111111;            /* TODO */
-  --color-accent: #000000;          /* TODO */
   --color-muted: #888888;           /* TODO */
 
   /* Layout */
@@ -321,8 +320,32 @@ strong {
 /* .site-main em inherits family/weight; italic handled by the em tag's default font-style and Louize-Italic @font-face */
 
 /* --- Service column text styles ---------------------------- */
-/* Zero-height baseline anchor: same font metrics as the h1 so the page grid's
-   align-items: first baseline still works even though the h1 is position: absolute */
+/* ------------------------------------------------------------------
+   Zero-height baseline anchor for .site-service.
+
+   Why this exists:
+   .page uses `align-items: first baseline` so the service column and the
+   main column line up on their first text baseline. The service column's
+   h1 is `position: absolute`, which takes it out of flow — meaning the
+   column has NO in-flow first baseline, and the grid falls back to
+   aligning on the top of the column's box. Result: the main column's
+   prose visibly drops below where the service h1 sits.
+
+   How the fix works:
+   This ::before is an in-flow pseudo-element carrying a zero-width space
+   (\200B is required — an empty `content: ''` would not generate a box,
+   so there would be no baseline to anchor to). Its font-size and
+   line-height mirror the h1, so its first baseline lands at the same y
+   the h1's baseline would have had in flow. `height: 0` + `overflow:
+   visible` means it contributes a baseline but no layout height, so the
+   row still sizes to the (absolute) h1's visual box. `visibility:
+   hidden` is belt-and-braces — the ZWSP renders nothing anyway.
+
+   If you "clean this up": the main/service columns will drift out of
+   vertical alignment on desktop. The mobile override below disables
+   this (display: none) because mobile is single-column and doesn't use
+   baseline alignment.
+   ------------------------------------------------------------------ */
 .site-service::before {
   content: '\200B';
   grid-area: 1 / 1;

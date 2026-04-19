@@ -58,7 +58,7 @@
   }
 
   // ---------- Defaults (match the study's Blizzard preset) ----------
-  var DEFAULTS = {
+  var DEFAULTS = Object.freeze({
     threshold:   0.48, // where the ink threshold sits — raise for sparser
     clumpSize:   140,  // px per noise unit — bigger = larger blobs
     turbulence:  0.50, // how fast the noise morphs
@@ -79,7 +79,7 @@
     clearUndrawBoost: 5,// multiplier on un-draw speed inside the clear zone — higher = snappier clear.
     clearAlpha:    1,   // 0..1 — how much alpha fading is applied inside the clear zone. 0 = no alpha effect (only threshold + un-draw), 1 = full fade.
     suppress:      0,   // 0..1 global suppression. Raises effective threshold toward 1 and boosts un-draw rate everywhere. Used for view-aware withering.
-  };
+  });
 
   // ---------- Mount ----------
   function mount(target, options) {
@@ -128,8 +128,15 @@
     var tZ = 0, scrollY = 0, scrollX = 0;
     var lastT = performance.now();
     var rafId = 0, running = true;
-    // Cursor-clear state. -9999 = offscreen / no effect.
-    var mouseX = -9999, mouseY = -9999;
+    // Set by onVisibilityChange when the tab goes hidden WHILE we are running.
+    // Lets the tab-return handler know whether it should auto-resume — external
+    // callers (e.g. view-pause) clear this flag so their pause intent is respected.
+    var pausedByVisibility = false;
+    // Cursor-clear state. mouseActive=false gates the whole clear-zone outer
+    // branch in the frame loop — when the cursor isn't on the page (or on a
+    // touch-only device) we skip the per-stroke distance math entirely.
+    // mouseX/mouseY are only meaningful when mouseActive is true.
+    var mouseX = 0, mouseY = 0, mouseActive = false;
     // Desktop-only: skip hover logic on touch-only devices (no hover media or coarse pointer).
     var isDesktop = !window.matchMedia
       || window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -143,6 +150,9 @@
       canvas.width = Math.floor(W * dpr);
       canvas.height = Math.floor(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // canvas.width reassignment above resets context state to defaults,
+      // so lineCap must be re-applied here (not just once at mount).
+      ctx.lineCap = 'round';
     }
 
     function buildStrokes() {
@@ -180,7 +190,6 @@
       var segs = 6;
       var px = -Math.sin(angleRad);
       var py = Math.cos(angleRad);
-      ctx.lineCap = 'round';
       for (var pass = 0; pass < passes; pass++) {
         var offX, offY, passA, lw;
         if (pass === 0) { offX = 0; offY = 0; passA = alpha; lw = s.lw; }
@@ -250,7 +259,7 @@
           thr = state.threshold + (1 - state.threshold) * t;
           fade = 1 - t;
         }
-        if (clearR > 0) {
+        if (clearR > 0 && mouseActive) {
           var ddx = s.x - mouseX, ddy = s.y - mouseY;
           var d2 = ddx * ddx + ddy * ddy;
           if (d2 < clearR2) {
@@ -300,8 +309,39 @@
       var r = canvas.getBoundingClientRect();
       mouseX = e.clientX - r.left;
       mouseY = e.clientY - r.top;
+      mouseActive = true;
     }
-    function onMouseLeave() { mouseX = -9999; mouseY = -9999; }
+    function onMouseLeave() { mouseActive = false; }
+
+    // Shared pause/resume internals so the public API and the visibilitychange
+    // handler go through the exact same code path.
+    function doPause() {
+      running = false;
+      cancelAnimationFrame(rafId);
+    }
+    function doResume() {
+      if (!running) {
+        running = true;
+        lastT = performance.now();
+        rafId = requestAnimationFrame(frame);
+      }
+    }
+
+    // Tab-switch pause. If the tab is hidden while we're actively running, stop
+    // the RAF and remember *we* did it — so on return we only resume loops that
+    // were ours to pause, never ones an external caller (view-pause wither,
+    // prefers-reduced-motion, etc.) paused on purpose.
+    function onVisibilityChange() {
+      if (document.hidden) {
+        if (running) {
+          doPause();
+          pausedByVisibility = true;
+        }
+      } else if (pausedByVisibility) {
+        pausedByVisibility = false;
+        doResume();
+      }
+    }
 
     // init
     resize();
@@ -323,6 +363,7 @@
       document.addEventListener('mouseleave', onMouseLeave);
       window.addEventListener('blur', onMouseLeave);
     }
+    document.addEventListener('visibilitychange', onVisibilityChange);
     rafId = requestAnimationFrame(frame);
 
     return {
@@ -337,25 +378,26 @@
         if (inkChanged) rebuildStrokeStyleCache();
       },
       pause: function () {
-        running = false;
-        cancelAnimationFrame(rafId);
+        // External pause: clear the visibility flag so tab-return doesn't
+        // undo this caller's intent.
+        pausedByVisibility = false;
+        doPause();
       },
       resume: function () {
-        if (!running) {
-          running = true;
-          lastT = performance.now();
-          rafId = requestAnimationFrame(frame);
-        }
+        // External resume: also clear the flag. Keeps the flag strictly a
+        // record of "did the visibility handler pause us" at all times.
+        pausedByVisibility = false;
+        doResume();
       },
       destroy: function () {
-        running = false;
-        cancelAnimationFrame(rafId);
+        doPause();
         window.removeEventListener('resize', onResize);
         if (isDesktop) {
           window.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseleave', onMouseLeave);
           window.removeEventListener('blur', onMouseLeave);
         }
+        document.removeEventListener('visibilitychange', onVisibilityChange);
         if (ro) ro.disconnect();
         if (createdCanvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
       },
