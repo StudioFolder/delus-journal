@@ -170,9 +170,10 @@
 
       // Image tooltips for issue links
       let activeImageTip = null;
+      let activeImageEl  = null;
 
       function createImageTip(el, centered) {
-        if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
+        if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; activeImageEl = null; }
         activeImageTip = document.createElement('div');
         activeImageTip.className = 'image-tooltip';
         const img = document.createElement('img');
@@ -193,15 +194,17 @@
           });
           activeImageTip.appendChild(buy);
         }
+        activeImageEl = el;
         document.body.appendChild(activeImageTip);
-        const rect = el.getBoundingClientRect();
-        if (centered) {
-          activeImageTip.style.left      = (rect.left + rect.width / 2) + 'px';
-          activeImageTip.style.transform = 'translateX(-50%)';
-        } else {
-          activeImageTip.style.right = (window.innerWidth - rect.right) + 'px';
-        }
-        activeImageTip.style.top = (rect.bottom + 12) + 'px';
+        const rect   = el.getBoundingClientRect();
+        const tipW   = activeImageTip.offsetWidth;
+        const margin = 16;
+        const desired = centered
+          ? rect.left + rect.width / 2 - tipW / 2
+          : rect.right - tipW;
+        const clamped = Math.max(margin, Math.min(window.innerWidth - tipW - margin, desired));
+        activeImageTip.style.left = clamped + 'px';
+        activeImageTip.style.top  = (rect.bottom + 12) + 'px';
       }
 
       // Dismiss on tap outside tooltip or issue link
@@ -209,6 +212,7 @@
         if (activeImageTip && !e.target.closest('[data-image]') && !e.target.closest('.image-tooltip')) {
           activeImageTip.remove();
           activeImageTip = null;
+          activeImageEl  = null;
         }
       });
 
@@ -217,8 +221,9 @@
         el.addEventListener('click', (e) => {
           if (!window.matchMedia('(hover: none)').matches) return;
           e.preventDefault();
-          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; return; }
-          createImageTip(el, true);
+          const isSame = activeImageEl === el;
+          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; activeImageEl = null; }
+          if (!isSame) createImageTip(el, true);
         });
         // Desktop: hover shows image only
         el.addEventListener('mouseenter', () => {
@@ -226,6 +231,7 @@
           createImageTip(el, false);
         });
         el.addEventListener('mouseleave', () => {
+          if (window.matchMedia('(hover: none)').matches) return;
           if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
         });
       });

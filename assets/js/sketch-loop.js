@@ -299,7 +299,15 @@
       rafId = requestAnimationFrame(frame);
     }
 
-    function onResize() { resize(); buildStrokes(); }
+    var lastWidth = 0;
+    function onResize() {
+      var newWidth = host.clientWidth;
+      resize();
+      if (newWidth !== lastWidth) {
+        lastWidth = newWidth;
+        buildStrokes();
+      }
+    }
 
     // Cursor-tracking. Listen on window so we catch the cursor everywhere
     // — the wrapper has pointer-events: none and shouldn't intercept events.
@@ -345,6 +353,7 @@
 
     // init
     resize();
+    lastWidth = host.clientWidth;
     buildStrokes();
     window.addEventListener('resize', onResize);
     // Watch the host element too — its size can change independently of the

@@ -110,8 +110,8 @@
       </article>
       <article class="view" data-view="about" inert><section class="section"><h1>About</h1>
 <p><em>DELUS</em> began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with emerging questions in landscape and urban studies. Emerging from the Institute for Landscape and Urban Studies (LUS) at ETH Zürich, <em>DELUS</em> is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.</p>
-</section><section class="section section--cta desktop-cta"><p><a href="mailto:mailto:delus@arch.ethz.ch">Contact Us</a>
-<a href="https://www.instagram.com/delusjournal/">Follow Us</a></p>
+</section><section class="section section--cta desktop-cta"><p><a href="mailto:delus@arch.ethz.ch">Contact</a>
+<a href="https://www.instagram.com/delusjournal/">Follow</a></p>
 </section></article>
       <article class="view" data-view="donate" inert><section class="section"></section><section class="section section--cta desktop-cta"></section></article>
     </main>
@@ -162,8 +162,8 @@ Hatje Cantz</p>
     <div class="site-cta">
       <div class="view view--active" data-view="home"><section class="section section--cta"><p><a href="mailto:delus@arch.ethz.ch?subject=Submission%20for%20DELUS%20Issue%202%20%E2%80%94%20Season%20Creep">Submit</a></p>
 </section></div>
-      <div class="view" data-view="about" inert><section class="section section--cta"><p><a href="mailto:mailto:delus@arch.ethz.ch">Contact Us</a>
-<a href="https://www.instagram.com/delusjournal/">Follow Us</a></p>
+      <div class="view" data-view="about" inert><section class="section section--cta"><p><a href="mailto:delus@arch.ethz.ch">Contact</a>
+<a href="https://www.instagram.com/delusjournal/">Follow</a></p>
 </section></div>
       <div class="view" data-view="donate" inert><section class="section section--cta"></section></div>
     </div>
@@ -218,9 +218,10 @@ Hatje Cantz</p>
 
       // Image tooltips for issue links
       let activeImageTip = null;
+      let activeImageEl  = null;
 
       function createImageTip(el, centered) {
-        if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
+        if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; activeImageEl = null; }
         activeImageTip = document.createElement('div');
         activeImageTip.className = 'image-tooltip';
         const img = document.createElement('img');
@@ -241,15 +242,17 @@ Hatje Cantz</p>
           });
           activeImageTip.appendChild(buy);
         }
+        activeImageEl = el;
         document.body.appendChild(activeImageTip);
-        const rect = el.getBoundingClientRect();
-        if (centered) {
-          activeImageTip.style.left      = (rect.left + rect.width / 2) + 'px';
-          activeImageTip.style.transform = 'translateX(-50%)';
-        } else {
-          activeImageTip.style.right = (window.innerWidth - rect.right) + 'px';
-        }
-        activeImageTip.style.top = (rect.bottom + 12) + 'px';
+        const rect   = el.getBoundingClientRect();
+        const tipW   = activeImageTip.offsetWidth;
+        const margin = 16;
+        const desired = centered
+          ? rect.left + rect.width / 2 - tipW / 2
+          : rect.right - tipW;
+        const clamped = Math.max(margin, Math.min(window.innerWidth - tipW - margin, desired));
+        activeImageTip.style.left = clamped + 'px';
+        activeImageTip.style.top  = (rect.bottom + 12) + 'px';
       }
 
       // Dismiss on tap outside tooltip or issue link
@@ -257,6 +260,7 @@ Hatje Cantz</p>
         if (activeImageTip && !e.target.closest('[data-image]') && !e.target.closest('.image-tooltip')) {
           activeImageTip.remove();
           activeImageTip = null;
+          activeImageEl  = null;
         }
       });
 
@@ -265,8 +269,9 @@ Hatje Cantz</p>
         el.addEventListener('click', (e) => {
           if (!window.matchMedia('(hover: none)').matches) return;
           e.preventDefault();
-          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; return; }
-          createImageTip(el, true);
+          const isSame = activeImageEl === el;
+          if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; activeImageEl = null; }
+          if (!isSame) createImageTip(el, true);
         });
         // Desktop: hover shows image only
         el.addEventListener('mouseenter', () => {
@@ -274,6 +279,7 @@ Hatje Cantz</p>
           createImageTip(el, false);
         });
         el.addEventListener('mouseleave', () => {
+          if (window.matchMedia('(hover: none)').matches) return;
           if (activeImageTip) { activeImageTip.remove(); activeImageTip = null; }
         });
       });

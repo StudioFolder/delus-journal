@@ -6,8 +6,8 @@
 
 ## cta
 
-[Contact Us](mailto:mailto:delus@arch.ethz.ch)
-[Follow Us](https://www.instagram.com/delusjournal/)
+[Contact](mailto:delus@arch.ethz.ch)
+[Follow](https://www.instagram.com/delusjournal/)
 
 ## service
 
