@@ -10,11 +10,11 @@ This issue brings together researchers and practitioners across architecture, ur
 
 ## cta
 
-[Submit your proposal](mailto:delus@arch.ethz.ch)
+[Submit](mailto:delus@arch.ethz.ch?subject=Submission%20for%20DELUS%20Issue%202%20%E2%80%94%20Season%20Creep)
 
 ## dates
 
-# issue 2 — autumn 2026 <br> open call
+# issue 2 — spring 2027 <br> open call
 
 **Submission guidelines**
 Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. All submissions must clearly state their relation to the theme of this issue of DELUS. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.
@@ -37,6 +37,10 @@ Texts must be submitted as Word files (.docx). Images should be high-resolution 
 
 **Deadline**
 June 1st, 2026
+
+## credit
+
+Issue 2, <em>Season Creep</em>, is part of "[DELUS: Dialogues on Changing Landscapes](https://data.snf.ch/grants/grant/239796)" (2026–2029), funded by [SNSF](https://www.snf.ch/).
 
 ## footer
 

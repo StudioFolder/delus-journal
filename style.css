@@ -389,6 +389,11 @@ strong {
   padding-top: calc(var(--line-height-base) * 2 * var(--font-size-base) - 0.6rem);
 }
 .site-service p  { font-weight: 400; margin-top: 1em; }
+.credit { font-size: 0.85rem; line-height: 1.25; margin-top: 2em; }
+.credit p { margin: 0; }
+.credit a { text-decoration: none; transition: opacity 150ms ease; }
+.credit a:hover { opacity: 0.6; }
+.credit--mobile { display: none; }
 
 .site-service strong {
   /* TODO: sub-title treatment (block-level, weight, spacing) */
@@ -412,6 +417,12 @@ strong {
 
 /* Mobile open-call floating pill */
 .mobile-open-call-pill { display: none; }
+
+.section--cta p {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
 
 .section--cta a {
   display: inline-block;
@@ -496,14 +507,19 @@ strong {
   .site-main    { order: 2; grid-column: 1; grid-row: auto; }
   .site-service { order: 3; grid-column: 1; grid-row: auto; }
   .site-cta     { order: 4; grid-column: 1; grid-row: auto; display: grid; text-align: center; padding-top: 3rem; }
+  .site-cta .section--cta p { padding-inline: 6rem; }
   .site-cta .section--cta a {
     border: 1px solid currentColor;
     border-radius: 999px;
     padding: 0.6rem 1.75rem;
   }
-  .site-footer  { order: 5; grid-column: 1; grid-row: auto; padding-top: 10rem; }
-  .page[data-current-view="about"] .site-cta  { padding-top: 5rem; }
-  .page[data-current-view="donate"] .site-cta { padding-top: 2rem; }
+  .credit--desktop { display: none; }
+  .credit--mobile  { display: block; order: 5; grid-column: 1; grid-row: auto; margin-top: 8rem; }
+  .site-footer  { order: 6; grid-column: 1; grid-row: auto; padding-top: 2rem; }
+  .page[data-current-view="about"] .site-cta    { padding-top: 5rem; }
+  .page[data-current-view="donate"] .site-cta   { padding-top: 2rem; }
+  .page[data-current-view="about"] .credit--mobile,
+  .page[data-current-view="donate"] .credit--mobile { display: none; }
   .desktop-cta  { display: none; }
 
   .page[data-current-view="home"] .mobile-open-call-pill {

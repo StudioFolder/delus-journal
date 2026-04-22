@@ -31,7 +31,7 @@
   </noscript>
 
   <!-- Analytics — add once live -->
-  <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="TODO"></script> -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="b3e39605-83c4-40b0-b0f1-dc6e27dadaa7"></script>
   <!-- <script defer src="/_vercel/insights/script.js"></script> -->
 </head>
 <body>
@@ -90,7 +90,7 @@
         <a href="#" data-view="about">About</a>
         <a href="https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-00.png">Issue 0</a>
         <a href="https://www.hatjecantz.com/products/77075-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-01.png">Issue 1</a>
-        <a href="#" data-view="donate">Donate</a>
+        <!-- <a href="#" data-view="donate">Donate</a> --> <!-- donate temporarily hidden 2026-04-22 per client; donate.md renamed to donate.md.draft -->
       </nav>
       <a href="#" class="site-nav-back" data-view="home">Open call</a>
     </header>
@@ -110,6 +110,7 @@
     <aside id="open-call-section" class="site-service">
       <article class="view view--active" data-view="home">
         <section class="section section--dates">{{DATES}}</section>
+        <div class="credit credit--desktop">{{CREDIT}}</div>
       </article>
       <article class="view" data-view="about" inert>{{ABOUT_SERVICE}}</article>
       <article class="view" data-view="donate" inert>{{DONATE_SERVICE}}</article>
@@ -120,6 +121,8 @@
       <div class="view" data-view="about" inert><section class="section section--cta">{{ABOUT_CTA}}</section></div>
       <div class="view" data-view="donate" inert><section class="section section--cta">{{DONATE_CTA}}</section></div>
     </div>
+
+    <div class="credit credit--mobile">{{CREDIT}}</div>
 
     <footer class="site-footer">
       {{FOOTER}}
@@ -183,7 +186,11 @@
           buy.target = '_blank';
           buy.rel = 'noopener noreferrer';
           buy.textContent = 'Buy at Hatje Cantz';
-          buy.addEventListener('click', (e) => e.stopPropagation());
+          buy.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            window.open(buy.href, '_blank', 'noopener,noreferrer');
+          });
           activeImageTip.appendChild(buy);
         }
         document.body.appendChild(activeImageTip);
@@ -250,6 +257,7 @@
 
       document.querySelectorAll('.site-nav [data-view], .masthead[data-view], .site-service [data-view], .site-nav-back[data-view]').forEach(trigger => {
         trigger.addEventListener('click', (e) => {
+          if (e.target.closest('a[href]:not([data-view])')) return;
           e.preventDefault();
           const target = trigger.dataset.view;
           const outgoing = [...document.querySelectorAll('.view--active')];
