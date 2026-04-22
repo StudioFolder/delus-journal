@@ -3,14 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="description" content="Delus Journal — Open Call">
+  <meta name="description" content="DELUS is an annual journal for landscape and urban studies from the Institute of Landscape and Urban Studies (LUS) at ETH Zürich, published by Hatje Cantz. Submit to Issue 2 — Season Creep. Deadline 1 June 2026.">
   <meta name="author" content="Delus Journal">
-  <meta property="og:title" content="Delus Journal">
-  <meta property="og:description" content="Delus Journal — Open Call">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:site_name" content="DELUS Journal">
+  <meta property="og:title" content="DELUS — Journal for Landscape and Urban Studies">
+  <meta property="og:description" content="Annual journal from the Institute of Landscape and Urban Studies. Issue 2 open call — Season Creep. Deadline 1 June 2026.">
   <meta property="og:url" content="https://delusjournal.com">
   <meta property="og:type" content="website">
-  <!-- <meta property="og:image" content="https://delusjournal.com/assets/og-image.jpg"> -->
-  <title>Delus Journal</title>
+  <meta property="og:image" content="https://delusjournal.com/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DELUS — Journal for Landscape and Urban Studies">
+  <meta name="twitter:description" content="Submit to Issue 2 — Season Creep. Deadline 1 June 2026.">
+  <meta name="twitter:image" content="https://delusjournal.com/assets/images/og-image.png">
+  <meta name="twitter:site" content="@delusjournal">
+
+  <title>DELUS — Journal for Landscape and Urban Studies</title>
+
 
   <!-- TODO: add real typefaces once design is finalised -->
   <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
@@ -21,8 +33,89 @@
   <link rel="preload" href="assets/images/issue-00.png" as="image">
   <link rel="preload" href="assets/images/issue-01.png" as="image">
   <link rel="stylesheet" href="style.css">
-  <!-- <link rel="icon" type="image/svg+xml" href="favicon.svg"> -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="canonical" href="https://delusjournal.com">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Periodical",
+        "@id": "https://delusjournal.com/#periodical",
+        "name": "DELUS. The Journal of the Institute of Landscape and Urban Studies",
+        "alternateName": "DELUS Journal",
+        "url": "https://delusjournal.com",
+        "publisher": { "@id": "https://delusjournal.com/#hatje-cantz" },
+        "editor": [
+          { "@type": "Person", "name": "Sara Frikech" },
+          { "@type": "Person", "name": "Johanna Just" }
+        ],
+        "inLanguage": "en",
+        "about": [
+          "Landscape architecture",
+          "Urban studies",
+          "Landscape urbanism",
+          "Architecture"
+        ],
+        "sameAs": [
+          "https://www.instagram.com/delusjournal/",
+          "https://www.nsl.ethz.ch/en/delus/",
+          "https://library.oapen.org/handle/20.500.12657/97869"
+        ]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://delusjournal.com/#lus",
+        "name": "Institute of Landscape and Urban Studies (LUS), ETH Zürich",
+        "url": "https://lus.arch.ethz.ch/"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://delusjournal.com/#hatje-cantz",
+        "name": "Hatje Cantz Verlag",
+        "url": "https://www.hatjecantz.com/"
+      },
+      {
+        "@type": "Book",
+        "name": "DELUS Issue 0",
+        "isbn": "9783775756365",
+        "sameAs": "https://library.oapen.org/handle/20.500.12657/97869",
+        "url": "https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies",
+        "isPartOf": { "@id": "https://delusjournal.com/#periodical" }
+      },
+      {
+        "@type": "Book",
+        "name": "DELUS Issue 1 — Chasing Water",
+        "isbn": "9783775758741",
+        "url": "https://www.hatjecantz.com/products/77075-delus-the-journal-of-the-institute-of-landscape-and-urban-studies",
+        "isPartOf": { "@id": "https://delusjournal.com/#periodical" }
+      },
+      {
+        "@type": "CreativeWork",
+        "additionalType": "CallForPapers",
+        "name": "DELUS Issue 2 — Season Creep — Open Call",
+        "description": "Open call for the autumn 2026 issue of DELUS, on phenological change, ecological precarity, and seasonal shift in landscape and urban studies.",
+        "datePosted": "2026-04-22",
+        "expires": "2026-06-01",
+        "inLanguage": "en",
+        "isPartOf": { "@id": "https://delusjournal.com/#periodical" },
+        "url": "https://delusjournal.com"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://delusjournal.com/#website",
+        "url": "https://delusjournal.com",
+        "name": "DELUS Journal",
+        "publisher": { "@id": "https://delusjournal.com/#periodical" },
+        "inLanguage": "en"
+      }
+    ]
+  }
+  </script>
 
   <noscript>
     <style>
@@ -88,8 +181,8 @@
       </div>
       <nav class="site-nav">
         <a href="#" data-view="about">About</a>
-        <a href="https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-00.png">Issue 0</a>
-        <a href="https://www.hatjecantz.com/products/77075-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-01.png">Issue 1</a>
+        <a href="https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-00.png" data-alt="DELUS Issue 0 — pilot issue (cover)">Issue 0</a>
+        <a href="https://www.hatjecantz.com/products/77075-delus-the-journal-of-the-institute-of-landscape-and-urban-studies" data-image="assets/images/issue-01.png" data-alt="DELUS Issue 1 — Chasing Water (cover)">Issue 1</a>
         <!-- <a href="#" data-view="donate">Donate</a> --> <!-- donate temporarily hidden 2026-04-22 per client; donate.md renamed to donate.md.draft -->
       </nav>
       <a href="#" class="site-nav-back" data-view="home">Open call</a>
@@ -226,7 +319,7 @@ Hatje Cantz</p>
         activeImageTip.className = 'image-tooltip';
         const img = document.createElement('img');
         img.src = el.dataset.image;
-        img.alt = '';
+        img.alt = el.dataset.alt || '';
         activeImageTip.appendChild(img);
         if (centered) {
           const buy = document.createElement('a');

@@ -48,3 +48,24 @@ output = output.replace(/\{\{[A-Z_]+\}\}/g, '');
 
 fs.writeFileSync('index.html', output);
 console.log('✓ Built index.html from content.md');
+
+// Emit sitemap.xml with lastmod = newest mtime across content / about / donate markdown.
+// Uses YYYY-MM-DD (W3C date, accepted by Google). Single URL for Phase 1 (SPA, one route).
+const sitemapSources = ['content.md', 'about.md', 'donate.md'].filter(fs.existsSync);
+const newestMtime = sitemapSources
+  .map(f => fs.statSync(f).mtime)
+  .reduce((a, b) => (a > b ? a : b), new Date(0));
+const lastmod = newestMtime.toISOString().split('T')[0];
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://delusjournal.com/</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+`;
+fs.writeFileSync('sitemap.xml', sitemap);
+console.log(`✓ Built sitemap.xml (lastmod=${lastmod})`);
