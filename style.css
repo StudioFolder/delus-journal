@@ -248,9 +248,8 @@ strong {
   position: fixed;
   pointer-events: none;
   z-index: 100;
-  background-color: rgba(226, 226, 221, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: var(--color-bg);
+  border: 1px solid currentColor;
   border-radius: 4px;
   padding: 0.5rem 0.75rem;
   font-size: 0.8rem;

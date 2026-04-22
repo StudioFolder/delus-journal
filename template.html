@@ -242,10 +242,11 @@
         }
       });
 
-      // Custom footnote tooltips — follows cursor
+      // Custom footnote tooltips — follows cursor on desktop, centered on mobile
       let activeTip = null;
       document.querySelectorAll('.footnote[data-tooltip]').forEach(el => {
         el.addEventListener('mouseenter', () => {
+          if (window.matchMedia('(hover: none)').matches) return;
           activeTip = document.createElement('div');
           activeTip.className = 'tooltip';
           activeTip.innerHTML = el.dataset.tooltip;
@@ -259,6 +260,22 @@
         el.addEventListener('mouseleave', () => {
           if (activeTip) { activeTip.remove(); activeTip = null; }
         });
+        el.addEventListener('click', (e) => {
+          if (!window.matchMedia('(hover: none)').matches) return;
+          e.stopPropagation();
+          if (activeTip) { activeTip.remove(); activeTip = null; return; }
+          activeTip = document.createElement('div');
+          activeTip.className = 'tooltip';
+          activeTip.innerHTML = el.dataset.tooltip;
+          document.body.appendChild(activeTip);
+          const margin = 16;
+          const tipW = activeTip.offsetWidth;
+          activeTip.style.left = Math.max(margin, (window.innerWidth - tipW) / 2) + 'px';
+          activeTip.style.top  = (el.getBoundingClientRect().bottom + 12) + 'px';
+        });
+      });
+      document.addEventListener('click', () => {
+        if (activeTip) { activeTip.remove(); activeTip = null; }
       });
 
       // Image tooltips for issue links
