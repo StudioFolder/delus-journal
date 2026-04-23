@@ -123,6 +123,29 @@
     }
     rebuildStrokeStyleCache();
 
+    // Pow LUTs — replaces two per-stroke per-frame `Math.pow(t, curve)` calls
+    // (taper falloff and cursor-clear falloff) with an array lookup. 256 entries
+    // give ~0.4% resolution on t∈[0,1], well below perceptual threshold for soft
+    // visual curves. Rebuilt only when the corresponding curve config changes.
+    var POW_LUT_SIZE = 256;
+    var POW_LUT_MAX_IDX = POW_LUT_SIZE - 1;
+    var taperCurveLUT = new Float32Array(POW_LUT_SIZE);
+    var clearCurveLUT = new Float32Array(POW_LUT_SIZE);
+    var cachedTaperCurve = null;
+    var cachedClearCurve = null;
+    function buildPowLUT(arr, curve) {
+      for (var i = 0; i < POW_LUT_SIZE; i++) {
+        arr[i] = Math.pow(i / POW_LUT_MAX_IDX, curve);
+      }
+    }
+    function rebuildPowLUTs() {
+      var tc = state.taperCurve || 1;
+      var cc = state.clearCurve || 1;
+      if (tc !== cachedTaperCurve) { buildPowLUT(taperCurveLUT, tc); cachedTaperCurve = tc; }
+      if (cc !== cachedClearCurve) { buildPowLUT(clearCurveLUT, cc); cachedClearCurve = cc; }
+    }
+    rebuildPowLUTs();
+
     var W = 0, H = 0, dpr = 1;
     var strokes = [];
     var tZ = 0, scrollY = 0, scrollX = 0;
@@ -171,6 +194,11 @@
             lw: rand(0.45, 1.35),
             wob: wob,
             aJit: rand(-9, 9),
+            // cosA / sinA are populated by refreshStrokeAngles() below — they're
+            // derived from state.angle + aJit, and since state.angle is constant
+            // across a frame (and usually across the whole lifetime of a mount),
+            // there's no reason to pay the cos/sin cost every frame.
+            cosA: 0, sinA: 0,
             passOffX: rand(-0.9, 0.9),  passOffY: rand(-0.4, 0.4),
             passOffX2: rand(-1.1, 1.1), passOffY2: rand(-0.5, 0.5),
             progress: 0,
@@ -179,17 +207,32 @@
           });
         }
       }
+      refreshStrokeAngles();
     }
 
-    function drawStroke(s, alpha, angleRad, passes, progress) {
+    // Recompute per-stroke cos/sin from the current state.angle. Called at the
+    // end of buildStrokes, and from update() whenever state.angle changes.
+    function refreshStrokeAngles() {
+      var baseAngle = state.angle * Math.PI / 180;
+      var degToRad = Math.PI / 180;
+      for (var i = 0; i < strokes.length; i++) {
+        var s = strokes[i];
+        var a = baseAngle + s.aJit * degToRad;
+        s.cosA = Math.cos(a);
+        s.sinA = Math.sin(a);
+      }
+    }
+
+    function drawStroke(s, alpha, passes, progress) {
       if (progress <= 0) return;
       var sc = state.scale || 1;
       var len = s.lenMul * state.strokeLen * sc;
-      var dx = Math.cos(angleRad) * len;
-      var dy = Math.sin(angleRad) * len;
+      // cos/sin are precomputed on the stroke object; no trig in the hot path.
+      var dx = s.cosA * len;
+      var dy = s.sinA * len;
       var segs = 6;
-      var px = -Math.sin(angleRad);
-      var py = Math.cos(angleRad);
+      var px = -s.sinA;
+      var py = s.cosA;
       for (var pass = 0; pass < passes; pass++) {
         var offX, offY, passA, lw;
         if (pass === 0) { offX = 0; offY = 0; passA = alpha; lw = s.lw; }
@@ -228,20 +271,17 @@
       tZ += 0.004 * state.turbulence * dt60;
       scrollY -= 0.9 * state.fallSpeed * dt60;
       scrollX -= 0.25 * state.fallSpeed * dt60;
-      var angleRad = state.angle * Math.PI / 180;
       var ns = 1 / (state.clumpSize * (state.scale || 1));
       // Taper: pools thin out toward the bottom. We raise the effective threshold
       // toward 1 as the stroke's y approaches the bottom, so progressively fewer
       // spots can ink — the pattern truly thins out rather than alpha-fading.
       var taper = Math.min(1, Math.max(0, state.taperBottom || 0));
-      var taperCurve = state.taperCurve || 1;
       var taperStartY = taper > 0 ? H * (1 - taper) : H + 1;
       // Cursor-clear: same mechanic, radial. Raise threshold + fade alpha inside
       // the clear radius, and boost the un-draw rate so clearing feels snappy.
       var clearR = state.clearRadius || 0;
       var clearR2 = clearR * clearR;
       var clearStrength = state.clearStrength == null ? 1 : state.clearStrength;
-      var clearCurve = state.clearCurve || 1;
       var undrawBoost = state.clearUndrawBoost || 1;
       ctx.clearRect(0, 0, W, H);
       for (var si = 0; si < strokes.length; si++) {
@@ -255,7 +295,8 @@
           var t = (s.y - taperStartY) / Math.max(0.001, (H - taperStartY));
           t = Math.min(1, Math.max(0, t));
           // curve lets the taper be soft-in / sharp-out (>1) or sharp-in / soft-out (<1)
-          t = Math.pow(t, taperCurve);
+          // — precomputed LUT lookup replaces a per-stroke Math.pow call.
+          t = taperCurveLUT[(t * POW_LUT_MAX_IDX + 0.5) | 0];
           thr = state.threshold + (1 - state.threshold) * t;
           fade = 1 - t;
         }
@@ -265,7 +306,8 @@
           if (d2 < clearR2) {
             // 1 at cursor center, 0 at radius edge
             var c = 1 - Math.sqrt(d2) / clearR;
-            c = Math.pow(c, clearCurve) * clearStrength;
+            // precomputed LUT lookup replaces a per-stroke Math.pow call.
+            c = clearCurveLUT[(c * POW_LUT_MAX_IDX + 0.5) | 0] * clearStrength;
             // Raise threshold toward 1, optionally fade alpha toward 0, speed up un-draw.
             // The alpha fade can be reduced/disabled independently via clearAlpha —
             // with clearAlpha=0 the only clearing mechanism is the reverse-trace un-draw,
@@ -293,8 +335,7 @@
         }
         if (s.progress < 0.015) continue;
         var passes = 1 + (s.intensity > 0.55 ? 1 : 0) + (s.intensity > 0.85 ? 1 : 0);
-        var strokeA = angleRad + s.aJit * Math.PI / 180;
-        drawStroke(s, s.intensity * fade, strokeA, passes, s.progress);
+        drawStroke(s, s.intensity * fade, passes, s.progress);
       }
       rafId = requestAnimationFrame(frame);
     }
@@ -382,9 +423,18 @@
           (newOpts.scale != null && newOpts.scale !== state.scale)
         ));
         var inkChanged = !!(newOpts && newOpts.inkColor && newOpts.inkColor !== state.inkColor);
+        var angleChanged = !!(newOpts && newOpts.angle != null && newOpts.angle !== state.angle);
+        var curveChanged = !!(newOpts && (
+          (newOpts.taperCurve != null && newOpts.taperCurve !== state.taperCurve) ||
+          (newOpts.clearCurve != null && newOpts.clearCurve !== state.clearCurve)
+        ));
         Object.assign(state, newOpts || {});
         if (rebuild) buildStrokes();
+        // Only refresh angles if we didn't already rebuild — buildStrokes calls
+        // refreshStrokeAngles internally.
+        else if (angleChanged) refreshStrokeAngles();
         if (inkChanged) rebuildStrokeStyleCache();
+        if (curveChanged) rebuildPowLUTs();
       },
       pause: function () {
         // External pause: clear the visibility flag so tab-return doesn't
