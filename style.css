@@ -28,14 +28,14 @@
 }
 @font-face {
   font-family: "Louize";
-  src: url("assets/fonts/Louize-Regular.ttf") format("truetype");
+  src: url("assets/fonts/205TF-Louize-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Louize";
-  src: url("assets/fonts/Louize-Italic.ttf") format("truetype");
+  src: url("assets/fonts/205TF-Louize-Italic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
