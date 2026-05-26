@@ -40,7 +40,7 @@ June 1st, 2026
 
 ## credit
 
-Issue 2, <em>Season Creep</em>, is part of "[DELUS: Dialogues on Changing Landscapes](https://data.snf.ch/grants/grant/239796)" (2026–2029), funded by [SNSF](https://www.snf.ch/).
+Issue 2, <em>Season Creep</em>, is part of "[DELUS: Dialogues on Changing Landscapes](https://data.snf.ch/grants/grant/239796)" (2026–2029), a collaborative project with [ILEA](https://ilea.art/), funded by [SNSF](https://www.snf.ch/).
 
 ## footer
 
