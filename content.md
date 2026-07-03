@@ -10,33 +10,15 @@ This issue brings together researchers and practitioners across architecture, ur
 
 ## cta
 
-[Submit](mailto:delus@arch.ethz.ch?subject=Submission%20for%20DELUS%20Issue%202%20%E2%80%94%20Season%20Creep)
+[Follow DELUS](https://www.instagram.com/delusjournal/)
 
 ## dates
 
-# issue 2 — spring 2027 <br> open call
+# issue 2 — spring 2027 <br> forthcoming
 
-**Submission guidelines**
-Texts must be submitted as Word files (.docx). Images should be high-resolution (300dpi), .jpg format. All submissions must clearly state their relation to the theme of this issue of DELUS. Authors are responsible for securing all necessary copyright permissions. Contributions will be selected by the editorial team.
+The open call for DELUS Issue 2, <em>Season Creep</em> has now closed. Thank you to everyone who submitted their work.
 
-**For a 3000-word article**
-- Proposed title
-- Abstract (max. 250 words)
-- Name and contact information
-- Bio (50 words)
-- Up to 3 images
-- 1 writing sample
-
-**For a visual essay**
-- Proposed title
-- Abstract (max. 200 words)
-- Name and contact information
-- Bio (50 words)
-- Up to 10 images
-- 1 visual work sample
-
-**Deadline**
-June 1st, 2026
+A new DELUS website is currently under construction. More information about the forthcoming issue, future events and calls will be available here soon. In the meantime, please follow DELUS for updates.
 
 ## credit
 

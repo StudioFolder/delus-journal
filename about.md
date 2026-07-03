@@ -11,7 +11,7 @@
 
 ## service
 
-<h1><a href="#" data-view="home">Open call</a></h1>
+<h1><a href="#" data-view="home">Back</a></h1>
 
 **Editors**
 Sara Frikech, Johanna Just
