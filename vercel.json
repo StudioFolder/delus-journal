@@ -1,24 +1,10 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".",
+  "buildCommand": "cd archive/holding-page && npm install && npm run build",
+  "outputDirectory": "archive/holding-page",
   "headers": [
     {
       "source": "/(.*)",
-      "has": [
-        { "type": "host", "value": "delus-journal-dev.vercel.app" }
-      ],
-      "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        { "type": "host", "value": "delus-journal.vercel.app" }
-      ],
-      "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
-      ]
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]
 }
