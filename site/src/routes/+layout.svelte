@@ -114,7 +114,9 @@
     z-index: 1;
   }
 
-  /* Page content that sits on the background: under the band, centred vertically */
+  /* Page content that sits on the background: under the band, centred
+     vertically — or, with `from-top`, starting at the height of the band's
+     `from-top` content (below) */
   .stage :global(.on-ground) {
     display: flex;
     align-items: center;
@@ -132,12 +134,14 @@
   }
   /* Content longer than the band scrolls inside it, between menu and
      footer, without a visible scrollbar */
-  .stage :global(.on-band.from-top) {
+  .stage :global(.on-band.from-top),
+  .stage :global(.on-ground.from-top) {
     align-items: flex-start;
     padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
     padding-bottom: calc(12 * var(--u)); /* the same above the footer */
   }
-  .stage :global(.on-band.from-top > *) {
+  .stage :global(.on-band.from-top > *),
+  .stage :global(.on-ground.from-top > *) {
     max-height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
@@ -228,6 +232,16 @@
     /* Content scrolls between the header and a zone of the same height at
        the bottom, where the tone dot sits */
     .stage :global(.on-band.from-top) {
+      padding-top: var(--pad);
+      padding-bottom: var(--header);
+    }
+    /* Content on the background with `from-top` takes the same place:
+       under the header, full width (e.g. a news text) */
+    .stage :global(.on-ground.from-top) {
+      left: var(--pad);
+      right: var(--pad);
+      width: auto;
+      top: var(--header);
       padding-top: var(--pad);
       padding-bottom: var(--header);
     }

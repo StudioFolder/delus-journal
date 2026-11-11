@@ -362,6 +362,9 @@ dd {
   - disappearing (.is-hidden): fades out straight away
   `.fade.now`: appears at once, without waiting — for changes where
   nothing moves (e.g. one highlight replacing another on the home page).
+  `.fade.next`: appears as soon as what was in its place has faded out —
+  for content that replaces other content where nothing moves (e.g. one
+  news text replacing another).
   The same holds for elements that arrive with a new page (they start
   from invisible) and leave with the old one (`out:leave`, motion/leave.ts).
   On the very first load nothing moves, so nothing waits: `.is-live` is
@@ -381,6 +384,9 @@ dd {
 }
 .fade.now {
   transition-delay: 0s;
+}
+.fade.next {
+  transition-delay: var(--fade-out-time);
 }
 @starting-style {
   .is-live .fade {

@@ -111,16 +111,31 @@ export const people = [
   {slug: 'emily-schlickman', name: 'Emily Schlickman', sortName: 'Schlickman, Emily', issues: [2]}
 ];
 
-// Eight invented news items. `date` is year-month.
-export const posts = [
-  {slug: 'news-8', kind: 'News', date: '2026-11', title: 'News title'},
-  {slug: 'news-7', kind: 'Event', date: '2026-10', title: 'News title'},
-  {slug: 'news-6', kind: 'News', date: '2026-08', title: 'News title'},
-  {slug: 'news-5', kind: 'Open call', date: '2026-06', title: 'News title'},
-  {slug: 'news-4', kind: 'Event', date: '2026-04', title: 'News title'},
-  {slug: 'news-3', kind: 'News', date: '2026-02', title: 'News title'},
-  {slug: 'news-2', kind: 'Open call', date: '2025-11', title: 'News title'},
-  {slug: 'news-1', kind: 'News', date: '2025-09', title: 'News title'}
+// Eight invented news items, newest first. `slug` is what the CMS
+// generates from the title ("News title A" → news-title-a), so the URLs
+// are already the real ones. `date` is the full date (YYYY-MM-DD). Only the newest has
+// a text (`body`, one string per paragraph), as a placeholder.
+export type Post = {slug: string; kind: string; date: string; title: string; body?: string[]};
+
+export const posts: Post[] = [
+  {
+    slug: 'news-title-a',
+    kind: 'News',
+    date: '2026-11-12',
+    title: 'News title A',
+    body: [
+      'Placeholder for the text of a news item. The first paragraph says what happens, when and where, in a few plain sentences, so that the page can be judged with a realistic amount of text in this position.',
+      'A second paragraph gives the details: who is taking part, how to join or apply, what the event or the call is about, and how it relates to the work of the journal and to its latest issue.',
+      'A last, shorter paragraph with practical information: the date and time, the place, a link for registration or submission.'
+    ]
+  },
+  {slug: 'news-title-b', kind: 'Event', date: '2026-10-08', title: 'News title B'},
+  {slug: 'news-title-c', kind: 'News', date: '2026-08-27', title: 'News title C'},
+  {slug: 'news-title-d', kind: 'Open call', date: '2026-06-15', title: 'News title D'},
+  {slug: 'news-title-e', kind: 'Event', date: '2026-04-03', title: 'News title E'},
+  {slug: 'news-title-f', kind: 'News', date: '2026-02-19', title: 'News title F'},
+  {slug: 'news-title-g', kind: 'Open call', date: '2025-11-21', title: 'News title G'},
+  {slug: 'news-title-h', kind: 'News', date: '2025-09-30', title: 'News title H'}
 ];
 
 // About: the text from the Figma About page.

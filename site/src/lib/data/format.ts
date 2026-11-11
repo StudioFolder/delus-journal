@@ -12,6 +12,12 @@ export const issueNumber = (n: number) => String(n).padStart(2, '0');
 /** The label of an issue: "Issue 02" */
 export const issueLabel = (n: number) => `Issue ${issueNumber(n)}`;
 
+/** A full date: '2026-11-12' → "12.11.2026" */
+export const fullDate = (date: string) => date.split('-').reverse().join('.');
+
+/** Month and year, as in the news list: '2026-11-12' → "11.2026" */
+export const monthYear = (date: string) => fullDate(date.slice(0, 7));
+
 /** An issue's publication details, as rows (empty fields are left out) */
 export function issueDetails(issue: Issue): Credit[] {
   const p = issue.publication;

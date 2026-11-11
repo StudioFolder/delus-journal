@@ -81,6 +81,17 @@ export function centredRight(band: Span, cols: number): Span {
   return [from, from + cols - 1];
 }
 
+/**
+ * The space beside the band, for text: `cols` columns starting one column
+ * after the band. With the Medium band [2, 13] and 18 columns: [15, 32].
+ */
+export function besideBand(band: Span, cols: number): Span {
+  return [band[1] + 2, band[1] + 1 + cols];
+}
+
+/** The width of a column of text beside the band (as the Large band) */
+export const TEXT_COLUMNS = 18;
+
 /** The width of a cover image, in columns */
 export const COVER_COLUMNS = 13;
 
