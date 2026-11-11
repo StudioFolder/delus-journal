@@ -105,6 +105,7 @@
 
   .stage :global(.band-bg) {
     background: var(--band);
+    box-shadow: 0 0 calc(3 * var(--u)) var(--shade); /* small and faint, the same on every side */
     overflow: hidden;
     z-index: 1;
   }

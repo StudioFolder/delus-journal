@@ -1,24 +1,34 @@
 <!--
   A panel placed on the 36-column grid.
-  `area` takes its columns from the current URL's entry in layouts.ts;
-  `span` places it by hand instead, e.g. span={[15, 32]}.
+  - area="band": the band of the current URL (layouts.ts);
+  - area="right" with cols={13}: that many columns in the middle of the
+    space to the right of the band — it follows the band when it resizes;
+  - span={[15, 32]}: placed by hand.
   Changes of position or width animate.
 -->
 <script lang="ts">
   import type {Snippet} from 'svelte';
   import {current} from './layout.svelte.ts';
-  import {spanStyle, type Span} from './layouts.ts';
+  import {centredRight, spanStyle, type Span} from './layouts.ts';
 
   type Props = {
-    area?: 'band';
+    area?: 'band' | 'right';
+    cols?: number; // with area="right": how many columns wide
     span?: Span;
     inset?: boolean; // keep content one column in from each side
     class?: string;
     children?: Snippet;
   };
-  let {area, span, inset = false, class: klass = '', children}: Props = $props();
+  let {area, cols = 1, span, inset = false, class: klass = '', children}: Props = $props();
 
-  const resolved: Span = $derived(span ?? (area ? current.layout[area] : [1, 1]));
+  const resolved: Span = $derived(
+    span ??
+      (area === 'band'
+        ? current.layout.band
+        : area === 'right'
+          ? centredRight(current.layout.band, cols)
+          : [1, 1])
+  );
 </script>
 
 <div class="panel {klass}" class:inset style={spanStyle(resolved)}>

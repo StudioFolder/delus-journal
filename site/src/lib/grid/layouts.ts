@@ -70,6 +70,20 @@ export function layoutFor(routeId: string | null): Layout {
   return (routeId && layouts[routeId]) || fallback;
 }
 
+/**
+ * The space to the right of the band, and a span of `cols` columns in the
+ * middle of it. With the Large band [2, 19] and 13 columns: [22, 34];
+ * with the Medium band [2, 13]: [19, 31].
+ */
+export function centredRight(band: Span, cols: number): Span {
+  const free = COLUMNS - band[1];
+  const from = band[1] + 1 + (free - cols) / 2;
+  return [from, from + cols - 1];
+}
+
+/** The width of a cover image, in columns */
+export const COVER_COLUMNS = 13;
+
 /** CSS for a span: left edge and width in column units */
 export function spanStyle([from, to]: Span): string {
   return `--from:${from - 1};--cols:${to - from + 1};`;

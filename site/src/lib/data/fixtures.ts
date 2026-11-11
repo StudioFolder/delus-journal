@@ -1,5 +1,33 @@
-// Placeholder slugs so the detail URLs exist. Replaced by Sanity later.
-export const issues = [{slug: '00-delus'}, {slug: '01-chasing-water'}, {slug: '02-season-creep'}];
+import {issueNumber} from './format.ts';
+
+// The issues. `date` is how the issue is dated in print (season and year).
+// Only Issue 02 has its real abstract; the other two are placeholders.
+export const issues = [
+  {
+    slug: '00-delus',
+    number: 0,
+    title: 'DELUS',
+    date: 'Autumn 2023',
+    abstract:
+      'Placeholder for the abstract of Issue 00. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.'
+  },
+  {
+    slug: '01-chasing-water',
+    number: 1,
+    title: 'Chasing Water',
+    date: 'Autumn 2024',
+    abstract:
+      'Placeholder for the abstract of Issue 01, Chasing Water. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.'
+  },
+  {
+    slug: '02-season-creep',
+    number: 2,
+    title: 'Season Creep',
+    date: 'Spring 2027',
+    abstract:
+      'In the highlands of the Caucasus, season is sensed before it is measured. It gathers in snowlines, grass, mud, thirst, animal fatigue, and the opening of mountain paths. For shepherds moving flocks between summer and winter pastures in eastern Georgia, transhumance is a cyclical rhythm of attunement: knowing when a landscape can receive, sustain, or release a moving herd.'
+  }
+];
 
 // The contributors of Issues 0, 1 and 2 (the same entries as studio/seed/people.ndjson).
 // `sortName` gives the alphabetical order; `issues` the issues they appear in.
@@ -58,19 +86,9 @@ export const home = {
   statement:
     'Situated at the intersection of architecture, landscape, and urban studies, DELUS gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.',
   // Highlights: what the home page shows, one at a time, in this order.
-  // Later chosen and ordered by the editors in the CMS.
-  highlights: [
-    {
-      label: 'Issue 02',
-      text: 'In the highlands of the Caucasus, season is sensed before it is measured. It gathers in snowlines, grass, mud, thirst, animal fatigue, and the opening of mountain paths. For shepherds moving flocks between summer and winter pastures in eastern Georgia, transhumance is a cyclical rhythm of attunement: knowing when a landscape can receive, sustain, or release a moving herd.'
-    },
-    {
-      label: 'Issue 01',
-      text: 'Placeholder for the abstract of Issue 01, Chasing Water. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.'
-    },
-    {
-      label: 'Issue 00',
-      text: 'Placeholder for the abstract of Issue 00. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.'
-    }
-  ]
+  // For now the issues, newest first; later chosen and ordered by the
+  // editors in the CMS.
+  highlights: issues
+    .toSorted((a, b) => b.number - a.number)
+    .map((issue) => ({label: `Issue ${issueNumber(issue.number)}`, text: issue.abstract}))
 };

@@ -8,8 +8,10 @@
   - The highlight on view sits at the bottom of the band, above the
     footer: a label in small capitals (e.g. the issue number), then a
     text (its abstract). Same width and type as the statement.
-  - Its image sits on the background: columns 22–34, centred vertically,
-    in the proportions of the book cover. For now an empty box.
+  - Its image sits on the background, in the middle of the space to the
+    right of the band (13 columns wide), in the proportions of the book
+    cover. For now an empty box. It follows the band: when the band
+    shrinks, the image moves to the middle of the larger space.
 
   HIGHLIGHTS — the home page shows a series of them, one at a time
   (fixtures.ts for now; later chosen by the editors). Scrolling moves to
@@ -37,6 +39,8 @@
   import {afterNavigate} from '$app/navigation';
   import Panel from '#lib/grid/Panel.svelte';
   import {focus} from '#lib/grid/focus.ts';
+  import {current} from '#lib/grid/layout.svelte.ts';
+  import {COVER_COLUMNS, layoutFor} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {hasPlayed, markPlayed} from '#lib/motion/once.ts';
   import {time} from '#lib/motion/time.ts';
@@ -141,6 +145,11 @@
   }
   onDestroy(() => clearTimeout(pause));
 
+  // When the pointer is on the image the band shrinks and the image moves
+  // left by this many columns; it must not slip from under the pointer
+  const layout = layoutFor('/');
+  const shift = layout.focus ? (layout.band[1] - layout.focus.band[1]) / 2 : 0;
+
   const playing = $derived(phase === 'words' || phase === 'rising');
   const below = $derived(phase === 'waiting' || phase === 'words'); // before the rise
 </script>
@@ -161,11 +170,13 @@
   </noscript>
 </svelte:head>
 
-<Panel span={[22, 34]} class="on-ground">
+<Panel area="right" cols={COVER_COLUMNS} class="on-ground">
   <div
-    class="image fade"
+    class="image cover fade"
     class:now={swapping}
     class:is-hidden={!imageShown || hidden}
+    class:is-focused={current.focused}
+    style:--shift={shift}
     use:focus
     out:leave|global
   ></div>
@@ -173,7 +184,7 @@
 
 <Panel area="band" inset class="on-band from-bottom">
   <div
-    class="highlight"
+    class="highlight labelled"
     class:fade={phase === 'done'}
     class:now={swapping}
     class:is-hidden={hidden}
@@ -210,10 +221,10 @@
     <!-- Mobile only -->
     <div class="highlights" class:is-below={below}>
       {#each highlights as highlight}
-        <section>
+        <section class="labelled">
           <p class="label">{highlight.label}</p>
           <p class="display"><Acronyms text={highlight.text} /></p>
-          <div class="image"></div>
+          <div class="image cover"></div>
         </section>
       {/each}
     </div>
@@ -223,11 +234,6 @@
 <style>
   .column {
     width: 100%;
-  }
-  .highlight,
-  section {
-    display: grid;
-    gap: calc(2 * var(--u));
   }
   .highlights {
     display: none; /* desktop shows one highlight at a time, at the bottom of the band */
@@ -261,11 +267,18 @@
     }
   }
 
-  /* Placeholder: the image will fill this box */
-  .image {
-    width: 100%;
-    aspect-ratio: 518 / 626; /* the book cover */
-    background: var(--band);
+  /* While the band is shrunk the image has moved left: its pointer area
+     still reaches to where its right edge was, so the pointer stays on it */
+  :global(.on-ground) > .image {
+    position: relative;
+  }
+  :global(.on-ground) > .image.is-focused::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: calc(var(--shift) * var(--col));
   }
 
   /* Mobile: everything in the one scrolling column */

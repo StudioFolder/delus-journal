@@ -115,8 +115,9 @@
 /*
   TONES — the dark and light versions of the site
 
-  Every colour on the site is one of the four below; nothing else may
-  carry a colour value. A tone is a set of values for the four.
+  Every colour on the site is one of the five below; nothing else may
+  carry a colour value. A tone is a set of values for the five.
+  (--shade is the colour of the band's shadow.)
   The visitor switches tone with the dot at the bottom right
   (lib/tone); the stage carries the current tone as `data-tone`.
   To add a tone: one block here, one name in lib/tone/tone.svelte.ts.
@@ -150,12 +151,18 @@
   inherits: true;
   initial-value: #7a7a7a;
 }
+@property --shade {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgb(0 0 0 / 0.1);
+}
 
 [data-tone='dark'] {
   --bg: #0b0b0b; /* behind everything */
   --band: #1c1c1c; /* the band */
   --ink: #e8e8e8; /* text, dots */
   --ink-quiet: #7a7a7a; /* secondary text */
+  --shade: rgb(0 0 0 / 0.1); /* the band's shadow: almost invisible */
   color-scheme: dark;
 }
 [data-tone='light'] {
@@ -163,6 +170,7 @@
   --band: #e8e8e8;
   --ink: #111111;
   --ink-quiet: #8c8c8c;
+  --shade: rgb(0 0 0 / 0.025);
   color-scheme: light;
 }
 
@@ -172,7 +180,8 @@
     --bg var(--tone),
     --band var(--tone),
     --ink var(--tone),
-    --ink-quiet var(--tone);
+    --ink-quiet var(--tone),
+    --shade var(--tone);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,6 +229,50 @@ p {
   margin: 0;
 }
 
+/*
+  TABLES — lists set in columns (contributors, issues):
+
+    <div class="table" style="--columns: …">
+      <p class="row head">…column titles…</p>
+      <ul><li class="row">…</li></ul>
+    </div>
+
+  --columns is the width of each column (grid-template-columns), in grid
+  columns so that it lines up with the rest of the page. A link inside a
+  row is stretched over the whole row.
+*/
+.table {
+  width: 100%;
+  display: grid;
+  gap: calc(3 * var(--u));
+}
+.table ul {
+  display: grid;
+  gap: var(--u);
+}
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--columns);
+}
+.row.head {
+  font: var(--type-ui);
+  color: var(--ink-quiet);
+}
+.row a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* A cover: the box an issue's cover image fills, in the proportions of
+   the book. For now an empty box */
+.cover {
+  width: 100%;
+  aspect-ratio: 518 / 626;
+  background: var(--band);
+}
+
 /* Large text: statements, abstracts */
 .display {
   font: var(--type-display);
@@ -230,6 +283,12 @@ p {
    (see lib/type/Acronyms.svelte). Louize Italic has none. */
 .sc {
   font-variant-caps: all-small-caps;
+}
+
+/* A label with its text underneath (home highlights, issue abstracts) */
+.labelled {
+  display: grid;
+  gap: calc(2 * var(--u));
 }
 
 /* Small capitals: categories, dates */

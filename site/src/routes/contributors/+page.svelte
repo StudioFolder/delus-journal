@@ -17,7 +17,7 @@
 </script>
 
 <Panel area="band" inset class="on-band from-top">
-  <div class="contributors">
+  <div class="table">
     <p class="row head fade" out:leave|global><span>Name</span><span>Issue</span></p>
     <ul>
       {#each sorted as person, i (person.slug)}
@@ -31,35 +31,14 @@
 </Panel>
 
 <style>
-  .contributors {
-    width: 100%;
-    display: grid;
-    gap: calc(3 * var(--u));
-  }
-  ul {
-    display: grid;
-    gap: var(--u);
-  }
   /* Names from column 3 (the band's inner edge), issues from column 10 */
-  .row {
-    position: relative;
-    display: grid;
-    grid-template-columns: calc(7 * var(--col)) auto;
-  }
-  .head {
-    font: var(--type-ui);
-    color: var(--ink-quiet);
+  .table {
+    --columns: calc(7 * var(--col)) auto;
   }
   /* Mobile: names on the left, issues against the right edge */
   @media (max-width: 767px) {
-    .row {
-      grid-template-columns: 1fr auto;
+    .table {
+      --columns: 1fr auto;
     }
-  }
-  /* The name is the link; it is stretched over the whole row */
-  a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
   }
 </style>
