@@ -1,15 +1,48 @@
-import {issueLabel} from './format.ts';
+import {issueLabel, type Credit} from './format.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
 // Only Issue 02 has its real abstract; the other two are placeholders.
-export const issues = [
+// `publication`: the Publication fields of the CMS. ISBNs, Hatje Cantz
+// links and the open-access PDF are real (from the holding page); pages,
+// binding and format are placeholders.
+const placeholder = {pages: '000 pages, 00 photos', binding: 'Binding', format: '000 × 000 mm'};
+const editors = 'Sara Frikech, Johanna Just';
+export type Issue = {
+  slug: string;
+  number: number;
+  title: string;
+  date: string;
+  abstract: string;
+  publication: {
+    editedBy: string;
+    designedBy: string;
+    pages: string;
+    binding: string;
+    format: string;
+    isbn?: string;
+    buyUrl?: string;
+    pdfUrl?: string;
+    forthcoming: boolean;
+  };
+};
+
+export const issues: Issue[] = [
   {
     slug: '00-delus',
     number: 0,
     title: 'DELUS',
     date: 'Autumn 2023',
     abstract:
-      'Placeholder for the abstract of Issue 00. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.'
+      'Placeholder for the abstract of Issue 00. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.',
+    publication: {
+      editedBy: editors,
+      designedBy: 'Studio Folder',
+      ...placeholder,
+      isbn: '978-3-7757-5636-5',
+      buyUrl: 'https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies',
+      pdfUrl: 'https://library.oapen.org/handle/20.500.12657/97869',
+      forthcoming: false
+    }
   },
   {
     slug: '01-chasing-water',
@@ -17,7 +50,15 @@ export const issues = [
     title: 'Chasing Water',
     date: 'Autumn 2024',
     abstract:
-      'Placeholder for the abstract of Issue 01, Chasing Water. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.'
+      'Placeholder for the abstract of Issue 01, Chasing Water. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.',
+    publication: {
+      editedBy: editors,
+      designedBy: 'Studio Folder',
+      ...placeholder,
+      isbn: '978-3-7757-5874-1',
+      buyUrl: 'https://www.hatjecantz.com/products/77075-delus-journal-for-landscape-and-urban-studies',
+      forthcoming: false
+    }
   },
   {
     slug: '02-season-creep',
@@ -25,7 +66,13 @@ export const issues = [
     title: 'Season Creep',
     date: 'Spring 2027',
     abstract:
-      'In the highlands of the Caucasus, season is sensed before it is measured. It gathers in snowlines, grass, mud, thirst, animal fatigue, and the opening of mountain paths. For shepherds moving flocks between summer and winter pastures in eastern Georgia, transhumance is a cyclical rhythm of attunement: knowing when a landscape can receive, sustain, or release a moving herd.'
+      'In the highlands of the Caucasus, season is sensed before it is measured. It gathers in snowlines, grass, mud, thirst, animal fatigue, and the opening of mountain paths. For shepherds moving flocks between summer and winter pastures in eastern Georgia, transhumance is a cyclical rhythm of attunement: knowing when a landscape can receive, sustain, or release a moving herd.',
+    publication: {
+      editedBy: editors,
+      designedBy: 'Studio Folder',
+      ...placeholder,
+      forthcoming: true
+    }
   }
 ];
 
@@ -78,7 +125,21 @@ export const posts = [
 
 // About: the text from the Figma About page.
 export const about = {
-  text: 'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the Institute for Landscape and Urban Studies (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.'
+  text: 'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the Institute for Landscape and Urban Studies (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.',
+  // The colophon: Sanity's `credits` (label + value). Here each value is
+  // a list of lines, some of them links.
+  credits: [
+    {label: 'Editors-in-Chief', value: [{text: 'Sara Frikech'}, {text: 'Johanna Just'}]},
+    {label: 'Graphic Design', value: [{text: 'Studio Folder', href: 'https://studiofolder.it/'}]},
+    {label: 'Publisher', value: [{text: 'Hatje Cantz', href: 'https://www.hatjecantz.com/'}]},
+    {
+      label: 'Contact',
+      value: [
+        {text: 'delus@arch.ethz.ch', href: 'mailto:delus@arch.ethz.ch'},
+        {text: '@delusjournal', href: 'https://www.instagram.com/delusjournal/'}
+      ]
+    }
+  ] as Credit[]
 };
 
 // Placeholder texts. Replaced by Sanity later.

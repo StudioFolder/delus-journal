@@ -13,7 +13,7 @@
 <script lang="ts">
   import '#lib/styles.css';
   import {page} from '$app/state';
-  import {afterNavigate} from '$app/navigation';
+  import {afterNavigate, onNavigate} from '$app/navigation';
   import {onMount} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
   import GridOverlay from '#lib/grid/GridOverlay.svelte';
@@ -21,6 +21,7 @@
   import {isSmall, backFor} from '#lib/grid/layouts.ts';
   import {tone} from '#lib/tone/tone.svelte.ts';
   import ToneDot from '#lib/tone/ToneDot.svelte';
+  import {snapshot} from '#lib/motion/carry.ts';
 
   let {children} = $props();
 
@@ -43,6 +44,9 @@
   // False during the very first load, when nothing moves (see FADE in styles.css)
   let live = $state(false);
   onMount(() => void (live = true));
+
+  // Elements that travel to the next page: note where they are (motion/carry.ts)
+  onNavigate(snapshot);
 
   // Mobile menu
   let menuOpen = $state(false);

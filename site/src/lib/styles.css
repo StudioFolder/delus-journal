@@ -225,7 +225,9 @@ ul {
   margin: 0;
   padding: 0;
 }
-p {
+p,
+dl,
+dd {
   margin: 0;
 }
 
@@ -324,6 +326,28 @@ p {
 }
 .hover:hover,
 .hover.active {
+  --lit: 1;
+}
+
+/*
+  LINKS IN TEXT — a link inside running text or a credit stays in full
+  ink and is marked by a small quiet arrow after it (↗, 1 unit square,
+  drawn here: neither Styrene B nor Louize has a plain one), which turns
+  to full ink under the pointer. Like `.hover`, it goes on the element
+  around the link: <span class="link"><a href="…">…</a></span>.
+*/
+.link::after {
+  content: '';
+  display: inline-block;
+  width: var(--u);
+  height: var(--u);
+  margin-left: var(--u);
+  background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' fill='none' stroke='black' stroke-width='1.25'%3E%3Cpath d='M0.5 7.5 7.5 0.5M2 0.5h5.5V6'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  transition: --lit var(--hover);
+}
+.link:hover::after {
   --lit: 1;
 }
 

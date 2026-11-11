@@ -14,6 +14,10 @@
     above the footer, as the highlight does on the home page: the issue
     number in small capitals, then the text.
 
+  TO AN ISSUE — clicking a row opens the issue: the list and the other
+  covers fade out, the abstract rises to the top of the band and the
+  cover stays in place (motion/carry.ts); the issue's page does the rest.
+
   CAROUSEL — pointing at a row of the list, or at a cover, slides the row
   of covers sideways until that issue's cover is in place, and the
   abstract fades out and in to that issue's. It stays there until
@@ -26,6 +30,7 @@
   import Panel from '#lib/grid/Panel.svelte';
   import {COVER_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
+  import {carry} from '#lib/motion/carry.ts';
   import {time} from '#lib/motion/time.ts';
   import Acronyms from '#lib/type/Acronyms.svelte';
   import {issues} from '#lib/data/fixtures.ts';
@@ -62,13 +67,20 @@
         role="img"
         aria-label="Cover of {issue.title}"
         onpointerenter={() => (at = i)}
+        use:carry={`cover:${issue.slug}`}
       ></div>
     {/each}
   </div>
 </Panel>
 
 <Panel area="band" inset class="on-band from-bottom">
-  <div class="abstract labelled fade" class:now={moved} class:is-hidden={hidden} out:leave|global>
+  <div
+    class="abstract labelled fade"
+    class:now={moved}
+    class:is-hidden={hidden}
+    use:carry={`abstract:${newestFirst[shown].slug}`}
+    out:leave|global
+  >
     <p class="label">{issueLabel(newestFirst[shown].number)}</p>
     <p class="display"><Acronyms text={newestFirst[shown].abstract} /></p>
   </div>
