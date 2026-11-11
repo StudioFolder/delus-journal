@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd archive/holding-page && npm install && npm run build",
-  "outputDirectory": "archive/holding-page",
+  "buildCommand": "cd site && npm ci && npm run build",
+  "outputDirectory": "site/build",
   "headers": [
     {
       "source": "/(.*)",

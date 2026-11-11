@@ -1,0 +1,68 @@
+:root {
+  /* One grid column. Everything horizontal is measured in these. */
+  --col: calc(100vw / 36);
+
+  /* Panel movement between pages */
+  --move-time: 600ms;
+  --move: var(--move-time) cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Fading elements (see .fade below) */
+  --fade-time: 300ms; /* how long one element takes to appear */
+  --fade-out-time: 200ms; /* how long it takes to disappear */
+  --cascade-step: 80ms; /* delay between one element and the next in a cascade */
+
+  --bg: #0b0b0b;
+  --band: #1c1c1c;
+  --ink: #e8e8e8;
+  --ink-quiet: #7a7a7a;
+
+  --sans: 'Styrene B', system-ui, sans-serif;
+  --serif: 'Louize', Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden; /* desktop: the stage is the viewport; panels scroll inside */
+}
+
+body {
+  font: 15px/1.35 var(--serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+  FADE — general behaviour for anything that appears and disappears
+  as panels change:
+  - appearing: waits for the band to finish moving, then fades in;
+    inside a `use:cascade` group each element waits one more step (--i)
+  - disappearing (.is-hidden): fades out straight away
+*/
+.fade {
+  transition: opacity var(--fade-time) ease
+    calc(var(--move-time) + var(--i, 0) * var(--cascade-step));
+}
+.fade.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--fade-out-time) ease 0s;
+}
