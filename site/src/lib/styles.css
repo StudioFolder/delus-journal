@@ -67,6 +67,11 @@
   the name below, large text is set in Louize.
   Styrene B is still .otf (as on the holding page); replace with .woff2
   when available.
+
+  Figures: Louize always uses its old-style figures (0123456789 with
+  ascenders and descenders, not the capital-height ones). This is set
+  here, on the font itself, so it holds wherever Louize is used and
+  never touches Styrene B.
 */
 @font-face {
   font-family: 'Louize Display';
@@ -74,6 +79,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  font-feature-settings: 'onum'; /* old-style figures */
 }
 @font-face {
   font-family: 'Louize';
@@ -81,6 +87,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  font-feature-settings: 'onum'; /* old-style figures */
 }
 @font-face {
   font-family: 'Louize';
@@ -88,6 +95,7 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
+  font-feature-settings: 'onum'; /* old-style figures */
 }
 @font-face {
   font-family: 'Styrene B';
@@ -254,6 +262,8 @@ p {
   - appearing: waits for the band to finish moving, then fades in;
     inside a `use:cascade` group each element waits one more step (--i)
   - disappearing (.is-hidden): fades out straight away
+  `.fade.now`: appears at once, without waiting — for changes where
+  nothing moves (e.g. one highlight replacing another on the home page).
   The same holds for elements that arrive with a new page (they start
   from invisible) and leave with the old one (`out:leave`, motion/leave.ts).
   On the very first load nothing moves, so nothing waits: `.is-live` is
@@ -270,6 +280,9 @@ p {
   transition:
     opacity var(--fade-out-time) ease 0s,
     --lit var(--hover);
+}
+.fade.now {
+  transition-delay: 0s;
 }
 @starting-style {
   .is-live .fade {

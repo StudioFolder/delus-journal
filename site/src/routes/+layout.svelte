@@ -125,6 +125,16 @@
     align-items: flex-start;
     padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
   }
+  /* Content longer than the band scrolls inside it, between menu and
+     footer, without a visible scrollbar */
+  .stage :global(.on-band.from-top) {
+    padding-bottom: calc(12 * var(--u));
+  }
+  .stage :global(.on-band.from-top > *) {
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
   .stage :global(.on-band.from-bottom) {
     align-items: flex-end;
     padding-bottom: calc(12 * var(--u)); /* footer: 5 units + its line of 2; then 5 units of air */

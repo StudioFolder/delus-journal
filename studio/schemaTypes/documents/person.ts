@@ -13,9 +13,18 @@ export const person = defineType({
       options: {source: 'name'},
       validation: (r) => r.required(),
     }),
+    defineField({
+      name: 'sortName',
+      title: 'Sort as',
+      type: 'string',
+      description: 'For alphabetical lists: surname first, e.g. "Pérez Villoro, Federico". Leave empty to sort by the name as written.',
+    }),
     defineField({name: 'bio', title: 'Bio', type: 'simpleText'}),
     defineField({name: 'link', title: 'Website', type: 'url'}),
   ],
-  orderings: [{title: 'Name', name: 'nameAsc', by: [{field: 'name', direction: 'asc'}]}],
+  orderings: [
+    {title: 'Surname', name: 'sortNameAsc', by: [{field: 'sortName', direction: 'asc'}]},
+    {title: 'Name', name: 'nameAsc', by: [{field: 'name', direction: 'asc'}]},
+  ],
   preview: {select: {title: 'name'}},
 })
