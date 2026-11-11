@@ -43,7 +43,7 @@ export const layouts: Record<string, Layout> = {
   '/': {band: l, focus: {band: m}},
 
   // The menu's four sections. News lives at /events/ for now.
-  '/about': {band: l},
+  '/about': {band: m},
   '/issues': {band: m},
   '/contributors': {band: m},
   '/events': {band: m},
@@ -57,6 +57,11 @@ export const layouts: Record<string, Layout> = {
 };
 
 export const fallback: Layout = {band: m};
+
+/** The name of a band size ('s', 'm', 'l', 'xl'), if the span is one of them */
+export function sizeOf([from, to]: Span): string | undefined {
+  return Object.entries(sizes).find(([, [f, t]]) => f === from && t === to)?.[0];
+}
 
 export const isSmall = (layout: Layout) =>
   layout.band[0] === sizes.s[0] && layout.band[1] === sizes.s[1];

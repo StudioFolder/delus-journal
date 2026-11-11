@@ -7,11 +7,22 @@
     the band;
   - span={[15, 32]}: placed by hand.
   Changes of position or width animate.
+  A band panel also carries the size of its page's band (data-band="m"…),
+  as set for the URL, without focus, fixed when the page is created:
+  styles can depend on it (e.g. .display on a Medium band, styles.css).
 -->
 <script lang="ts">
-  import type {Snippet} from 'svelte';
+  import {untrack, type Snippet} from 'svelte';
+  import {page} from '$app/state';
   import {current} from './layout.svelte.ts';
-  import {centredRight, restOfScreen, spanStyle, type Span} from './layouts.ts';
+  import {
+    centredRight,
+    layoutFor,
+    restOfScreen,
+    sizeOf,
+    spanStyle,
+    type Span
+  } from './layouts.ts';
 
   type Props = {
     area?: 'band' | 'right' | 'rest';
@@ -33,9 +44,14 @@
             ? restOfScreen(current.layout.band)
             : [1, 1])
   );
+
+  // Read once, when the page is created (see above)
+  const size = untrack(() =>
+    area === 'band' ? sizeOf(layoutFor(page.route.id).band) : undefined
+  );
 </script>
 
-<div class="panel {klass}" class:inset style={spanStyle(resolved)}>
+<div class="panel {klass}" class:inset style={spanStyle(resolved)} data-band={size}>
   {@render children?.()}
 </div>
 

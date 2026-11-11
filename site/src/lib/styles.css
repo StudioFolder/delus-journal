@@ -18,6 +18,9 @@
   --type-label: 11px/16px var(--sans); /* small capitals: use the .label class */
   --type-text: 18px/24px var(--serif); /* titles in lists, running text */
   --type-display: 28px/32px var(--display); /* large statements */
+  /* Large statements on a Medium band: one size smaller, size and line
+     height reduced in proportion (× 0.75) — see .display below */
+  --type-display-m: 21px/24px var(--display);
 
   /* Dots (tone switch, mobile menu): the dot, and the area that catches the click */
   --dot: var(--u);
@@ -284,6 +287,16 @@ dd {
 .display {
   font: var(--type-display);
   letter-spacing: 0.02em;
+}
+/* On a Medium band it is one size smaller (Marco's rule). The band size
+   is the one of the page's own URL (data-band, set by Panel when the
+   page is created): text doesn't change size while the home band is
+   focused, nor while a page fades out. Desktop only: on mobile the band
+   is the whole screen. */
+@media (min-width: 768px) {
+  [data-band='m'] .display {
+    font: var(--type-display-m);
+  }
 }
 
 /* Acronyms inside Louize text: the font's true small capitals
