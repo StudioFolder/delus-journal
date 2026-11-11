@@ -17,6 +17,11 @@
   ones fade in; the statement stays. One scroll gesture = one step; also
   the up/down arrow keys, Page Up/Down, and a swipe on touch screens.
 
+  MOBILE — one column that scrolls in the ordinary way, under the header:
+  the statement, then every highlight in turn (label, text, image). No
+  steps and no fades between highlights; the intro plays the same way,
+  with the first highlight coming up from below.
+
   INTRO — the first time the home page is shown in a visit:
     1. the statement appears word by word, in the middle of the band;
     2. a short pause;
@@ -36,6 +41,7 @@
   import {hasPlayed, markPlayed} from '#lib/motion/once.ts';
   import {time} from '#lib/motion/time.ts';
   import {home} from '#lib/data/fixtures.ts';
+  import Acronyms from '#lib/type/Acronyms.svelte';
 
   // waiting: hidden, about to start · words: appearing in the middle ·
   // rising: moving to the top · done: the final state
@@ -43,6 +49,7 @@
     hasPlayed('home-intro') ? 'done' : 'waiting'
   );
   let statement: HTMLElement;
+  let column: HTMLElement;
   const words = home.statement.split(' ');
   let drop = $state(0); // how far below their final places statement and highlight start (px)
   let imageShown = $state(hasPlayed('home-intro'));
@@ -69,7 +76,7 @@
 
     // Measure the statement in its final place, then start it in the middle
     const text = statement.getBoundingClientRect();
-    const panel = statement.parentElement!.getBoundingClientRect();
+    const panel = column.parentElement!.getBoundingClientRect(); // the space between header/menu and the bottom
     drop = panel.top + panel.height / 2 - (text.top + text.height / 2);
     // Arriving from another page, the band moves first
     wait = navigation.type === 'enter' ? 0 : time('--move-time');
@@ -144,7 +151,8 @@
   <!-- Without JavaScript there is no intro: show everything -->
   <noscript>
     <style>
-      .statement,
+      .column,
+      .highlights,
       .highlight,
       .image {
         opacity: 1 !important;
@@ -175,52 +183,73 @@
     out:leave|global
   >
     <p class="label">{highlights[at].label}</p>
-    <p class="large">{highlights[at].text}</p>
+    <p class="display"><Acronyms text={highlights[at].text} /></p>
   </div>
 </Panel>
 
+<!-- The column: on desktop it holds the statement only; on mobile also all
+     the highlights, and it scrolls. The intro moves the whole column -->
 <Panel area="band" inset class="on-band from-top">
-  <p
-    bind:this={statement}
-    class="statement"
+  <div
+    bind:this={column}
+    class="column"
     class:fade={phase === 'done'}
     class:is-waiting={phase === 'waiting'}
     class:is-rising={phase === 'rising'}
     style:transform={below ? `translateY(${drop}px)` : undefined}
     out:leave|global
   >
-    {#if playing}
-      {#each words as word, n}
-        <span class="word" style="--n: {n}; --wait: {wait}ms">{word}</span>{' '}
+    <p bind:this={statement} class="display">
+      {#if playing}
+        {#each words as word, n}
+          <span class="word" style="--n: {n}; --wait: {wait}ms"><Acronyms text={word} /></span>{' '}
+        {/each}
+      {:else}<Acronyms text={home.statement} />{/if}
+    </p>
+
+    <!-- Mobile only -->
+    <div class="highlights" class:is-below={below}>
+      {#each highlights as highlight}
+        <section>
+          <p class="label">{highlight.label}</p>
+          <p class="display"><Acronyms text={highlight.text} /></p>
+          <div class="image"></div>
+        </section>
       {/each}
-    {:else}{home.statement}{/if}
-  </p>
+    </div>
+  </div>
 </Panel>
 
 <style>
-  .statement,
-  .large {
-    font: var(--type-display);
-    letter-spacing: 0.02em;
+  .column {
+    width: 100%;
   }
-  .highlight {
+  .highlight,
+  section {
     display: grid;
     gap: calc(2 * var(--u));
   }
+  .highlights {
+    display: none; /* desktop shows one highlight at a time, at the bottom of the band */
+  }
 
   /* Intro */
-  .statement.is-waiting {
+  .column.is-waiting {
     opacity: 0;
   }
-  .highlight.is-below {
+  .highlight.is-below,
+  .highlights.is-below {
     opacity: 0;
     pointer-events: none;
   }
-  .statement.is-rising,
+  .column.is-rising,
   .highlight.is-rising {
     transition:
       transform var(--rise),
       opacity var(--rise);
+  }
+  .highlights {
+    transition: opacity var(--rise);
   }
   .word {
     animation: word-in var(--word-time) ease-in-out both;
@@ -239,11 +268,23 @@
     background: var(--band);
   }
 
-  /* Mobile: no image or highlights yet — the mobile home page is still to be laid out */
+  /* Mobile: everything in the one scrolling column */
   @media (max-width: 767px) {
-    .image,
+    :global(.on-ground) > .image,
     .highlight {
       display: none;
+    }
+    .column {
+      display: grid;
+      gap: calc(8 * var(--u));
+      padding-bottom: calc(3 * var(--u));
+    }
+    .highlights {
+      display: grid;
+      gap: calc(8 * var(--u));
+    }
+    section .image {
+      margin-top: var(--u);
     }
   }
 </style>

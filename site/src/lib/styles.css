@@ -220,6 +220,18 @@ p {
   margin: 0;
 }
 
+/* Large text: statements, abstracts */
+.display {
+  font: var(--type-display);
+  letter-spacing: 0.02em;
+}
+
+/* Acronyms inside Louize text: the font's true small capitals
+   (see lib/type/Acronyms.svelte). Louize Italic has none. */
+.sc {
+  font-variant-caps: all-small-caps;
+}
+
 /* Small capitals: categories, dates */
 .label {
   font: var(--type-label);
@@ -260,7 +272,10 @@ p {
   FADE — general behaviour for anything that appears and disappears
   as panels change:
   - appearing: waits for the band to finish moving, then fades in;
-    inside a `use:cascade` group each element waits one more step (--i)
+    in a CASCADE each element waits one more step than the one before.
+    To make a list cascade, give each item its place in the list:
+    `style:--i={i}` (0, 1, 2…) — written in the markup, so it is there
+    from the first instant
   - disappearing (.is-hidden): fades out straight away
   `.fade.now`: appears at once, without waiting — for changes where
   nothing moves (e.g. one highlight replacing another on the home page).

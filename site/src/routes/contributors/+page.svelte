@@ -9,7 +9,6 @@
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
-  import {cascade} from '#lib/motion/cascade.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {people} from '#lib/data/fixtures.ts';
   import {issueNumber} from '#lib/data/format.ts';
@@ -20,9 +19,9 @@
 <Panel area="band" inset class="on-band from-top">
   <div class="contributors">
     <p class="row head fade" out:leave|global><span>Name</span><span>Issue</span></p>
-    <ul use:cascade>
-      {#each sorted as person (person.slug)}
-        <li class="row hover fade" out:leave|global>
+    <ul>
+      {#each sorted as person, i (person.slug)}
+        <li class="row hover fade" style:--i={i} out:leave|global>
           <a href="/contributors/{person.slug}/">{person.name}</a>
           <span>{person.issues.map(issueNumber).join(', ')}</span>
         </li>
@@ -50,6 +49,12 @@
   .head {
     font: var(--type-ui);
     color: var(--ink-quiet);
+  }
+  /* Mobile: names on the left, issues against the right edge */
+  @media (max-width: 767px) {
+    .row {
+      grid-template-columns: 1fr auto;
+    }
   }
   /* The name is the link; it is stretched over the whole row */
   a::after {

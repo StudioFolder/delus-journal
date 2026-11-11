@@ -19,7 +19,6 @@
   import GridOverlay from '#lib/grid/GridOverlay.svelte';
   import {current} from '#lib/grid/layout.svelte.ts';
   import {isSmall, backFor} from '#lib/grid/layouts.ts';
-  import {cascade} from '#lib/motion/cascade.ts';
   import {tone} from '#lib/tone/tone.svelte.ts';
   import ToneDot from '#lib/tone/ToneDot.svelte';
 
@@ -70,9 +69,14 @@
 
     <a class="back fade" class:is-hidden={!small} href={back}>Back</a>
 
-    <nav use:cascade>
-      {#each nav as item}
-        <span class="item hover fade" class:active={isActive(item.href)} class:is-hidden={small}>
+    <nav>
+      {#each nav as item, i}
+        <span
+          class="item hover fade"
+          class:active={isActive(item.href)}
+          class:is-hidden={small}
+          style:--i={i}
+        >
           <a href={item.href}>{item.label}</a>
         </span>
       {/each}
@@ -220,8 +224,14 @@
       top: var(--header);
       transition: opacity var(--fade-time) ease var(--move-time);
     }
+    /* Content scrolls between the header and a zone of the same height at
+       the bottom, where the tone dot sits */
     .stage :global(.on-band.from-top) {
       padding-top: var(--pad);
+      padding-bottom: var(--header);
+    }
+    .stage.menu-open :global(.on-band > *) {
+      pointer-events: none; /* invisible content must not catch the menu's clicks */
     }
     .stage.menu-open :global(.on-band) {
       opacity: 0;

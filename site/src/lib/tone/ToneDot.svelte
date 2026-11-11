@@ -4,7 +4,7 @@
 
   Desktop: on the footer's line, its right edge one column in from the
   right edge of the screen — the mirror of the band on the left.
-  Mobile: same margin as the header (--pad), from the right and the bottom.
+  Mobile: in a zone at the bottom as high as the header, under the menu dot.
 -->
 <script lang="ts">
   import {tone} from './tone.svelte.ts';
@@ -45,7 +45,7 @@
   @media (max-width: 767px) {
     .tone-dot {
       right: calc(var(--pad) - var(--dot-edge));
-      bottom: calc(var(--pad) - var(--dot-edge));
+      bottom: calc((var(--header) - var(--dot-hit)) / 2); /* centred in the bottom zone, as the menu dot is in the header */
     }
   }
 </style>

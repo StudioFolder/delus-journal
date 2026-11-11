@@ -43,9 +43,9 @@ export const layouts: Record<string, Layout> = {
   '/': {band: l, focus: {band: m}},
 
   // The menu's four sections. News lives at /events/ for now.
-  '/about': {band: s},
+  '/about': {band: l},
   '/issues': {band: m},
-  '/contributors': {band: l},
+  '/contributors': {band: m},
   '/events': {band: m},
 
   '/issues/[slug]': {band: m},

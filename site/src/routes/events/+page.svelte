@@ -8,7 +8,6 @@
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
-  import {cascade} from '#lib/motion/cascade.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {posts} from '#lib/data/fixtures.ts';
 
@@ -22,9 +21,9 @@
 </script>
 
 <Panel area="band" inset class="on-band from-top">
-  <ul class="news" use:cascade>
-    {#each posts as post (post.slug)}
-      <li class="entry hover fade" out:leave|global>
+  <ul class="news">
+    {#each posts as post, i (post.slug)}
+      <li class="entry hover fade" style:--i={i} out:leave|global>
         <p class="label">
           <span>{post.kind}</span>
           <time datetime={post.date}>{monthYear(post.date)}</time>
