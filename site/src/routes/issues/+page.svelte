@@ -271,13 +271,17 @@
     outline-offset: calc(-1 * var(--u));
   }
   /* The icon shows the view the button leads to; one fades into the
-     other with the time and curve of the tone switch (--tone) */
+     other with the time and curve of every icon (--icon, styles.css) */
   .icon {
+    /* At rest the quiet grey taken a quarter towards the background: a
+       full shape reads darker than thin text, so this is what looks like
+       the footer's tagline (Marco's choice among four) */
+    --rest: color-mix(in srgb, var(--ink-quiet) 75%, var(--bg));
     position: absolute;
     inset: var(--edge);
-    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--rest));
     transition:
-      opacity var(--tone),
+      opacity var(--icon),
       --lit var(--hover);
   }
   @media (prefers-reduced-motion: reduce) {

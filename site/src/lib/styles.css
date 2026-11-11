@@ -56,6 +56,11 @@
   --tone-time: var(--move-time);
   --tone: var(--tone-time) cubic-bezier(0.65, 0, 0.35, 1);
 
+  /* Icons that change from one state to another (the tone switch, the
+     issues view switch, any new one): the same time and curve as the
+     tone change (Marco's rule). Instant with reduced motion. */
+  --icon: var(--tone);
+
   --sans: 'Styrene B', system-ui, sans-serif;
   --serif: 'Louize', Georgia, serif;
   --display: 'Louize Display', 'Louize', Georgia, serif; /* large text */

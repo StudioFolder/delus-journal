@@ -13,7 +13,10 @@
   to hover with, it is always shown. The whole entry is the link.
 
 
-  TEXTS — on an item's URL, all the news texts, in the same order, one
+  TEXTS — on an item's URL, and on desktop also on the list's own URL
+  (/events/, which opens on the newest item, selected — Marco's request,
+  so arriving from the menu there is already a text to read), all the
+  news texts, in the same order, one
   below the other, each as tall as the screen: scrolling anywhere right
   of the band moves from one to the next and snaps to it, the text
   starting at the height of the list; while scrolling, the texts run to
@@ -27,8 +30,9 @@
   then the text — 18 columns, one column after the band (columns 15–32
   with the Medium band). See NewsText.svelte.
 
-  MOBILE — the list under the header; with an item open, the texts take
-  its place and snap in the same way.
+  MOBILE — the list under the header (on /events/ nothing is opened or
+  selected: the texts would hide the list); with an item open, the texts
+  take its place and snap in the same way.
 -->
 <script lang="ts">
   import {onMount, untrack} from 'svelte';
@@ -50,16 +54,17 @@
   onMount(() => void (live = true));
 
   // The news item on view: set by navigation (a click in the list, an
-  // address) and by scrolling the texts
-  let onView = $state(page.params.slug);
+  // address; on /events/ the newest) and by scrolling the texts
+  const first = posts[0].slug;
+  let onView = $state(page.params.slug ?? first);
 
   let texts = $state<HTMLElement>(); // the scrolling column of texts
   let placed: HTMLElement | undefined; // the column already scrolled into place once
   let steering = false; // true while the column scrolls to a clicked item
 
   afterNavigate(() => {
-    onView = page.params.slug;
-    if (onView) show(onView);
+    onView = page.params.slug ?? first;
+    show(onView);
   });
 
   // Brings an item's text into view, from its beginning: at once when the
@@ -107,7 +112,7 @@
       const nearest = items.reduce((a, b) =>
         Math.abs(b.offsetTop - top) < Math.abs(a.offsetTop - top) ? b : a
       );
-      onView = nearest?.dataset.slug;
+      onView = nearest?.dataset.slug ?? onView;
     });
   }
   function arrived() {
@@ -118,7 +123,7 @@
 </script>
 
 <Panel area="band" inset class="on-band from-top">
-  <ul class="news" class:has-item={page.params.slug}>
+  <ul class="news" class:has-item={page.params.slug} class:is-list={!page.params.slug}>
     {#each posts as post, i (post.slug)}
       <li
         class="entry hover fade"
@@ -139,22 +144,21 @@
   </ul>
 </Panel>
 
-{#if page.params.slug}
-  <Panel area="rest" class="on-ground from-top">
-    <div
-      class="texts fade"
-      class:next={untrack(() => live)}
-      style:--text-cols={TEXT_COLUMNS}
-      bind:this={texts}
-      {onscroll}
-      out:leave|global
-    >
-      {#each posts as post (post.slug)}
-        <NewsText {post} />
-      {/each}
-    </div>
-  </Panel>
-{/if}
+<Panel area="rest" class="on-ground from-top">
+  <div
+    class="texts fade"
+    class:is-list={!page.params.slug}
+    class:next={untrack(() => live)}
+    style:--text-cols={TEXT_COLUMNS}
+    bind:this={texts}
+    {onscroll}
+    out:leave|global
+  >
+    {#each posts as post (post.slug)}
+      <NewsText {post} />
+    {/each}
+  </div>
+</Panel>
 
 {@render children()}
 
@@ -189,6 +193,13 @@
     }
     .has-item {
       display: none; /* the news texts take the column */
+    }
+    /* On /events/ the list only: no text open, no entry selected */
+    .texts.is-list {
+      display: none;
+    }
+    .is-list .entry.active {
+      --lit: 0;
     }
   }
   a {

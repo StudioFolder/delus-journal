@@ -11,7 +11,7 @@
   the same size slides in from the left and bites into the dot, while
   the shape turns a little clockwise, so the crescent leans instead of standing
   upright — and back. One number, --moon (0 → 1), drives both, with the
-  same duration and curve as the change of colours (--tone). Drawn in SVG
+  same duration and curve as the change of colours (--icon = --tone). Drawn in SVG
   so that both edges of the crescent are equally sharp.
   Under the pointer a slight halo of ink fades in around the shape.
 -->
@@ -76,7 +76,7 @@
       0 0 var(--u) color-mix(in srgb, var(--ink) calc(var(--lit) * 50%), transparent)
     );
     transition:
-      --moon var(--tone),
+      --moon var(--icon),
       --lit var(--hover);
   }
   .tone-dot:hover svg {
