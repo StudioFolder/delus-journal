@@ -6,13 +6,15 @@
   - links stay in full ink, marked by the arrow of `.link` (styles.css);
   - `cascade`: the rows appear one after another and fade out when the
     page is left (FADE in styles.css); otherwise they follow the block
-    they sit in.
+    they sit in. `start`: the cascade's place of the first row, when
+    something on the page comes before it (default 0).
 -->
 <script lang="ts">
   import type {Credit} from '#lib/data/format.ts';
   import {leave} from '#lib/motion/leave.ts';
 
-  let {rows, cascade = false}: {rows: Credit[]; cascade?: boolean} = $props();
+  let {rows, cascade = false, start = 0}: {rows: Credit[]; cascade?: boolean; start?: number} =
+    $props();
 </script>
 
 {#snippet row(credit: Credit)}
@@ -29,7 +31,7 @@
 <dl class="credits">
   {#each rows as credit, i (credit.label)}
     {#if cascade}
-      <div class="fade" style:--i={i} out:leave|global>{@render row(credit)}</div>
+      <div class="fade" style:--i={start + i} out:leave|global>{@render row(credit)}</div>
     {:else}
       <div>{@render row(credit)}</div>
     {/if}

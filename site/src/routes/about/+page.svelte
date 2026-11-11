@@ -3,7 +3,8 @@
   #lib/grid/layouts.ts) with the text at the top, under the menu, in the
   same type as the home statement; the colophon follows it (Credits).
   Text and colophon are one block, so on short screens and on mobile
-  they scroll together.
+  they scroll together. They appear in a cascade, as on the other pages:
+  the text, then the colophon row by row.
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
@@ -14,9 +15,9 @@
 </script>
 
 <Panel area="band" inset class="on-band from-top">
-  <div class="about fade" out:leave|global>
-    <p class="display"><Acronyms text={about.text} /></p>
-    <Credits rows={about.credits} />
+  <div class="about">
+    <p class="display fade" style:--i={0} out:leave|global><Acronyms text={about.text} /></p>
+    <Credits rows={about.credits} cascade start={1} />
   </div>
 </Panel>
 
