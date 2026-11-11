@@ -20,7 +20,7 @@
   the very top and bottom edges of the screen. A text longer than the
   screen scrolls inside its own page, like a normal page, with some space
   after its last line; once at its end, the next gesture snaps on to the
-  next text. The entry
+  next text; coming back, a long text shows from its beginning. The entry
   in the list and the address follow the text on view (the address
   quietly, without a new page). Clicking an entry scrolls to its text.
   Each text: the date (12.11.2026) above the title, then the first image,
@@ -76,6 +76,21 @@
     steering = true;
     texts.scrollTo({top, behavior: 'smooth'});
   }
+
+  // A long text that has left the screen goes back to its beginning, so
+  // coming back to it always shows its title, as with the others
+  $effect(() => {
+    if (!texts) return;
+    const gone = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (!entry.isIntersecting) entry.target.scrollTop = 0;
+      },
+      // 1px in: a text just touching the edge, next to the one on view, is gone
+      {root: texts, rootMargin: '-1px 0px'}
+    );
+    for (const item of texts.children) gone.observe(item);
+    return () => gone.disconnect();
+  });
 
   // Scrolling by hand: the text nearest to the top is the one on view;
   // once the scrolling has stopped, the address follows
