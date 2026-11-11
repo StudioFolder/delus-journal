@@ -23,8 +23,20 @@
   abstract fades out and in to that issue's. It stays there until
   another one is pointed at. The row of the issue on view is in full ink.
 
+  GRID — a button on the footer's line, at the left of the space right
+  of the band (the mirror of the tone switch), turns the carousel into a
+  grid of all the covers, and back: two per row, rows half the screen
+  high, a cover in the middle of each cell — its top at the height of
+  the band's content, its bottom where the abstract ends. Only the
+  dividers are drawn: one vertical line in the middle, one horizontal
+  line between rows. More rows than the screen holds scroll edge to
+  edge. Pointing at a cover in the grid works as in the carousel. The
+  button shows the view it leads to; the two views fade from one to the
+  other. In the grid the covers don't travel to the issue's page (their
+  size differs): the issue's cover fades in.
+
   MOBILE — the covers come after the list, in a row that is swiped
-  sideways.
+  sideways. No grid.
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
@@ -57,20 +69,68 @@
     }, time('--fade-out-time'));
     return () => clearTimeout(timer);
   });
+
+  // Carousel or grid
+  let grid = $state(false);
+  let switched = $state(false); // true once the view has been changed
+  const toggle = () => {
+    grid = !grid;
+    switched = true;
+  };
+  // Full rows: the empty cells still carry the dividers
+  const cells = Math.ceil(newestFirst.length / 2) * 2;
 </script>
 
 <Panel area="right" cols={COVER_COLUMNS} class="on-ground">
-  <div class="covers fade" style:--at={at} style:--step={step} out:leave|global>
+  <div
+    class="covers fade"
+    class:is-hidden={grid}
+    class:next={switched}
+    style:--at={at}
+    style:--step={step}
+    out:leave|global
+  >
     {#each newestFirst as issue, i (issue.slug)}
       <div
         class="cover"
         role="img"
         aria-label="Cover of {issue.title}"
         onpointerenter={() => (at = i)}
-        use:carry={`cover:${issue.slug}`}
+        use:carry={grid ? `hidden-cover:${issue.slug}` : `cover:${issue.slug}`}
       ></div>
     {/each}
   </div>
+</Panel>
+
+<Panel area="rest" class="on-ground from-top">
+  <div class="grid fade next" class:is-hidden={!grid} out:leave|global>
+    {#each {length: cells}, i}
+      {@const issue = newestFirst[i]}
+      <div class="cell">
+        {#if issue}
+          <div
+            class="cover"
+            role="img"
+            aria-label="Cover of {issue.title}"
+            onpointerenter={() => (at = i)}
+          ></div>
+        {/if}
+      </div>
+    {/each}
+  </div>
+</Panel>
+
+<Panel area="rest" class="view-switch">
+  <button
+    class="switch fade"
+    class:is-grid={grid}
+    aria-label={grid ? 'Show the covers one by one' : 'Show all the covers'}
+    onclick={toggle}
+    out:leave|global
+  >
+    <span class="icon to-grid"></span>
+    <span class="icon to-carousel"></span>
+  </button>
 </Panel>
 
 <Panel area="band" inset class="on-band from-bottom">
@@ -140,6 +200,99 @@
   .covers .cover {
     flex: none;
   }
+  /* Switching views nothing moves: the carousel fades out at once and
+     comes back once the grid has gone */
+  .covers.fade.next {
+    transition:
+      transform var(--move),
+      opacity var(--fade-time) ease var(--fade-out-time);
+  }
+  .covers.fade.is-hidden {
+    transition:
+      transform var(--move),
+      opacity var(--fade-out-time) ease 0s;
+  }
+
+  /* The grid: two cells per row, each row half the screen high. The
+     dividers are the cells' borders: a line right of every left-hand
+     cell, a line above every cell after the first row */
+  .grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 50vh;
+  }
+  .cell {
+    container-type: size;
+    display: grid;
+    place-items: center;
+    padding-block: calc(12 * var(--u)); /* as from-top / from-bottom content */
+  }
+  .cell:nth-child(odd) {
+    border-right: 1px solid var(--band);
+  }
+  .cell:nth-child(n + 3) {
+    border-top: 1px solid var(--band);
+  }
+  /* The cover fills the cell's height, unless the cell is too narrow:
+     then it keeps one column clear on each side */
+  .cell .cover {
+    width: min(100cqh * 518 / 626, 100cqw - 2 * var(--col));
+  }
+
+  /* The switch: on the footer's line, its left edge one column in from
+     the band — the mirror of the tone switch. 1.5 units square, stroke 1
+     (thinner than the arrows, at Marco's request), inside
+     a larger area that catches the click (--dot-hit, as the tone switch).
+     Quiet, full ink under the pointer. */
+  :global(.panel.view-switch) {
+    z-index: 1;
+    pointer-events: none;
+  }
+  .switch {
+    --size: calc(1.5 * var(--u));
+    --edge: calc((var(--dot-hit) - var(--size)) / 2);
+    position: absolute;
+    left: calc(var(--col) - var(--edge));
+    bottom: calc(6 * var(--u) - var(--dot-hit) / 2); /* centre on the centre of the footer's line */
+    width: var(--dot-hit);
+    height: var(--dot-hit);
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .switch:hover .icon {
+    --lit: 1;
+  }
+  .switch:focus-visible {
+    outline: 1px solid var(--ink-quiet);
+    outline-offset: calc(-1 * var(--u));
+  }
+  /* The icon shows the view the button leads to; one fades into the other */
+  .icon {
+    position: absolute;
+    inset: var(--edge);
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
+    transition:
+      opacity var(--fade-out-time),
+      --lit var(--hover);
+  }
+  /* A square divided in four, as the grid */
+  .to-grid {
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M.5.5h11v11H.5zM6 .5v11M.5 6h11'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  /* One cover in the middle, the edges of the others at its sides */
+  .to-carousel {
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M3.5.5h5v11h-5zM.5 2.5v7M11.5 2.5v7'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  .switch:not(.is-grid) .to-carousel,
+  .switch.is-grid .to-grid {
+    opacity: 0;
+  }
   .covers-mobile {
     display: none;
   }
@@ -151,8 +304,10 @@
       --columns: 1fr calc(5 * var(--u)) calc(13 * var(--u));
     }
     .covers,
-    .abstract {
-      display: none; /* the abstracts are not on mobile yet */
+    .abstract,
+    .grid,
+    .switch {
+      display: none; /* the abstracts are not on mobile yet; no grid */
     }
     .covers-mobile {
       display: flex;
