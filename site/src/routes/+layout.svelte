@@ -4,7 +4,7 @@
 
   Desktop: the band is a vertical strip placed on the 36-column grid.
   Mobile (under 768px): the band becomes a header across the top; the dot
-  on its left opens it to full screen and the menu cascades in.
+  on its right opens it to full screen and the menu cascades in.
 -->
 <script lang="ts">
   import '#lib/styles.css';
@@ -175,7 +175,7 @@
     .dot {
       display: block;
       position: absolute;
-      left: calc(var(--pad) - 12px);
+      right: calc(var(--pad) - 12px); /* the visible dot sits --pad from the edge, like DELUS on the left */
       top: calc(var(--header) / 2 - 17px);
       width: 34px;
       height: 34px;
@@ -197,11 +197,11 @@
       background: transparent; /* filled = closed, ring = open */
     }
 
-    /* DELUS next to the dot; tagline at the bottom of the open band */
+    /* DELUS on the left of the header; tagline at the bottom of the open band */
     footer {
       top: calc(var(--header) / 2 - 9px);
       bottom: auto;
-      left: calc(var(--pad) + 22px);
+      left: var(--pad);
       right: auto;
       display: block;
     }
@@ -221,11 +221,11 @@
       gap: 8px;
     }
 
-    /* Back: right side of the header */
+    /* Back: right side of the header, just before the dot */
     .back {
       top: calc(var(--header) / 2 - 9px);
       left: auto;
-      right: var(--pad);
+      right: calc(var(--pad) + 26px);
     }
 
     /* Closed: menu and tagline hidden. Open: both shown (cascading in after
