@@ -3,19 +3,19 @@
   - area="band": the band of the current URL (layouts.ts);
   - area="right" with cols={13}: that many columns in the middle of the
     space to the right of the band — it follows the band when it resizes;
-  - area="beside" with cols={18}: that many columns starting one column
-    after the band, for text — it also follows the band;
+  - area="rest": everything to the right of the band — it also follows
+    the band;
   - span={[15, 32]}: placed by hand.
   Changes of position or width animate.
 -->
 <script lang="ts">
   import type {Snippet} from 'svelte';
   import {current} from './layout.svelte.ts';
-  import {besideBand, centredRight, spanStyle, type Span} from './layouts.ts';
+  import {centredRight, restOfScreen, spanStyle, type Span} from './layouts.ts';
 
   type Props = {
-    area?: 'band' | 'right' | 'beside';
-    cols?: number; // with area="right" or "beside": how many columns wide
+    area?: 'band' | 'right' | 'rest';
+    cols?: number; // with area="right": how many columns wide
     span?: Span;
     inset?: boolean; // keep content one column in from each side
     class?: string;
@@ -29,8 +29,8 @@
         ? current.layout.band
         : area === 'right'
           ? centredRight(current.layout.band, cols)
-          : area === 'beside'
-            ? besideBand(current.layout.band, cols)
+          : area === 'rest'
+            ? restOfScreen(current.layout.band)
             : [1, 1])
   );
 </script>

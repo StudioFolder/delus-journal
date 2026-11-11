@@ -113,9 +113,25 @@ export const people = [
 
 // Eight invented news items, newest first. `slug` is what the CMS
 // generates from the title ("News title A" → news-title-a), so the URLs
-// are already the real ones. `date` is the full date (YYYY-MM-DD). Only the newest has
-// a text (`body`, one string per paragraph), as a placeholder.
-export type Post = {slug: string; kind: string; date: string; title: string; body?: string[]};
+// are already the real ones. `date` is the full date (YYYY-MM-DD). A, B and
+// C have a text (`body`, one string per paragraph), as a placeholder; B and
+// C an image (B horizontal, C vertical).
+// `images`: the post's images (Sanity's figures) — for now only their
+// proportions, shown as empty frames.
+export type Post = {
+  slug: string;
+  kind: string;
+  date: string;
+  title: string;
+  body?: string[];
+  images?: {width: number; height: number}[];
+};
+
+const placeholderBody = [
+  'Placeholder for the text of a news item. The first paragraph says what happens, when and where, in a few plain sentences, so that the page can be judged with a realistic amount of text in this position.',
+  'A second paragraph gives the details: who is taking part, how to join or apply, what the event or the call is about, and how it relates to the work of the journal and to its latest issue.',
+  'A last, shorter paragraph with practical information: the date and time, the place, a link for registration or submission.'
+];
 
 export const posts: Post[] = [
   {
@@ -123,14 +139,24 @@ export const posts: Post[] = [
     kind: 'News',
     date: '2026-11-12',
     title: 'News title A',
-    body: [
-      'Placeholder for the text of a news item. The first paragraph says what happens, when and where, in a few plain sentences, so that the page can be judged with a realistic amount of text in this position.',
-      'A second paragraph gives the details: who is taking part, how to join or apply, what the event or the call is about, and how it relates to the work of the journal and to its latest issue.',
-      'A last, shorter paragraph with practical information: the date and time, the place, a link for registration or submission.'
-    ]
+    body: placeholderBody
   },
-  {slug: 'news-title-b', kind: 'Event', date: '2026-10-08', title: 'News title B'},
-  {slug: 'news-title-c', kind: 'News', date: '2026-08-27', title: 'News title C'},
+  {
+    slug: 'news-title-b',
+    kind: 'Event',
+    date: '2026-10-08',
+    title: 'News title B',
+    body: placeholderBody,
+    images: [{width: 3, height: 2}] // horizontal
+  },
+  {
+    slug: 'news-title-c',
+    kind: 'News',
+    date: '2026-08-27',
+    title: 'News title C',
+    body: placeholderBody,
+    images: [{width: 2, height: 3}] // vertical
+  },
   {slug: 'news-title-d', kind: 'Open call', date: '2026-06-15', title: 'News title D'},
   {slug: 'news-title-e', kind: 'Event', date: '2026-04-03', title: 'News title E'},
   {slug: 'news-title-f', kind: 'News', date: '2026-02-19', title: 'News title F'},
