@@ -1,7 +1,14 @@
 <!--
-  One news text, in the column of texts (+layout.svelte): at least as tall
-  as the space, snapping to its top. 18 columns (--text-cols), one column
-  after the band.
+  One news text, in the column of texts (+layout.svelte): a page as tall
+  as the screen, snapping to its top, so the next text begins just out of
+  sight. The text starts at the height of the list (--edge from the top)
+  and is 18 columns wide (--text-cols), one column after the band; the
+  page takes the whole width, so scrolling works anywhere on it.
+  - LONG TEXTS scroll inside their page, like a normal page, and end with
+    12 units of space after the last line (as the space above). Once at
+    the end, the next scroll gesture moves the column to the next text.
+    (A single snap item taller than the screen would do the same in
+    Chrome, but Safari jumps over its middle.)
   - the date (12.11.2026) in small capitals, quiet, above the title, as the
     issue number above an abstract; title and text in the display type;
     one line (4 units) between blocks;
@@ -34,12 +41,14 @@
 
 <style>
   article {
-    min-height: 100%;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
     scroll-snap-align: start;
     scroll-snap-stop: always; /* one item per scroll gesture */
-    margin-left: var(--col);
-    width: calc(var(--text-cols) * var(--col));
+    padding: var(--edge) 0 calc(12 * var(--u)) var(--col);
     display: grid;
+    grid-template-columns: calc(var(--text-cols) * var(--col));
     align-content: start;
     gap: calc(4 * var(--u));
   }
@@ -62,8 +71,8 @@
 
   @media (max-width: 767px) {
     article {
-      margin-left: 0;
-      width: auto;
+      padding-left: 0;
+      grid-template-columns: 100%;
     }
   }
 </style>

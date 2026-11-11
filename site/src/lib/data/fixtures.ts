@@ -165,6 +165,12 @@ export const posts: Post[] = [
 ];
 
 // About: the text from the Figma About page.
+// The site's tagline (Site settings → Footer text in the CMS): in the
+// footer, and the measure of the newsletter's line.
+export const site = {
+  tagline: 'Journal for Landscape and Urban Studies'
+};
+
 export const about = {
   text: 'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the Institute for Landscape and Urban Studies (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.',
   // The colophon: Sanity's `credits` (label + value). Here each value is

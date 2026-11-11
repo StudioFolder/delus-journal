@@ -22,6 +22,7 @@
   import {tone} from '#lib/tone/tone.svelte.ts';
   import ToneDot from '#lib/tone/ToneDot.svelte';
   import {snapshot} from '#lib/motion/carry.ts';
+  import {site} from '#lib/data/fixtures.ts';
 
   let {children} = $props();
 
@@ -89,7 +90,7 @@
     <footer>
       <a href="/">DELUS</a>
       <!-- Text that doesn't fit the band fades out instead of being cut -->
-      <span class="fade" class:is-hidden={bandCols < 10}>Journal for Landscape and Urban Studies</span>
+      <span class="fade" class:is-hidden={bandCols < 10}>{site.tagline}</span>
     </footer>
   </Panel>
 
@@ -134,11 +135,18 @@
   }
   /* Content longer than the band scrolls inside it, between menu and
      footer, without a visible scrollbar */
-  .stage :global(.on-band.from-top),
-  .stage :global(.on-ground.from-top) {
+  .stage :global(.on-band.from-top) {
     align-items: flex-start;
     padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
     padding-bottom: calc(12 * var(--u)); /* the same above the footer */
+  }
+  /* On the background nothing frames the content: it scrolls the whole
+     height of the screen and disappears at its very edges. What's inside
+     keeps --edge above it, so at rest it starts at the same height as the
+     band's content (see News) */
+  .stage :global(.on-ground.from-top) {
+    align-items: flex-start;
+    --edge: calc(12 * var(--u));
   }
   .stage :global(.on-band.from-top > *),
   .stage :global(.on-ground.from-top > *) {
@@ -235,9 +243,14 @@
       padding-top: var(--pad);
       padding-bottom: var(--header);
     }
+    /* Content at the bottom ends above the bottom zone (where the tone dot is) */
+    .stage :global(.on-band.from-bottom) {
+      padding-bottom: var(--header);
+    }
     /* Content on the background with `from-top` takes the same place:
        under the header, full width (e.g. a news text) */
     .stage :global(.on-ground.from-top) {
+      --edge: 0px;
       left: var(--pad);
       right: var(--pad);
       width: auto;

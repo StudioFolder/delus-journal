@@ -12,9 +12,15 @@
   line up whatever the category; on touch screens, which have no pointer
   to hover with, it is always shown. The whole entry is the link.
 
+
   TEXTS — on an item's URL, all the news texts, in the same order, one
-  below the other, each as tall as the space at least: scrolling anywhere
-  right of the band moves from one to the next and snaps to it. The entry
+  below the other, each as tall as the screen: scrolling anywhere right
+  of the band moves from one to the next and snaps to it, the text
+  starting at the height of the list; while scrolling, the texts run to
+  the very top and bottom edges of the screen. A text longer than the
+  screen scrolls inside its own page, like a normal page, with some space
+  after its last line; once at its end, the next gesture snaps on to the
+  next text. The entry
   in the list and the address follow the text on view (the address
   quietly, without a new page). Clicking an entry scrolls to its text.
   Each text: the date (12.11.2026) above the title, then the first image,
@@ -56,17 +62,19 @@
     if (onView) show(onView);
   });
 
-  // Brings an item's text into view: at once when the column has just
-  // appeared, smoothly when it was already there
+  // Brings an item's text into view, from its beginning: at once when the
+  // column has just appeared, smoothly when it was already there
   function show(slug: string) {
     const item = texts?.querySelector<HTMLElement>(`[data-slug="${slug}"]`);
     if (!texts || !item) return;
+    const top = item.offsetTop;
+    item.scrollTop = 0; // a long text read halfway before
     const smooth =
       texts === placed && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     placed = texts;
-    if (!smooth) return void (texts.scrollTop = item.offsetTop);
+    if (!smooth) return void (texts.scrollTop = top);
     steering = true;
-    texts.scrollTo({top: item.offsetTop, behavior: 'smooth'});
+    texts.scrollTo({top, behavior: 'smooth'});
   }
 
   // Scrolling by hand: the text nearest to the top is the one on view;
@@ -172,7 +180,7 @@
     display: block;
     font: var(--type-text);
   }
-  /* The texts: each at least as tall as the space, snapping to the top */
+  /* The texts: each as tall as the column, snapping to its top */
   .texts {
     position: relative; /* the items' offsetTop is measured from here */
     width: 100%;
@@ -185,4 +193,5 @@
     position: absolute;
     inset: 0;
   }
+
 </style>
