@@ -6,9 +6,10 @@
  * A span [from, to] covers columns `from` to `to`, both included:
  *   [2, 13] = column 2 through column 13 = 12 columns.
  *
- * Each URL sets where the band sits.
- * Change a number here and the band moves; navigating between two URLs
- * animates the band from one setting to the other.
+ * Each URL sets where the band sits and which tone the site takes
+ * (dark or light — the colours of each tone are in styles.css).
+ * Change a value here and the page changes; navigating between two URLs
+ * animates the band and the colours from one setting to the other.
  *
  * More panels (content, media…) will be added here the same way.
  */
@@ -16,8 +17,10 @@
 export const COLUMNS = 36;
 
 export type Span = [from: number, to: number];
+export type Tone = 'dark' | 'light';
 export type Layout = {
   band: Span;
+  tone: Tone;
   /** Small band only: where "Back" leads (default: home, the Medium band) */
   back?: string | ((params: Record<string, string>) => string);
 };
@@ -34,23 +37,23 @@ const {s, m, l, xl} = sizes;
 
 export const layouts: Record<string, Layout> = {
   // Default: Medium
-  '/': {band: m},
+  '/': {band: m, tone: 'dark'},
 
   // Temporary: the menu items Small, Large, X-Large lead to these sections
-  '/about': {band: s},
-  '/contributors': {band: l},
-  '/events': {band: xl},
+  '/about': {band: s, tone: 'light'},
+  '/contributors': {band: l, tone: 'light'},
+  '/events': {band: xl, tone: 'dark'},
 
-  '/issues': {band: m},
-  '/issues/[slug]': {band: m},
-  '/issues/[slug]/editorial': {band: s, back: (p) => `/issues/${p.slug}/`},
-  '/contributors/[slug]': {band: s, back: '/contributors/'},
-  '/events/[slug]': {band: m},
-  '/donate': {band: m},
-  '/shop': {band: m}
+  '/issues': {band: m, tone: 'dark'},
+  '/issues/[slug]': {band: m, tone: 'dark'},
+  '/issues/[slug]/editorial': {band: s, tone: 'light', back: (p) => `/issues/${p.slug}/`},
+  '/contributors/[slug]': {band: s, tone: 'light', back: '/contributors/'},
+  '/events/[slug]': {band: m, tone: 'light'},
+  '/donate': {band: m, tone: 'light'},
+  '/shop': {band: m, tone: 'dark'}
 };
 
-export const fallback: Layout = {band: m};
+export const fallback: Layout = {band: m, tone: 'dark'};
 
 export const isSmall = (layout: Layout) =>
   layout.band[0] === sizes.s[0] && layout.band[1] === sizes.s[1];

@@ -11,13 +11,81 @@
   --fade-out-time: 200ms; /* how long it takes to disappear */
   --cascade-step: 80ms; /* delay between one element and the next in a cascade */
 
-  --bg: #0b0b0b;
-  --band: #1c1c1c;
-  --ink: #e8e8e8;
-  --ink-quiet: #7a7a7a;
+  /* Change from one tone to another (see TONES below): same time and
+     curve as the band, so colour and movement read as one gesture */
+  --tone-time: var(--move-time);
+  --tone: var(--tone-time) cubic-bezier(0.65, 0, 0.35, 1);
 
   --sans: 'Styrene B', system-ui, sans-serif;
   --serif: 'Louize', Georgia, serif;
+}
+
+/*
+  TONES — the dark and light versions of the site
+
+  Every colour on the site is one of the four below; nothing else may
+  carry a colour value. A tone is a set of values for the four.
+  Each URL names its tone in layouts.ts; the stage carries it as
+  `data-tone`. To add a tone: one block here, one name in layouts.ts.
+
+  The four colours are declared as real colours (@property), so the
+  browser can blend them: when `data-tone` changes, the colours
+  themselves travel from the old values to the new ones, and everything
+  drawn with them follows together — no element needs its own colour
+  transition. (Colours switch instantly in browsers without @property.)
+
+  `data-tone` can also be set on any element inside the stage to give
+  that part a different tone from the rest.
+*/
+@property --bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0b0b0b;
+}
+@property --band {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1c1c1c;
+}
+@property --ink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e8e8e8;
+}
+@property --ink-quiet {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7a7a7a;
+}
+
+[data-tone='dark'] {
+  --bg: #0b0b0b; /* behind everything */
+  --band: #1c1c1c; /* the band */
+  --ink: #e8e8e8; /* text */
+  --ink-quiet: #7a7a7a; /* secondary text */
+  color-scheme: dark;
+}
+[data-tone='light'] {
+  --bg: #fffef6;
+  --band: #e8e8e8;
+  --ink: #111111;
+  --ink-quiet: #8c8c8c;
+  color-scheme: light;
+}
+
+[data-tone] {
+  color: var(--ink);
+  transition:
+    --bg var(--tone),
+    --band var(--tone),
+    --ink var(--tone),
+    --ink-quiet var(--tone);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --tone-time: 0ms;
+  }
 }
 
 *,
@@ -35,7 +103,6 @@ body {
 
 body {
   font: 15px/1.35 var(--serif);
-  color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
 

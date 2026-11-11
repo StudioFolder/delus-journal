@@ -2,6 +2,10 @@
   The stage: background, the band (menu + footer), and the grid overlay.
   This layout never re-renders between pages; only what changes animates.
 
+  The stage carries the tone of the current URL (dark or light, set in
+  layouts.ts); the colours travel from one tone to the other while the
+  band moves (see TONES in styles.css).
+
   Desktop: the band is a vertical strip placed on the 36-column grid.
   Mobile (under 768px): the band becomes a header across the top; the dot
   on its right opens it to full screen and the menu cascades in.
@@ -43,7 +47,7 @@
 
 <svelte:window {onkeydown} />
 
-<div class="stage" class:menu-open={menuOpen}>
+<div class="stage" class:menu-open={menuOpen} data-tone={current.layout.tone}>
   <Panel area="band" inset class="band-bg">
     <!-- Mobile only -->
     <button
