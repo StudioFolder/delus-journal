@@ -24,7 +24,7 @@ export type Layout = {
   band: Span;
   /** What changes while the visitor points at the page's image */
   focus?: {band: Span};
-  /** Small band only: where "Back" leads (default: home, the Medium band) */
+  /** Small band only: where "Back" leads (default: home) */
   back?: string | ((params: Record<string, string>) => string);
 };
 

@@ -32,7 +32,8 @@
        up from below, the same distance, fading in on the way;
     4. the image fades in once they have arrived.
   Later visits to the page show the final state directly. Timings are in
-  styles.css (--word-time, --word-step, --intro-pause, --rise). Skipped when the visitor has asked for reduced motion.
+  styles.css (--word-time, --word-step, --intro-pause, --rise). Skipped
+  when the visitor has asked for reduced motion.
 -->
 <script lang="ts">
   import {onDestroy} from 'svelte';
@@ -105,7 +106,7 @@
   function go(step: 1 | -1) {
     const next = at + step;
     if (phase !== 'done' || swapping || next < 0 || next >= highlights.length) return;
-    if (innerWidth < 768) return; // no highlights on mobile yet
+    if (innerWidth < 768) return; // mobile shows them all, one after another: no steps
     swapping = true;
     hidden = true;
     const out = time('--fade-out-time');

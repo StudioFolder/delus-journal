@@ -1,4 +1,4 @@
-import {issueNumber} from './format.ts';
+import {issueLabel} from './format.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
 // Only Issue 02 has its real abstract; the other two are placeholders.
@@ -90,5 +90,5 @@ export const home = {
   // editors in the CMS.
   highlights: issues
     .toSorted((a, b) => b.number - a.number)
-    .map((issue) => ({label: `Issue ${issueNumber(issue.number)}`, text: issue.abstract}))
+    .map((issue) => ({label: issueLabel(issue.number), text: issue.abstract}))
 };

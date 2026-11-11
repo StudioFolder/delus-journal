@@ -29,7 +29,7 @@
   import {time} from '#lib/motion/time.ts';
   import Acronyms from '#lib/type/Acronyms.svelte';
   import {issues} from '#lib/data/fixtures.ts';
-  import {issueNumber} from '#lib/data/format.ts';
+  import {issueLabel, issueNumber} from '#lib/data/format.ts';
 
   const newestFirst = issues.toSorted((a, b) => b.number - a.number);
 
@@ -69,7 +69,7 @@
 
 <Panel area="band" inset class="on-band from-bottom">
   <div class="abstract labelled fade" class:now={moved} class:is-hidden={hidden} out:leave|global>
-    <p class="label">Issue {issueNumber(newestFirst[shown].number)}</p>
+    <p class="label">{issueLabel(newestFirst[shown].number)}</p>
     <p class="display"><Acronyms text={newestFirst[shown].abstract} /></p>
   </div>
 </Panel>

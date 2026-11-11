@@ -36,7 +36,7 @@
   const band = $derived(current.layout.band);
   const bandCols = $derived(band[1] - band[0] + 1);
 
-  // In the Small band the menu is replaced by a back link to the Medium band
+  // In the Small band the menu is replaced by "Back" (where it leads: layouts.ts)
   const small = $derived(isSmall(current.layout));
   const back = $derived(backFor(current.layout, page.params as Record<string, string>));
 
@@ -126,14 +126,12 @@
     align-items: center;
     pointer-events: none;
   }
-  .stage :global(.on-band.from-top) {
-    align-items: flex-start;
-    padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
-  }
   /* Content longer than the band scrolls inside it, between menu and
      footer, without a visible scrollbar */
   .stage :global(.on-band.from-top) {
-    padding-bottom: calc(12 * var(--u));
+    align-items: flex-start;
+    padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
+    padding-bottom: calc(12 * var(--u)); /* the same above the footer */
   }
   .stage :global(.on-band.from-top > *) {
     max-height: 100%;
@@ -184,8 +182,6 @@
     right: var(--col);
     display: grid;
     grid-template-columns: calc(2 * var(--col)) auto;
-  }
-  footer {
     pointer-events: none; /* as for the menu: only the link catches clicks */
   }
   footer a {

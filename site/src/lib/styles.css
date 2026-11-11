@@ -122,7 +122,7 @@
   (lib/tone); the stage carries the current tone as `data-tone`.
   To add a tone: one block here, one name in lib/tone/tone.svelte.ts.
 
-  The four colours are declared as real colours (@property), so the
+  The five colours are declared as real colours (@property), so the
   browser can blend them: when `data-tone` changes, the colours
   themselves travel from the old values to the new ones, and everything
   drawn with them follows together — no element needs its own colour
