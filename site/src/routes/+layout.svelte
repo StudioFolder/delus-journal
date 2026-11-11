@@ -2,9 +2,9 @@
   The stage: background, the band (menu + footer), and the grid overlay.
   This layout never re-renders between pages; only what changes animates.
 
-  The stage carries the tone of the current URL (dark or light, set in
-  layouts.ts); the colours travel from one tone to the other while the
-  band moves (see TONES in styles.css).
+  The stage carries the tone (dark or light), chosen with the dot at the
+  bottom right; the colours travel from one tone to the other
+  (see TONES in styles.css).
 
   Desktop: the band is a vertical strip placed on the 36-column grid.
   Mobile (under 768px): the band becomes a header across the top; the dot
@@ -14,23 +14,25 @@
   import '#lib/styles.css';
   import {page} from '$app/state';
   import {afterNavigate} from '$app/navigation';
+  import {onMount} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
   import GridOverlay from '#lib/grid/GridOverlay.svelte';
   import {current} from '#lib/grid/layout.svelte.ts';
   import {isSmall, backFor} from '#lib/grid/layouts.ts';
   import {cascade} from '#lib/motion/cascade.ts';
+  import {tone} from '#lib/tone/tone.svelte.ts';
+  import ToneDot from '#lib/tone/ToneDot.svelte';
 
   let {children} = $props();
 
-  // Temporary menu: one item per band size (see layouts.ts)
+  // The menu. Home has no item: "DELUS" in the footer leads there.
   const nav = [
-    {href: '/about/', label: 'Small'},
-    {href: '/', label: 'Medium'},
-    {href: '/contributors/', label: 'Large'},
-    {href: '/events/', label: 'X-Large'}
+    {href: '/about/', label: 'About'},
+    {href: '/issues/', label: 'Issues'},
+    {href: '/contributors/', label: 'Contributors'},
+    {href: '/events/', label: 'News'}
   ];
-  const isActive = (href: string) =>
-    href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href);
+  const isActive = (href: string) => page.url.pathname.startsWith(href);
 
   const band = $derived(current.layout.band);
   const bandCols = $derived(band[1] - band[0] + 1);
@@ -38,6 +40,10 @@
   // In the Small band the menu is replaced by a back link to the Medium band
   const small = $derived(isSmall(current.layout));
   const back = $derived(backFor(current.layout, page.params as Record<string, string>));
+
+  // False during the very first load, when nothing moves (see FADE in styles.css)
+  let live = $state(false);
+  onMount(() => void (live = true));
 
   // Mobile menu
   let menuOpen = $state(false);
@@ -47,7 +53,12 @@
 
 <svelte:window {onkeydown} />
 
-<div class="stage" class:menu-open={menuOpen} data-tone={current.layout.tone}>
+<div
+  class="stage"
+  class:menu-open={menuOpen}
+  class:is-live={live}
+  data-tone={tone.current}
+>
   <Panel area="band" inset class="band-bg">
     <!-- Mobile only -->
     <button
@@ -60,15 +71,10 @@
     <a class="back fade" class:is-hidden={!small} href={back}>Back</a>
 
     <nav use:cascade>
-      {#each nav as item, i}
-        <!-- Desktop: item i takes columns 3+2i and 4+2i; hidden in the Small band
-             or where the band's inner edge would cut it -->
-        <a
-          href={item.href}
-          class="fade"
-          class:active={isActive(item.href)}
-          class:is-hidden={small || 4 + 2 * i > band[1] - 1}>{item.label}</a
-        >
+      {#each nav as item}
+        <span class="item hover fade" class:active={isActive(item.href)} class:is-hidden={small}>
+          <a href={item.href}>{item.label}</a>
+        </span>
       {/each}
     </nav>
 
@@ -80,6 +86,8 @@
   </Panel>
 
   {@render children()}
+
+  <ToneDot />
 </div>
 
 <GridOverlay />
@@ -97,45 +105,67 @@
     z-index: 1;
   }
 
+  /* Page content that sits on the background: under the band, centred vertically */
+  .stage :global(.on-ground) {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Page content that sits on the band: above it, centred vertically —
+     or, with `from-top`, starting under the menu; with `from-bottom`,
+     ending above the footer, at the same distance.
+     Like the menu, the panel itself doesn't catch clicks, only what's in it */
+  .stage :global(.on-band) {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+  .stage :global(.on-band.from-top) {
+    align-items: flex-start;
+    padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
+  }
+  .stage :global(.on-band.from-bottom) {
+    align-items: flex-end;
+    padding-bottom: calc(12 * var(--u)); /* footer: 5 units + its line of 2; then 5 units of air */
+  }
+  .stage :global(.on-band > *) {
+    pointer-events: auto;
+  }
+
   nav,
   footer,
   .back {
     position: absolute;
     left: var(--col);
-    font: 13px/1.4 var(--sans);
+    font: var(--type-ui);
     white-space: nowrap;
   }
 
-  /* Menu items sit on fixed columns (two each, from column 3), so they
+  /* Menu items follow one another from column 3, 4 units apart; they
      don't move while the band resizes */
   nav {
-    top: 40px;
-    right: var(--col);
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: calc(2 * var(--col));
+    top: calc(5 * var(--u));
+    display: flex;
+    gap: calc(4 * var(--u));
     pointer-events: none; /* only the visible items catch clicks, so "Back" stays clickable */
   }
+  /* The item, not its link, carries the colour and the hover effect
+     (see LINKS and HOVER in styles.css) */
   nav a {
-    color: var(--ink-quiet);
     pointer-events: auto;
   }
-  nav a.is-hidden {
+  nav .is-hidden a {
     pointer-events: none;
-  }
-  nav a:hover,
-  nav a.active {
-    color: var(--ink);
   }
 
   .back {
-    top: 40px;
-    color: var(--ink);
+    top: calc(5 * var(--u));
   }
 
   /* Footer: DELUS on column 3, tagline from column 5, both fixed */
   footer {
-    bottom: 40px;
+    bottom: calc(5 * var(--u));
     right: var(--col);
     display: grid;
     grid-template-columns: calc(2 * var(--col)) auto;
@@ -144,7 +174,6 @@
     pointer-events: none; /* as for the menu: only the link catches clicks */
   }
   footer a {
-    color: var(--ink);
     pointer-events: auto;
   }
   footer span {
@@ -157,11 +186,6 @@
 
   /* ---------- Mobile: the band becomes a header ---------- */
   @media (max-width: 767px) {
-    .stage {
-      --header: 64px;
-      --pad: 24px;
-    }
-
     /* Header bar across the top; opens downwards to full screen */
     .stage :global(.band-bg) {
       left: 0;
@@ -176,13 +200,31 @@
       height: 100%;
     }
 
+    /* Content that sits on the band on desktop goes under the header,
+       full width; it fades away while the menu is open */
+    .stage :global(.on-band) {
+      left: var(--pad);
+      right: var(--pad);
+      width: auto;
+      padding-inline: 0;
+      top: var(--header);
+      transition: opacity var(--fade-time) ease var(--move-time);
+    }
+    .stage :global(.on-band.from-top) {
+      padding-top: var(--pad);
+    }
+    .stage.menu-open :global(.on-band) {
+      opacity: 0;
+      transition: opacity var(--fade-out-time) ease 0s;
+    }
+
     .dot {
       display: block;
       position: absolute;
-      right: calc(var(--pad) - 12px); /* the visible dot sits --pad from the edge, like DELUS on the left */
-      top: calc(var(--header) / 2 - 17px);
-      width: 34px;
-      height: 34px;
+      right: calc(var(--pad) - var(--dot-edge)); /* the visible dot sits --pad from the edge, like DELUS on the left */
+      top: calc((var(--header) - var(--dot-hit)) / 2);
+      width: var(--dot-hit);
+      height: var(--dot-hit);
       padding: 0;
       border: 0;
       background: none;
@@ -191,11 +233,11 @@
     .dot::before {
       content: '';
       position: absolute;
-      inset: 12px;
+      inset: var(--dot-edge);
       border-radius: 50%;
       border: 1.5px solid var(--ink);
       background: var(--ink);
-      transition: background-color 200ms;
+      transition: background-color var(--hover);
     }
     .menu-open .dot::before {
       background: transparent; /* filled = closed, ring = open */
@@ -203,7 +245,7 @@
 
     /* DELUS on the left of the header; tagline at the bottom of the open band */
     footer {
-      top: calc(var(--header) / 2 - 9px);
+      top: calc(3 * var(--u)); /* its line centred in the header */
       bottom: auto;
       left: var(--pad);
       right: auto;
@@ -217,32 +259,35 @@
 
     /* Menu: a vertical list under the header, only while open */
     nav {
-      top: calc(var(--header) + 16px);
+      top: calc(var(--header) + 2 * var(--u));
       left: var(--pad);
-      right: var(--pad);
-      grid-auto-flow: row;
-      grid-auto-columns: auto;
-      gap: 8px;
+      flex-direction: column;
+      gap: var(--u);
     }
 
     /* Back: right side of the header, just before the dot */
     .back {
-      top: calc(var(--header) / 2 - 9px);
+      top: calc(3 * var(--u));
       left: auto;
-      right: calc(var(--pad) + 26px);
+      right: calc(var(--pad) + 4 * var(--u));
     }
 
     /* Closed: menu and tagline hidden. Open: both shown (cascading in after
        the band has opened), whatever the desktop rules say; Back hidden */
-    .stage:not(.menu-open) nav a,
+    .stage:not(.menu-open) nav .item,
     .stage:not(.menu-open) footer span {
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--fade-out-time) ease 0s;
     }
-    .stage.menu-open nav a,
+    .stage.menu-open nav .item,
     .stage.menu-open footer span {
       opacity: 1;
+    }
+    .stage:not(.menu-open) nav a {
+      pointer-events: none;
+    }
+    .stage.menu-open nav a {
       pointer-events: auto;
     }
     .stage.menu-open .back {

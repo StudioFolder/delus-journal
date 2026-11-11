@@ -1,6 +1,32 @@
 :root {
-  /* One grid column. Everything horizontal is measured in these. */
+  /*
+    SPACE — two measures only.
+    Across: the grid column. Panels, and what must line up with them, are
+    measured in columns.
+    Everything else — heights, margins, gaps, paddings, line heights — is
+    a whole number of units of 8px: calc(3 * var(--u)) = 24px. Never a
+    loose pixel value.
+  */
   --col: calc(100vw / 36);
+  --u: 8px;
+
+  /*
+    TYPE — four styles, one weight (regular). Use them as `font: var(--type-…)`;
+    no other size or weight anywhere. Every line height is a multiple of 8px.
+  */
+  --type-ui: 14px/16px var(--sans); /* menu, footer, links */
+  --type-label: 11px/16px var(--sans); /* small capitals: use the .label class */
+  --type-text: 18px/24px var(--serif); /* titles in lists, running text */
+  --type-display: 28px/32px var(--display); /* large statements */
+
+  /* Dots (tone switch, mobile menu): the dot, and the area that catches the click */
+  --dot: var(--u);
+  --dot-hit: calc(5 * var(--u));
+  --dot-edge: calc((var(--dot-hit) - var(--dot)) / 2);
+
+  /* Mobile: height of the header, and margin from the screen edges */
+  --header: calc(8 * var(--u));
+  --pad: calc(3 * var(--u));
 
   /* Panel movement between pages */
   --move-time: 600ms;
@@ -11,13 +37,71 @@
   --fade-out-time: 200ms; /* how long it takes to disappear */
   --cascade-step: 80ms; /* delay between one element and the next in a cascade */
 
+  /* Home intro (routes/+page.svelte): the statement appears word by word,
+     pauses, then rises to the top of the band. Each word takes long to
+     appear and the next starts soon after, so several are always
+     arriving at once: a soft wave rather than a count */
+  --word-time: 900ms; /* how long one word takes to appear */
+  --word-step: 70ms; /* delay between one word and the next */
+  --intro-pause: 800ms; /* the pause before the statement rises */
+  --rise-time: 1400ms; /* the rise: slower and softer than the band's movement */
+  --rise: var(--rise-time) cubic-bezier(0.7, 0, 0.2, 1);
+
+  /* Hover effects (see HOVER below) */
+  --hover-time: 200ms;
+  --hover: var(--hover-time) ease;
+
   /* Change from one tone to another (see TONES below): same time and
-     curve as the band, so colour and movement read as one gesture */
+     curve as the band, so everything on the site moves the same way */
   --tone-time: var(--move-time);
   --tone: var(--tone-time) cubic-bezier(0.65, 0, 0.35, 1);
 
   --sans: 'Styrene B', system-ui, sans-serif;
   --serif: 'Louize', Georgia, serif;
+  --display: 'Louize Display', 'Louize', Georgia, serif; /* large text */
+}
+
+/*
+  FONTS — files in site/static/fonts/
+  Louize Display is not in the repo yet: until its file is added under
+  the name below, large text is set in Louize.
+  Styrene B is still .otf (as on the holding page); replace with .woff2
+  when available.
+*/
+@font-face {
+  font-family: 'Louize Display';
+  src: url('/fonts/205TF-LouizeDisplay-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Louize';
+  src: url('/fonts/205TF-Louize-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Louize';
+  src: url('/fonts/205TF-Louize-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Styrene B';
+  src: url('/fonts/StyreneB-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Styrene B';
+  src: url('/fonts/StyreneB-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
 /*
@@ -25,8 +109,9 @@
 
   Every colour on the site is one of the four below; nothing else may
   carry a colour value. A tone is a set of values for the four.
-  Each URL names its tone in layouts.ts; the stage carries it as
-  `data-tone`. To add a tone: one block here, one name in layouts.ts.
+  The visitor switches tone with the dot at the bottom right
+  (lib/tone); the stage carries the current tone as `data-tone`.
+  To add a tone: one block here, one name in lib/tone/tone.svelte.ts.
 
   The four colours are declared as real colours (@property), so the
   browser can blend them: when `data-tone` changes, the colours
@@ -61,7 +146,7 @@
 [data-tone='dark'] {
   --bg: #0b0b0b; /* behind everything */
   --band: #1c1c1c; /* the band */
-  --ink: #e8e8e8; /* text */
+  --ink: #e8e8e8; /* text, dots */
   --ink-quiet: #7a7a7a; /* secondary text */
   color-scheme: dark;
 }
@@ -102,10 +187,17 @@ body {
 }
 
 body {
-  font: 15px/1.35 var(--serif);
+  font: var(--type-text);
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+  LINKS never set their own colour: they take it from the element
+  around them. Give the colour to a wrapper (as the menu items do), not
+  to the <a>. Reason: while the tone changes, Chrome draws links that
+  have already been visited with the surrounding colour instead of
+  their own, and snaps back at the end — the text flickers.
+*/
 a {
   color: inherit;
   text-decoration: none;
@@ -116,6 +208,45 @@ ul {
   margin: 0;
   padding: 0;
 }
+p {
+  margin: 0;
+}
+
+/* Small capitals: categories, dates */
+.label {
+  font: var(--type-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/*
+  HOVER — general rule: every hover effect is soft, fading in and out
+  over --hover-time. Nothing changes abruptly under the pointer.
+
+  `.hover` is the effect for text: quiet text that turns to full ink
+  under the pointer, or when it is `.active`. --lit goes from 0 (quiet)
+  to 1 (full ink) and it is --lit that fades, not the colour: this way
+  the text still follows the tone change exactly like everything else.
+  Put it on the element around a link, not on the link (see LINKS).
+
+  Any other hover effect: a transition with `var(--hover)`.
+
+  (Written before FADE on purpose: an element with both classes takes
+  its transitions from `.fade`, which includes this one.)
+*/
+@property --lit {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+.hover {
+  color: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
+  transition: --lit var(--hover);
+}
+.hover:hover,
+.hover.active {
+  --lit: 1;
+}
 
 /*
   FADE — general behaviour for anything that appears and disappears
@@ -123,13 +254,25 @@ ul {
   - appearing: waits for the band to finish moving, then fades in;
     inside a `use:cascade` group each element waits one more step (--i)
   - disappearing (.is-hidden): fades out straight away
+  The same holds for elements that arrive with a new page (they start
+  from invisible) and leave with the old one (`out:leave`, motion/leave.ts).
+  On the very first load nothing moves, so nothing waits: `.is-live` is
+  set on the stage only once the site is running.
 */
 .fade {
-  transition: opacity var(--fade-time) ease
-    calc(var(--move-time) + var(--i, 0) * var(--cascade-step));
+  transition:
+    opacity var(--fade-time) ease calc(var(--move-time) + var(--i, 0) * var(--cascade-step)),
+    --lit var(--hover);
 }
 .fade.is-hidden {
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--fade-out-time) ease 0s;
+  transition:
+    opacity var(--fade-out-time) ease 0s,
+    --lit var(--hover);
+}
+@starting-style {
+  .is-live .fade {
+    opacity: 0;
+  }
 }
