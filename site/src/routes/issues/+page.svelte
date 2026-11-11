@@ -241,8 +241,8 @@
   }
 
   /* The switch: on the footer's line, its left edge one column in from
-     the band — the mirror of the tone switch. 1.5 units square, stroke 1
-     (thinner than the arrows, at Marco's request), inside
+     the band — the mirror of the tone switch. 1.5 units square, filled
+     shapes like the sun and moon (Marco's request), inside
      a larger area that catches the click (--dot-hit, as the tone switch).
      Quiet, full ink under the pointer. */
   :global(.panel.view-switch) {
@@ -270,23 +270,29 @@
     outline: 1px solid var(--ink-quiet);
     outline-offset: calc(-1 * var(--u));
   }
-  /* The icon shows the view the button leads to; one fades into the other */
+  /* The icon shows the view the button leads to; one fades into the
+     other with the time and curve of the tone switch (--tone) */
   .icon {
     position: absolute;
     inset: var(--edge);
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
     transition:
-      opacity var(--fade-out-time),
+      opacity var(--tone),
       --lit var(--hover);
   }
-  /* A square divided in four, as the grid */
+  @media (prefers-reduced-motion: reduce) {
+    .icon {
+      transition: --lit var(--hover);
+    }
+  }
+  /* A full square cut in four by a 1px cross, as the grid */
   .to-grid {
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M.5.5h11v11H.5zM6 .5v11M.5 6h11'/%3E%3C/svg%3E")
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M0 0h5.5v5.5H0zM6.5 0H12v5.5H6.5zM0 6.5h5.5V12H0zM6.5 6.5H12V12H6.5z'/%3E%3C/svg%3E")
       center / contain no-repeat;
   }
-  /* One cover in the middle, the edges of the others at its sides */
+  /* One cover: a full upright 3:4 block, as tall as the grid icon (9 × 12) */
   .to-carousel {
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M3.5.5h5v11h-5zM.5 2.5v7M11.5 2.5v7'/%3E%3C/svg%3E")
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.5 0h9v12h-9z'/%3E%3C/svg%3E")
       center / contain no-repeat;
   }
   .switch:not(.is-grid) .to-carousel,
