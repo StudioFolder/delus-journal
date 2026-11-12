@@ -19,8 +19,10 @@
   FIGURE, LARGE — a click on a figure's miniature: the text and the
   notes fade out, then the miniature grows into the large figure in
   their place (ArticleLightbox, which also says when the text must be
-  out of the way: `textHidden`); a click there, or Esc, and it shrinks
-  back, then the text returns where it was. One figure at a time.
+  out of the way: `textHidden`). From there all the figures of the
+  article can be browsed (Previous, Next, the arrow keys). Close, a
+  click elsewhere or Esc, and the figure on view shrinks back onto its
+  miniature, then the text returns — at the passage that names it.
 
   DOWNLOAD, CITE — two words at the bottom of the band, above the footer
   (ArticleActions): the link to the article's PDF and a button that
@@ -59,6 +61,12 @@
   let onView = $state<number[]>([]); // the note numbers on the screen
   let titleOnView = $state(true); // the title in the text is on the screen
   let lightbox: ArticleLightbox;
+  // The figures of the article, in the order of their letters (the gallery)
+  const figures = $derived(
+    (data.contribution.body ?? [])
+      .flatMap((b) => (typeof b === 'object' && 'figure' in b ? [b.figure] : []))
+      .toSorted((a, b) => a.label.localeCompare(b.label))
+  );
   let textHidden = $state(false); // a figure is shown large, in place of the text
   let swapped = $state(false); // a figure has been opened: from then on the text comes back at once
 </script>
@@ -120,7 +128,7 @@
   </article>
 </Panel>
 
-<ArticleLightbox bind:this={lightbox} bind:hidden={textHidden} />
+<ArticleLightbox bind:this={lightbox} {figures} bind:hidden={textHidden} />
 
 <style>
   .people {

@@ -51,6 +51,11 @@
     color: inherit;
     cursor: pointer;
   }
+  /* Reached with the keyboard: a thin quiet line, as the issues switch */
+  button:focus-visible {
+    outline: 1px solid var(--ink-quiet);
+    outline-offset: calc(var(--u) / 2);
+  }
   .none {
     cursor: default;
   }

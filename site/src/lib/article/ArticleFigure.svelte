@@ -44,13 +44,22 @@
   });
 </script>
 
-<figure class="figure" class:placed={top !== undefined} style:top={top === undefined ? null : `${top}px`}>
+<figure
+  class="figure"
+  class:placed={top !== undefined}
+  style:top={top === undefined ? null : `${top}px`}
+  data-figure={figure.label}
+>
   <button
     type="button"
     class="image"
     aria-label="Figure {figure.label}: see it larger"
     style:aspect-ratio={figure.ratio}
-    onclick={(e) => onopen?.(e.currentTarget)}
+    onclick={(e) => {
+      // a click leaves no focus behind (it would keep the caption shown); the keyboard keeps its place
+      if (e.detail) e.currentTarget.blur();
+      onopen?.(e.currentTarget);
+    }}
   ></button>
   <figcaption>
     <span class="n">{figure.label}</span>{#each words as word, i (i)}{#if word.n < 0}{' '}{:else}<span
@@ -101,7 +110,7 @@
       transition: --lit var(--hover);
     }
     .figure:hover .image,
-    .figure:focus-within .image {
+    .image:focus-visible {
       --lit: 1;
     }
     .word {
@@ -109,7 +118,7 @@
       transition: opacity var(--hover);
     }
     .figure:hover .word,
-    .figure:focus-within .word {
+    .image:focus-visible + figcaption .word {
       opacity: 1;
       /* twice as fast as the home statement */
       transition: opacity calc(var(--word-time) / 2) ease-in-out calc(var(--n) * var(--word-step) / 2);
