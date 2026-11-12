@@ -9,7 +9,8 @@
     the Figma layout; line breaks typed in it (verse) are kept.
   - A chapter title (Sanity: the Heading style): the quote's type in
     small capitals (Styrene B has them), centred, 8 columns wide (half
-    the text), so a long one takes two lines; two lines of space above
+    the text; 14 on Narrow screens, 12 on Medium), so a long one takes two
+    lines; two lines of space above
     it, one below.
   - A figure (ArticleFigure; Sanity: an image between two paragraphs):
     it stands after the paragraph that refers to it. On desktop it is a
@@ -176,6 +177,20 @@
      two lines of space above them */
   .end {
     display: none;
+  }
+  /* Narrow and Medium screens (SCREENS in styles.css): the columns are
+     smaller and the text takes more of them, so a chapter title too —
+     about half the text, as on Wide: 14 of the text's 25 columns on
+     Narrow, 12 of its 22 on Medium */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    h2 {
+      width: calc(14 * var(--col));
+    }
+  }
+  @media (min-width: 1200px) and (max-width: 1439px) {
+    h2 {
+      width: calc(12 * var(--col));
+    }
   }
   /* Mobile: the grid columns are too narrow, a fixed indent instead */
   @media (max-width: 767px) {
