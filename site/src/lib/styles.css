@@ -19,6 +19,13 @@
   /* Titles of essays: the large type's size and line, in Styrene B (whose
      taller lowercase reads a step above Louize); letter-spacing 0.02em */
   --type-title: 28px/32px var(--sans);
+  /* The exception for long reading — the text of essays: between the
+     large type and its Medium step, on the large type's line (32px), so
+     the page keeps one rhythm. Quotes in it: Styrene B on the same line,
+     at the size whose lowercase matches the text's (Styrene's is ~14%
+     taller than Louize's: 21px ≈ 24px) */
+  --type-reading: 24px/32px var(--display);
+  --type-quote: 21px/32px var(--sans);
   --type-text: 18px/24px var(--serif); /* titles in lists, running text */
   --type-display: 28px/32px var(--display); /* large statements */
   /* Large statements on a Medium band: one size smaller, size and line

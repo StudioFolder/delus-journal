@@ -14,7 +14,8 @@
 
   TEXT — in the space to the right of the band, as the news texts and
   the About text: one column after the band, 18 columns wide, starting
-  at the height of the band's content (--edge); a long text scrolls the
+  at the height of the band's content (--edge) — the text itself 16
+  columns, two fewer than head and abstract; a long text scrolls the
   whole height of the screen, with 12 units of space after its last line.
 
   MOBILE — one column under the header; the people in small capitals
@@ -74,6 +75,11 @@
   article > :global(*) {
     width: calc(var(--text-cols) * var(--col));
   }
+  /* The text (paragraphs and quotes) two columns narrower than the head
+     and the abstract: a better measure for its smaller type */
+  article > :global(.body) {
+    width: calc((var(--text-cols) - 2) * var(--col));
+  }
 
   @media (max-width: 767px) {
     .people {
@@ -87,7 +93,8 @@
     article {
       padding-left: 0;
     }
-    article > :global(*) {
+    article > :global(*),
+    article > :global(.body) {
       width: 100%;
     }
   }
