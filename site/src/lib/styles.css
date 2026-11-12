@@ -1,3 +1,27 @@
+/*
+  SCREENS — the names and widths of the site's layouts (agreed 12 Nov
+  2026; the values will be fine-tuned). Every media query in the site
+  uses these limits, and only these:
+
+    Phone     under 768px     @media (max-width: 767px)
+    Narrow    768–1199px      @media (min-width: 768px) and (max-width: 1199px)
+    Medium    1200–1439px     @media (min-width: 1200px) and (max-width: 1439px)
+    Wide      1440px and up   @media (min-width: 1440px)
+
+  - Phone: the band becomes a header across the top; one column.
+  - Narrow, Medium, Wide: the band and the 36 columns. Wide is the
+    reference (a column is 40px at 1440px).
+  - Not to be confused with the sizes of the band (Small, Medium, Large,
+    X-Large: grid/layouts.ts), which are set per page, not per screen.
+  - Still to decide: very wide screens — the columns grow with the
+    window and the type doesn't, so lines of text get too long (a fifth
+    step: a limit to the grid's width, or larger type).
+  What changes at each step is written where it changes; so far only the
+  article has a Narrow and a Medium layout (routes/issues/[slug]/
+  [contribution]); everywhere else Narrow and Medium are as Wide.
+  (CSS can't read these numbers from a token: they are written out in
+  each media query.)
+*/
 :root {
   /*
     SPACE — two measures only.

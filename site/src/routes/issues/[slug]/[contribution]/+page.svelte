@@ -43,6 +43,8 @@
   FORTHCOMING ISSUE — its texts are not final: only the people (on the
   band; on mobile at the top of the column), nothing in the column.
 
+  The screens named below are the site's (SCREENS in styles.css).
+
   MEDIUM (1200–1439px) — the figures stay in the margin, but nothing is
   left free to their right: the text is 6 columns wider (22; head and
   abstract 24), so the figures stand in the last columns before the
@@ -53,7 +55,7 @@
   (one kept free at the edge), the text two fewer, as on desktop. No
   figures for now (how to show them there is still to decide).
 
-  MOBILE — one column under the header; the people in small capitals
+  PHONE — one column under the header; the people in small capitals
   above the title (the band is the header there).
 -->
 <script lang="ts">
