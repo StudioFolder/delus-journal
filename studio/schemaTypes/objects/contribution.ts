@@ -52,6 +52,13 @@ export const contribution = defineType({
       description: 'The full text, when it is published on the website: paragraphs, chapter titles (Heading), quotes, footnotes.',
     }),
     defineField({
+      name: 'pdf',
+      title: 'PDF',
+      type: 'file',
+      options: {accept: 'application/pdf'},
+      description: 'The article as a PDF, for "Download" on its page.',
+    }),
+    defineField({
       name: 'images',
       title: 'Images',
       type: 'array',

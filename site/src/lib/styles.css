@@ -67,6 +67,7 @@
 
   /* Hover effects (see HOVER below) */
   --hover-time: 200ms;
+  --copied-time: 1600ms; /* how long "Copied" stands in for "Cite" (ArticleActions) */
   --hover: var(--hover-time) ease;
 
   /* Change from one tone to another (see TONES below): same time and

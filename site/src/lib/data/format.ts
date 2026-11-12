@@ -1,7 +1,7 @@
 /**
  * How things are written out, in one place.
  */
-import type {Issue} from './fixtures.ts';
+import type {Contribution, Issue} from './fixtures.ts';
 
 /** A row of credits or details: a label, and one or more lines (some links) */
 export type Credit = {label: string; value: {text: string; href?: string}[]};
@@ -47,4 +47,37 @@ export function issueDetails(issue: Issue): Credit[] {
   if (p.isbn) rows.push({label: 'ISBN', value: [{text: p.isbn}]});
   if (p.pdfUrl) rows.push({label: 'PDF', value: [{text: 'Open access', href: p.pdfUrl}]});
   return rows;
+}
+
+/**
+ * How to cite an article (the text "Cite" copies), after the Chicago
+ * style of the printed notes: the first author surname first, the title
+ * in quotes, the journal with the issue's number, title and season, the
+ * pages.
+ *   Breit, Stefan, and Insa Jelena Streit. “Not a Drop Is Lost.” DELUS:
+ *   Journal for Landscape and Urban Studies 01, Chasing Water (Autumn
+ *   2024): 38–49.
+ * `authors`: the people in their order, with their name and their name
+ * for sorting (surname first). The pages run to the page before the next
+ * contribution's first one (the last contribution: its first page only)
+ * — until the CMS gives the real ones ("Pages").
+ */
+export function citationOf(
+  issue: Issue,
+  contribution: Contribution,
+  authors: {name: string; sortName: string}[],
+  journal: string
+): string {
+  const names = authors.map((a, i) => (i ? a.name : a.sortName));
+  const by =
+    names.length > 2
+      ? `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`
+      : names.join(names[0]?.includes(',') ? ', and ' : ' and ');
+  const title = /[?!]$/.test(contribution.title) ? contribution.title : `${contribution.title}.`;
+  const next = issue.contributions[issue.contributions.indexOf(contribution) + 1]?.page;
+  const pages = contribution.page
+    ? `: ${contribution.page}${next && next - 1 > contribution.page ? `–${next - 1}` : ''}`
+    : '';
+  const named = issue.title === 'DELUS' ? '' : `, ${issue.title}`;
+  return `${by}. “${title}” ${journal} ${issueNumber(issue.number)}${named} (${issue.date})${pages}.`;
 }

@@ -16,7 +16,11 @@
   (ArticleBody: paragraphs, quotes, chapter titles; two essays of
   Issue 01 so far).
 
-  NOTES — on the band, at the bottom (as the abstracts of other bands):
+  DOWNLOAD, CITE — two words at the bottom of the band, above the footer
+  (ArticleActions): the link to the article's PDF and a button that
+  copies how to cite it. Mobile: after the text and its notes.
+
+  NOTES — on the band, at the bottom, above those two words (4 units):
   a note is there only while its number in the text is on the screen
   (ArticleNotes; the text says which numbers are on view). Mobile: all
   the notes after the text instead.
@@ -42,6 +46,7 @@
   import ArticleAbstract from '#lib/article/ArticleAbstract.svelte';
   import ArticleBody from '#lib/article/ArticleBody.svelte';
   import ArticleNotes from '#lib/article/ArticleNotes.svelte';
+  import ArticleActions from '#lib/article/ArticleActions.svelte';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
@@ -61,10 +66,13 @@
   </div>
 </Panel>
 
-{#if data.contribution.notes && !data.issue.publication.forthcoming}
+{#if !data.issue.publication.forthcoming}
   <Panel area="band" inset class="on-band from-bottom">
-    <div class="notes fade" out:leave|global>
-      <ArticleNotes notes={data.contribution.notes} only={onView} />
+    <div class="foot fade" out:leave|global>
+      {#if data.contribution.notes}
+        <ArticleNotes notes={data.contribution.notes} only={onView} />
+      {/if}
+      <ArticleActions pdf={data.contribution.pdf} citation={data.citation} />
     </div>
   </Panel>
 {/if}
@@ -85,6 +93,10 @@
           onview={(numbers) => (onView = numbers)}
         />
       {/if}
+      <!-- Mobile only: on desktop they are on the band -->
+      <div class="actions-mobile">
+        <ArticleActions pdf={data.contribution.pdf} citation={data.citation} />
+      </div>
     {/if}
   </article>
 </Panel>
@@ -103,8 +115,14 @@
     margin-top: calc(2 * var(--u));
     font: var(--type-ui);
   }
-  .notes {
+  /* Notes, then Download and Cite, 4 units apart */
+  .foot {
     width: 100%;
+    display: grid;
+    gap: calc(4 * var(--u));
+  }
+  .actions-mobile {
+    display: none;
   }
 
   /* Head, abstract and text one under the other, two lines of the
@@ -127,8 +145,11 @@
 
   @media (max-width: 767px) {
     .head,
-    .notes {
+    .foot {
       display: none;
+    }
+    .actions-mobile {
+      display: block;
     }
     .people-mobile {
       display: block;

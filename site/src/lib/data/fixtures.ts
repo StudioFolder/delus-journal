@@ -40,6 +40,7 @@ export type Contribution = {
   slug: string;
   people: string[];
   page?: number;
+  pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
   abstract?: string;
   body?: Block[];
   notes?: Inline[][];
