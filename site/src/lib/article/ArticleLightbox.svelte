@@ -10,10 +10,9 @@
   article can be seen, in the order of their letters (`figures`), round
   and round. One figure fades out, the next fades in.
   - To the left of the image a click shows the one before, to its right
-    the next one: there the pointer itself becomes the word — Previous,
-    Next — in the small Styrene.
-  - On the image (and above and under it) the pointer is the lens, and a
-    click closes. Esc too.
+    the next one; on the image (and above and under it) a click closes.
+    Everywhere the pointer itself becomes the word for what a click does
+    — Previous, Next, Close (use:word, #lib/pointer). Esc closes too.
   - The left and right arrow keys; on touch screens a swipe to the left
     or to the right (a tap closes).
 
@@ -37,6 +36,7 @@
   import {tick} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
   import {time} from '#lib/motion/time.ts';
+  import {word} from '#lib/pointer/word.svelte.ts';
   import Inlines from './Inlines.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
@@ -120,16 +120,6 @@
   }
   const shown = $derived(phase === 'open' || phase === 'changing');
 
-  // THE WORD AT THE POINTER — beside the image the pointer is hidden and
-  // a word takes its place, following it
-  let word = $state<'' | 'Previous' | 'Next'>('');
-  let at = $state({x: 0, y: 0});
-  const follow = (name: 'Previous' | 'Next') => (e: PointerEvent) => {
-    if (e.pointerType !== 'mouse') return;
-    word = name;
-    at = {x: e.clientX, y: e.clientY};
-  };
-
   // SWIPE (touch screens): to the left, the next figure; to the right,
   // the one before. The tap that ends a swipe doesn't close.
   let down: number | undefined;
@@ -155,7 +145,14 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="view" class:is-on={phase !== 'closed'} onpointerdown={press} onpointerup={release}>
     <!-- On the image, above and under it: close -->
-    <button type="button" class="around" aria-label="Close the images" tabindex="-1" onclick={tap(close)}></button>
+    <button
+      type="button"
+      class="around"
+      aria-label="Close the images"
+      tabindex="-1"
+      onclick={tap(close)}
+      use:word={shown ? 'Close' : ''}
+    ></button>
     <!-- Beside it: the one before, the next one -->
     {#if figures.length > 1}
       <button
@@ -164,9 +161,7 @@
         aria-label="Previous figure"
         tabindex="-1"
         onclick={tap(() => step(-1))}
-        onpointerenter={follow('Previous')}
-        onpointermove={follow('Previous')}
-        onpointerleave={() => (word = '')}
+        use:word={shown ? 'Previous' : ''}
       ></button>
     {/if}
     {#if figure}
@@ -192,22 +187,12 @@
         aria-label="Next figure"
         tabindex="-1"
         onclick={tap(() => step(1))}
-        onpointerenter={follow('Next')}
-        onpointermove={follow('Next')}
-        onpointerleave={() => (word = '')}
+        use:word={shown ? 'Next' : ''}
       ></button>
     {/if}
   </div>
 </Panel>
 
-<!-- The word that stands for the pointer -->
-<span
-  class="pointer hover active"
-  class:is-on={word && shown}
-  style:left="{at.x}px"
-  style:top="{at.y}px"
-  aria-hidden="true">{word}</span
->
 
 <style>
   /* The panel lies over the text: it must not catch what is meant for it */
@@ -236,13 +221,11 @@
   .around {
     position: absolute;
     inset: 0;
-    cursor: zoom-out;
   }
   /* The two sides, the whole height, above the button around */
   .beside {
     position: relative;
     align-self: stretch;
-    cursor: none; /* the word is the pointer */
   }
   .before {
     grid-column: 1;
@@ -293,21 +276,6 @@
     text-align: left;
     font: var(--type-ui);
     color: var(--ink);
-  }
-  /* The word at the pointer: centred on it, in full ink, coming and
-     going softly */
-  .pointer {
-    position: fixed;
-    z-index: 2;
-    transform: translate(-50%, -50%);
-    font: var(--type-ui);
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity var(--hover);
-  }
-  .pointer.is-on {
-    opacity: 1;
   }
   /* Mobile: the image as wide as the column (nothing beside it: swipe);
      the caption at the foot of the column */

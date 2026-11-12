@@ -12,15 +12,18 @@
   little more from the background (see the styles).
   On touch screens it is always there.
   The box is a button: a click on it asks the page to show the figure
-  large (`onopen`; ArticleLightbox).
+  large (`onopen`; ArticleLightbox); on it the pointer becomes the word
+  Open (use:word, #lib/pointer).
   - In the text's column (mobile; and before the page has placed it): it
     follows the paragraph that refers to it, half the text wide.
+  - Between the two (768–1199px) it is not shown, for now.
   - `top` given (desktop, by ArticleBody): a miniature in the margin to
     the right of the text — one column after it, 4 columns wide — that
     far down from the start of the text.
 -->
 <script lang="ts">
   import Acronyms from '#lib/type/Acronyms.svelte';
+  import {word} from '#lib/pointer/word.svelte.ts';
   import type {Figure} from '#lib/data/fixtures.ts';
 
   let {figure, top, onopen}: {figure: Figure; top?: number; onopen?: (miniature: HTMLElement) => void} = $props();
@@ -55,6 +58,7 @@
     class="image"
     aria-label="Figure {figure.label}: see it larger"
     style:aspect-ratio={figure.ratio}
+    use:word={'Open'}
     onclick={(e) => {
       // a click leaves no focus behind (it would keep the caption shown); the keyboard keeps its place
       if (e.detail) e.currentTarget.blur();
@@ -84,7 +88,6 @@
     padding: 0;
     border: 0;
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
-    cursor: zoom-in;
   }
   figcaption {
     font: var(--type-note);
@@ -127,6 +130,13 @@
   @media (prefers-reduced-motion: reduce) {
     .figure .word {
       transition-delay: 0s;
+    }
+  }
+  /* Narrow (768–1199px): the text takes the margin's place; no figures
+     for now (see the article's page) */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .figure {
+      display: none;
     }
   }
   @media (min-width: 768px) {

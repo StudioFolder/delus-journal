@@ -43,6 +43,16 @@
   FORTHCOMING ISSUE — its texts are not final: only the people (on the
   band; on mobile at the top of the column), nothing in the column.
 
+  MEDIUM (1200–1439px) — the figures stay in the margin, but nothing is
+  left free to their right: the text is 6 columns wider (22; head and
+  abstract 24), so the figures stand in the last columns before the
+  edge.
+
+  NARROW (768–1199px) — the columns are too narrow for the text and a
+  margin of figures: head and abstract take all the columns to the right
+  (one kept free at the edge), the text two fewer, as on desktop. No
+  figures for now (how to show them there is still to decide).
+
   MOBILE — one column under the header; the people in small capitals
   above the title (the band is the header there).
 -->
@@ -56,6 +66,7 @@
   import ArticleNotes from '#lib/article/ArticleNotes.svelte';
   import ArticleActions from '#lib/article/ArticleActions.svelte';
   import ArticleLightbox from '#lib/article/ArticleLightbox.svelte';
+  import PointerWord from '#lib/pointer/PointerWord.svelte';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
@@ -130,6 +141,9 @@
 
 <ArticleLightbox bind:this={lightbox} {figures} bind:hidden={textHidden} />
 
+<!-- The word that stands for the pointer on the figures (Open, Close, Previous, Next) -->
+<PointerWord />
+
 <style>
   .people {
     padding: 0;
@@ -170,6 +184,28 @@
      and the abstract: a better measure for its smaller type */
   article > :global(.body) {
     width: calc((var(--text-cols) - 2) * var(--col));
+  }
+
+  /* Medium: the text wider, the figures at the edge (see MEDIUM above):
+     of the 28 columns to the right of the text's start, the text takes
+     22 — then one free, the figures' four, one at the edge */
+  @media (min-width: 1200px) and (max-width: 1439px) {
+    article > :global(*) {
+      width: calc(100% - 4 * var(--col));
+    }
+    article > :global(.body) {
+      width: calc(100% - 6 * var(--col));
+    }
+  }
+
+  /* Narrow: the text takes the width of the page (see NARROW above) */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    article > :global(*) {
+      width: calc(100% - var(--col));
+    }
+    article > :global(.body) {
+      width: calc(100% - 3 * var(--col));
+    }
   }
 
   @media (max-width: 767px) {
