@@ -7,8 +7,9 @@
   of the caption shows only while the pointer is on the figure (or the
   keyboard is): it appears word by word, as the statement on the home
   page but twice as fast (--word-time, --word-step, halved), and goes
-  all at once, softly, as
-  every hover effect. Its place under the box is kept, so nothing moves.
+  all at once, softly, as every hover effect. Its place under the box is
+  kept, so nothing moves. Under the pointer the box also stands out a
+  little more from the background (see the styles).
   On touch screens it is always there.
   - In the text's column (mobile; and before the page has placed it): it
     follows the paragraph that refers to it, half the text wide.
@@ -21,6 +22,10 @@
   import type {Figure} from '#lib/data/fixtures.ts';
 
   let {figure, top}: {figure: Figure; top?: number} = $props();
+
+  // A word on its own can't tell an article from a letter ("A Mapp"), so
+  // only words with two capitals in a row go in small capitals (RA, UK)
+  const acronym = /\p{Lu}{2,}/u;
 
   // The caption word by word: each word (or the space between two), with
   // its italics and its place in the cascade
@@ -50,7 +55,7 @@
           class="word"
           class:em={word.em}
           style:--n={word.n}
-          >{#if word.text.length > 1}<Acronyms text={word.text} />{:else}{word.text}{/if}</span
+          >{#if acronym.test(word.text)}<Acronyms text={word.text} />{:else}{word.text}{/if}</span
         >{/if}{/each}
   </figcaption>
 </figure>
@@ -63,7 +68,7 @@
     gap: var(--u);
   }
   .image {
-    background: var(--band);
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
   }
   figcaption {
     font: var(--type-note);
@@ -80,6 +85,18 @@
     color: var(--ink);
   }
   @media (hover: hover) {
+    /* Under the pointer the box stands out a little more from the
+       background, softly: a touch of the ink colour (--lit, as .hover) —
+       lighter in the dark tone, darker in the light one. (A brightness
+       filter made the box vanish into the light background; for the
+       real images it will be the right tool again.) */
+    .image {
+      transition: --lit var(--hover);
+    }
+    .figure:hover .image,
+    .figure:focus-visible .image {
+      --lit: 1;
+    }
     .word {
       opacity: 0;
       transition: opacity var(--hover);
