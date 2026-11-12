@@ -8,7 +8,8 @@
   the screen. Everything appears in a cascade, as on the other pages:
   the text, then the colophon row by row, then the newsletter.
 
-  MOBILE — one column under the header: the text, then the colophon.
+  MOBILE — one column under the header: the text, the colophon, then the
+  newsletter (not at the bottom of the screen).
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
@@ -27,6 +28,8 @@
       <Acronyms text={about.text} />
     </p>
     <Credits rows={about.credits} cascade start={1} />
+    <!-- Phone only: the newsletter after the colophon -->
+    <Newsletter i={1 + about.credits.length} inline />
   </div>
 </Panel>
 

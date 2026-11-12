@@ -98,7 +98,7 @@
   @media (max-width: 767px) {
     .tone-dot {
       right: calc(var(--pad) - var(--dot-edge));
-      bottom: calc((var(--header) - var(--dot-hit)) / 2); /* centred in the bottom zone, as the menu dot is in the header */
+      /* its height and when it shows: at the bottom of the open menu (+layout.svelte) */
     }
   }
 </style>

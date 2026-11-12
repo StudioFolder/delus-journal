@@ -66,8 +66,8 @@
      where the band has the room (Marco, 12 Nov) */
   --type-band-title: 16px/24px var(--sans);
   --type-display: 28px/32px var(--display); /* large statements */
-  /* Large statements on a Medium band: one size smaller, size and line
-     height reduced in proportion (× 0.75) — see .display below */
+  /* Large statements on a Medium band, and on Phone: one size smaller,
+     size and line height reduced in proportion (× 0.75) — see .display below */
   --type-display-m: 21px/24px var(--display);
 
   /* Dots (tone switch, mobile menu): the dot, and the area that catches the click */
@@ -132,6 +132,16 @@
 @media (min-width: 1440px) {
   :root {
     --type-band-title: 18px/24px var(--sans);
+  }
+}
+/* Phone: an essay's text at the size of the large type there (21/24,
+   as the issues' abstracts), and its quotes, chapter titles and note
+   numbers in Styrene at the size that matches it (21 × 0.875 ≈ 18), on
+   the same line */
+@media (max-width: 767px) {
+  :root {
+    --type-reading: 21px/24px var(--display);
+    --type-quote: 18px/24px var(--sans);
   }
 }
 
@@ -387,6 +397,12 @@ dd {
    is the whole screen. */
 @media (min-width: 768px) {
   [data-band='m'] .display {
+    font: var(--type-display-m);
+  }
+}
+/* On Phone too, everywhere (Marco, 12 Nov) */
+@media (max-width: 767px) {
+  .display {
     font: var(--type-display-m);
   }
 }

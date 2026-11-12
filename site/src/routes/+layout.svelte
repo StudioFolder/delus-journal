@@ -7,8 +7,12 @@
   (see TONES in styles.css).
 
   Desktop: the band is a vertical strip placed on the 36-column grid.
-  Mobile (under 768px): the band becomes a header across the top; the dot
-  on its right opens it to full screen and the menu cascades in.
+  Mobile (under 768px): the band becomes a header across the top; the
+  menu button on its right (two lines, turning into a cross) opens the
+  menu: the menu lies under the page, on the band's colour, and the page
+  (a layer with its own background) slides down to half the screen to
+  show it; the menu, then the tagline and the tone dot at its bottom,
+  cascade in. Only the page moves, as one piece (a transform).
 -->
 <script lang="ts">
   import '#lib/styles.css';
@@ -22,6 +26,7 @@
   import {tone} from '#lib/tone/tone.svelte.ts';
   import ToneDot from '#lib/tone/ToneDot.svelte';
   import {snapshot} from '#lib/motion/carry.ts';
+  import {leave} from '#lib/motion/leave.ts';
   import {site} from '#lib/data/fixtures.ts';
 
   let {children} = $props();
@@ -42,6 +47,9 @@
   const small = $derived(isSmall(current.layout));
   const back = $derived(backFor(current.layout, page.params as Record<string, string>));
 
+  // Phone: the section's name at the top of the page (not on pages with "Back")
+  const section = $derived(small ? undefined : nav.find((item) => isActive(item.href))?.label);
+
   // False during the very first load, when nothing moves (see FADE in styles.css)
   let live = $state(false);
   onMount(() => void (live = true));
@@ -60,19 +68,29 @@
 <div
   class="stage"
   class:menu-open={menuOpen}
+  class:has-section={section}
   class:is-live={live}
   data-tone={tone.current}
+  style:--items={nav.length}
 >
   <Panel area="band" inset class="band-bg">
     <!-- Mobile only -->
     <button
-      class="dot"
+      class="menu-button"
       aria-label={menuOpen ? 'Close menu' : 'Open menu'}
       aria-expanded={menuOpen}
       onclick={() => (menuOpen = !menuOpen)}
     ></button>
 
     <a class="back fade" class:is-hidden={!small} href={back}>Back</a>
+
+    <!-- Phone only: the section's name, on the band, which extends down
+         under the header to hold it -->
+    {#key section}
+      {#if section}
+        <p class="section fade" style:--i={0} out:leave|global>{section}</p>
+      {/if}
+    {/key}
 
     <nav>
       {#each nav as item, i}
@@ -94,7 +112,12 @@
     </footer>
   </Panel>
 
-  {@render children()}
+  <!-- The page: on mobile, pushed down while the menu is open; it still
+       scrolls then, and a tap on it closes the menu -->
+  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+  <div class="page" onclick={() => (menuOpen = false)}>
+    {@render children()}
+  </div>
 
   <ToneDot />
 </div>
@@ -106,6 +129,11 @@
     position: fixed;
     inset: 0;
     background: var(--bg);
+  }
+
+  .page {
+    position: absolute;
+    inset: 0;
   }
 
   .stage :global(.band-bg) {
@@ -207,85 +235,151 @@
     color: var(--ink-quiet);
   }
 
-  .dot {
+  .menu-button,
+  .section {
     display: none;
   }
 
   /* ---------- Mobile: the band becomes a header ---------- */
   @media (max-width: 767px) {
-    /* Header bar across the top; opens downwards to full screen */
+    /* --sheet: where the page begins, under the band — the header, and on
+       a section's pages (About, Issues…) a line more for its name (its
+       line, then --pad: as DELUS in the header) */
+    .stage {
+      --sheet: var(--header);
+    }
+    .stage.has-section {
+      --sheet: calc(var(--header) + 2 * var(--u) + var(--pad));
+    }
+    /* Header bar across the top */
     .stage :global(.band-bg) {
       left: 0;
       width: 100%;
       padding: 0;
       top: 0;
       bottom: auto;
-      height: var(--header);
-      transition: height var(--move);
+      height: var(--sheet);
+      overflow: visible; /* the menu lies below the header */
+      transition: box-shadow var(--move);
     }
+    /* Open, the header and the menu under it are one surface */
     .stage.menu-open :global(.band-bg) {
-      height: 100%;
+      box-shadow: none;
+    }
+    /* Under the page: the menu's ground */
+    .stage {
+      overflow: hidden; /* the page pushed down goes off the bottom */
+      background: var(--band);
+    }
+    /* The page: a layer lying on the menu. Its sheet (background and
+       shadow) begins under the band, so its edge keeps the same distance
+       from its content, closed or open */
+    .page {
+      z-index: 0; /* the sheet (z-index -1) stays under the page's content */
+      transition: transform var(--move);
+    }
+    .page::before {
+      content: '';
+      position: absolute;
+      inset: var(--sheet) 0 0;
+      z-index: -1;
+      background: var(--bg);
+      box-shadow: 0 0 calc(3 * var(--u)) var(--shade);
+    }
+    .stage.menu-open .page {
+      transform: translateY(calc(50% - var(--sheet))); /* the sheet's edge halfway down the screen */
     }
 
-    /* Content that sits on the band on desktop goes under the header,
-       full width; it fades away while the menu is open */
+    /* Content that sits on the band on desktop goes on the page, under
+       the band, full width */
     .stage :global(.on-band) {
       left: var(--pad);
       right: var(--pad);
       width: auto;
       padding-inline: 0;
-      top: var(--header);
-      transition: opacity var(--fade-time) ease var(--move-time);
+      top: var(--sheet);
     }
-    /* Content scrolls between the header and a zone of the same height at
-       the bottom, where the tone dot sits */
+    /* Content scrolls between the band and a zone of the header's height
+       at the bottom. It scrolls right up to the band, and its first --pad
+       under the band is a soft edge: at rest the content starts below
+       it; scrolling up, it fades out there instead of being cut */
     .stage :global(.on-band.from-top) {
-      padding-top: var(--pad);
+      padding-top: 0;
       padding-bottom: var(--header);
     }
-    /* Content at the bottom ends above the bottom zone (where the tone dot is) */
+    .stage :global(.on-band.from-top > *) {
+      padding-top: var(--pad);
+    }
+    .stage :global(.on-band.from-top > *),
+    .stage :global(.on-ground.from-top > *) {
+      mask-image: linear-gradient(to bottom, transparent, #000 var(--pad));
+    }
+    /* The section's name (About, Issues…) on the band, under DELUS, as a
+       menu item; while the menu is open it gives way to the menu */
+    .section {
+      display: block;
+      position: absolute;
+      top: var(--header);
+      left: var(--pad);
+      font: var(--type-ui);
+    }
+    .stage.menu-open .section {
+      opacity: 0;
+      transition: opacity var(--fade-out-time) ease 0s;
+    }
+    /* Content at the bottom ends above the bottom zone */
     .stage :global(.on-band.from-bottom) {
       padding-bottom: var(--header);
     }
     /* Content on the background with `from-top` takes the same place:
-       under the header, full width (e.g. a news text) */
+       under the band, full width (e.g. a news text); what's inside keeps
+       --edge above itself, the soft edge's height */
     .stage :global(.on-ground.from-top) {
-      --edge: 0px;
+      --edge: var(--pad);
       left: var(--pad);
       right: var(--pad);
       width: auto;
-      top: var(--header);
-      padding-top: var(--pad);
+      top: var(--sheet);
+      padding-top: 0;
       padding-bottom: var(--header);
     }
-    .stage.menu-open :global(.on-band > *) {
-      pointer-events: none; /* invisible content must not catch the menu's clicks */
-    }
-    .stage.menu-open :global(.on-band) {
-      opacity: 0;
-      transition: opacity var(--fade-out-time) ease 0s;
-    }
 
-    .dot {
+    /* Menu button: two short lines one unit apart; open, they turn into
+       a cross (an icon changing state: --icon). The lines' right end sits
+       --pad from the edge, like DELUS on the left; the button catches
+       the touch over the dot's area (--dot-hit). */
+    .menu-button {
+      --lines: calc(2 * var(--u)); /* the lines' length */
       display: block;
       position: absolute;
-      right: calc(var(--pad) - var(--dot-edge)); /* the visible dot sits --pad from the edge, like DELUS on the left */
+      right: calc(var(--pad) - (var(--dot-hit) - var(--lines)) / 2);
       top: calc((var(--header) - var(--dot-hit)) / 2);
       width: var(--dot-hit);
       height: var(--dot-hit);
       cursor: pointer;
     }
-    .dot::before {
+    .menu-button::before,
+    .menu-button::after {
       content: '';
       position: absolute;
-      inset: var(--dot-edge);
-      border-radius: 50%;
-      border: 1.5px solid var(--ink);
+      left: calc((var(--dot-hit) - var(--lines)) / 2);
+      top: calc(50% - 0.75px);
+      width: var(--lines);
+      height: 1.5px;
       background: var(--ink);
-      transition: background-color var(--hover);
+      transition: transform var(--icon);
     }
-    .menu-open .dot::before {
-      background: transparent; /* filled = closed, ring = open */
+    .menu-button::before {
+      transform: translateY(calc(var(--u) / -2));
+    }
+    .menu-button::after {
+      transform: translateY(calc(var(--u) / 2));
+    }
+    .menu-open .menu-button::before {
+      transform: rotate(45deg);
+    }
+    .menu-open .menu-button::after {
+      transform: rotate(-45deg);
     }
 
     /* DELUS on the left of the header; tagline at the bottom of the open band */
@@ -296,10 +390,23 @@
       right: auto;
       display: block;
     }
+    /* Tagline and tone dot: on one line at the bottom of the open menu,
+       --pad above its edge; they come after the menu's items */
     footer span {
       position: fixed;
       left: var(--pad);
-      bottom: var(--pad);
+      bottom: calc(50% + var(--pad));
+      --i: var(--items);
+    }
+    .stage :global(.tone-dot) {
+      bottom: calc(50% + var(--pad) + var(--u) - var(--dot-hit) / 2);
+      transition: opacity var(--fade-time) ease
+        calc(var(--move-time) + var(--items) * var(--cascade-step));
+    }
+    .stage:not(.menu-open) :global(.tone-dot) {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fade-out-time) ease 0s;
     }
 
     /* Menu: a vertical list under the header, only while open */
@@ -310,7 +417,7 @@
       gap: var(--u);
     }
 
-    /* Back: right side of the header, just before the dot */
+    /* Back: right side of the header, just before the menu button */
     .back {
       top: calc(3 * var(--u));
       left: auto;

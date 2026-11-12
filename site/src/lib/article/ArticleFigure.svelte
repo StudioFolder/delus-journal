@@ -16,7 +16,9 @@
   large (`onopen`; ArticleLightbox); on it the pointer becomes the word
   Open (use:word, #lib/pointer).
   - In the text's column (mobile; and before the page has placed it): it
-    follows the paragraph that refers to it, half the text wide.
+    follows the paragraph that refers to it, half the text wide; on
+    phones the image two thirds of the column wide, centred, its caption
+    as wide as the column, two units under it.
   - Between the two (768–1199px) it is not shown, for now.
   - `top` given (desktop, by ArticleBody): a miniature in the margin to
     the right of the text — one column after it, 4 columns wide — that
@@ -120,6 +122,23 @@
     display: block;
     width: 100%;
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
+  }
+  /* Phone: the figure as wide as the column (its caption too, two units
+     under the image); the image centred in it, at its own width (two
+     thirds of the text, or a photo essay's) */
+  @media (max-width: 767px) {
+    .figure,
+    .figure.photo {
+      width: 100%;
+      gap: calc(2 * var(--u));
+    }
+    .image {
+      width: calc(100% * 2 / 3);
+      margin-inline: auto;
+    }
+    .photo .image {
+      width: min(100%, (100vh - 24 * var(--u)) * var(--ratio));
+    }
   }
   figcaption {
     font: var(--type-note);

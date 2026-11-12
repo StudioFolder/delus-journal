@@ -13,6 +13,11 @@
   The band panel above it carries `above-newsletter`, so its content stops
   before the newsletter. `i`: the newsletter's place in the page's cascade.
 
+  On Phone it is not at the bottom: it follows the page's content (the
+  About page's credits). The page places a second one there, `inline`
+  (no panel of its own), shown on Phone only; the one in its panel is
+  shown on the other screens only.
+
   No newsletter service yet: the form only checks the address and sends
   nothing.
 -->
@@ -21,25 +26,35 @@
   import {leave} from '#lib/motion/leave.ts';
   import {site} from '#lib/data/fixtures.ts';
 
-  let {i = 0}: {i?: number} = $props();
+  let {i = 0, inline = false}: {i?: number; inline?: boolean} = $props();
+  const id = $props.id(); // the page has two of them: each its own field id
 </script>
 
-<Panel area="band" inset class="on-band from-bottom">
+{#snippet form()}
   <form
     class="newsletter fade"
+    class:inline
     style:--i={i}
     onsubmit={(e) => e.preventDefault()}
     out:leave|global
   >
-    <label class="label" for="newsletter-email">Subscribe to our newsletter</label>
+    <label class="label" for="{id}-email">Subscribe to our newsletter</label>
     <div class="field">
-      <input id="newsletter-email" type="email" name="email" placeholder="email" required />
+      <input id="{id}-email" type="email" name="email" placeholder="email" required />
       <button type="submit" aria-label="Subscribe"></button>
     </div>
     <!-- Gives the form its width: two columns and the footer's tagline -->
     <span class="measure" aria-hidden="true">{site.tagline}</span>
   </form>
-</Panel>
+{/snippet}
+
+{#if inline}
+  {@render form()}
+{:else}
+  <Panel area="band" inset class="on-band from-bottom">
+    {@render form()}
+  </Panel>
+{/if}
 
 <style>
   /* Content above stops before the newsletter: 12 units as every from-top
@@ -52,6 +67,9 @@
   .newsletter {
     display: grid;
     width: max-content;
+  }
+  .newsletter.inline {
+    display: none; /* Phone only (below) */
   }
   .measure {
     height: 0;
@@ -113,13 +131,17 @@
     pointer-events: none;
   }
 
-  /* Mobile: above the bottom zone, the whole width; content above stops
-     3 units before it */
+  /* Phone: after the content, the whole width; the panel at the bottom
+     is not shown, so the content above ends as on any page */
   @media (max-width: 767px) {
     :global(.stage .on-band.from-top.above-newsletter) {
-      padding-bottom: calc(var(--header) + 10 * var(--u));
+      padding-bottom: var(--header);
     }
     .newsletter {
+      display: none;
+    }
+    .newsletter.inline {
+      display: grid;
       width: 100%;
     }
     .measure {
