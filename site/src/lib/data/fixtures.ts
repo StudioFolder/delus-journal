@@ -3,7 +3,8 @@ import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
-// Only Issue 02 has its real abstract; the other two are placeholders.
+// The abstracts are placeholders (the issue's title in italics, then
+// filler text, about as long as a real abstract).
 // `publication`: the Publication fields of the CMS. ISBNs, Hatje Cantz
 // links and the open-access PDF are real (from the holding page); pages,
 // binding and format are placeholders.
@@ -52,7 +53,7 @@ export type Issue = {
   number: number;
   title: string;
   date: string;
-  abstract: string;
+  abstract: string | Inline[]; // plain text, or with italics
   publication: {
     editedBy: string;
     designedBy: string;
@@ -199,8 +200,11 @@ export const issues: Issue[] = [
     number: 0,
     title: 'DELUS',
     date: 'Autumn 2023',
-    abstract:
-      'Placeholder for the abstract of Issue 00. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.',
+    abstract: [
+      'Placeholder for the abstract of Issue 00, ',
+      {em: 'DELUS'},
+      '. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
+    ],
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',
@@ -217,8 +221,11 @@ export const issues: Issue[] = [
     number: 1,
     title: 'Chasing Water',
     date: 'Autumn 2024',
-    abstract:
-      'Placeholder for the abstract of Issue 01, Chasing Water. A few sentences introducing the issue will stand here, of about the same length as the abstract of the current issue, so that the page can be judged with a realistic amount of text in this position.',
+    abstract: [
+      'Placeholder for the abstract of Issue 01, ',
+      {em: 'Chasing Water'},
+      '. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.'
+    ],
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',
@@ -234,8 +241,11 @@ export const issues: Issue[] = [
     number: 2,
     title: 'Season Creep',
     date: 'Spring 2027',
-    abstract:
-      'In the highlands of the Caucasus, season is sensed before it is measured. It gathers in snowlines, grass, mud, thirst, animal fatigue, and the opening of mountain paths. For shepherds moving flocks between summer and winter pastures in eastern Georgia, transhumance is a cyclical rhythm of attunement: knowing when a landscape can receive, sustain, or release a moving herd.',
+    abstract: [
+      'Placeholder for the abstract of Issue 02, ',
+      {em: 'Season Creep'},
+      '. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.'
+    ],
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',

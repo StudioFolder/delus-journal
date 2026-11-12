@@ -3,12 +3,18 @@
 
   - The abstract at the top of the band, under the menu: the issue
     number in small capitals, then the text.
-  - On the line of the issue number, two more words in small capitals,
-    quiet → full ink under the pointer (.hover):
+  - On the line of the issue number, in small capitals too: the
+    issue's date (season and year). This line stays at the top of the
+    band while the rest of the column scrolls under it.
+  - Under the abstract, a line of words in small capitals, quiet → full
+    ink under the pointer (.hover), apart as the items of the menu:
+    Colophon — shows the publication details in place of the table of
+    contents, and back; in full ink while they are on view;
     Buy — the link to the publisher's page of the issue (only if the
     issue has one);
-    Colophon — shows the publication details in place of the table of
-    contents, and back; in full ink while they are on view.
+    Cite — copies how to cite the issue; the word then reads "Copied"
+    for a moment (--copied-time), as on an article. Not for a
+    forthcoming issue.
   - Below the abstract the table of contents: title, people; each
     entry is the link to its article. Or, after Colophon, the
     publication details (Credits). One fades out, the other fades in.
@@ -34,7 +40,7 @@
 
   FROM THE LIST — arriving from the issues list, nothing reloads: the
   abstract rises from the bottom of the band to the top and the cover
-  stays where it was (motion/carry.ts); Buy, Colophon and the contents
+  stays where it was (motion/carry.ts); the date, Colophon, Buy, Cite and the contents
   cascade in once the abstract has arrived. Arriving any other way,
   everything fades in.
 
@@ -68,7 +74,7 @@
   import {arriving, land} from '#lib/motion/carry.ts';
   import {time} from '#lib/motion/time.ts';
   import {opens} from '#lib/type/links.ts';
-  import Acronyms from '#lib/type/Acronyms.svelte';
+  import Inlines from '#lib/article/Inlines.svelte';
   import Credits from '#lib/type/Credits.svelte';
   import {issueDetails, issueLabel} from '#lib/data/format.ts';
 
@@ -98,6 +104,22 @@
   const rows = $derived(Math.min(Math.ceil(data.contents.length / 4), 4));
   let grid = $state(false);
   let changed = $state(false); // true once the view has been changed
+
+  // Cite: copies how to cite the issue; "Copied" stands in for a moment
+  // (as ArticleActions)
+  let copied = $state(false);
+  let uncopy: ReturnType<typeof setTimeout>;
+  async function cite() {
+    if (!data.citation) return;
+    try {
+      await navigator.clipboard.writeText(data.citation);
+    } catch {
+      return; // the browser refused: nothing was copied, so nothing is claimed
+    }
+    copied = true;
+    clearTimeout(uncopy);
+    uncopy = setTimeout(() => (copied = false), time('--copied-time'));
+  }
 
   // The gallery: which image is on view (0 = the cover, then the entries
   // of the contents, in their order)
@@ -159,7 +181,7 @@
       behavior: still() ? 'auto' : 'smooth'
     });
   }
-  onDestroy(() => (clearTimeout(pause), hold()));
+  onDestroy(() => (clearTimeout(pause), clearTimeout(uncopy), hold()));
 
   // The contents scroll to show the entry of the image on view — not
   // while the pointer is on them (they would slip from under it)
@@ -240,25 +262,35 @@
 <ViewSwitch bind:grid onswitch={() => (changed = true)} />
 
 <Panel area="band" inset class="on-band from-top">
-  <div class="column">
-    <div class="labelled" class:fade={!from.abstract} use:land={from.abstract} out:leave|global>
+  <!-- The whole column lands from the list's abstract (its number line and
+       text are at the top; the rest appears after) -->
+  <div class="column" class:fade={!from.abstract} use:land={from.abstract} out:leave|global>
+    <p class="label tags head">
+      <span>{issueLabel(issue.number)}</span>
+      <span class="fade" style:--i={0}>{issue.date}</span>
+    </p>
+    <div class="labelled">
+      <p class="display"><Inlines parts={issue.abstract} /></p>
       <p class="label tags">
-        <span>{issueLabel(issue.number)}</span>
-        {#if issue.publication.buyUrl}
-          <span class="hover fade" style:--i={0}>
-            <a href={issue.publication.buyUrl} {...opens(issue.publication.buyUrl)}>Buy</a>
-          </span>
-        {/if}
         <span class="hover fade" class:active={colophon} style:--i={1}>
           <button type="button" aria-pressed={colophon} onclick={() => (colophon = !colophon)}>
             Colophon
           </button>
         </span>
+        {#if issue.publication.buyUrl}
+          <span class="hover fade" style:--i={2}>
+            <a href={issue.publication.buyUrl} {...opens(issue.publication.buyUrl)}>Buy</a>
+          </span>
+        {/if}
+        {#if data.citation}
+          <span class="hover fade" class:active={copied} style:--i={3}>
+            <button type="button" onclick={cite} aria-live="polite">{copied ? 'Copied' : 'Cite'}</button>
+          </span>
+        {/if}
       </p>
-      <p class="display"><Acronyms text={issue.abstract} /></p>
     </div>
 
-    <div class="below fade" class:now={switched} class:is-hidden={hidden} out:leave|global>
+    <div class="below fade" class:now={switched} class:is-hidden={hidden}>
       {#if shown}
         <Credits rows={issueDetails(issue)} />
       {:else}
@@ -268,14 +300,14 @@
               class="entry hover"
               class:fade={!switched}
               class:active={at === i + 1}
-              style:--i={2 + i}
+              style:--i={4 + i}
               bind:this={entries[i]}
               onpointerenter={() => (hold(), show(i + 1))}
               onpointerleave={rest}
               onfocusin={() => (hold(), show(i + 1))}
               onfocusout={rest}
             >
-              <span class="label title"><a href={entry.href}>{entry.title}</a></span>
+              <span class="title"><a href={entry.href}>{entry.title}</a></span>
               <span class="by">{entry.by}</span>
             </li>
           {/each}
@@ -284,7 +316,7 @@
     </div>
 
     <!-- Mobile only -->
-    <div class="cover cover-mobile fade" out:leave|global></div>
+    <div class="cover cover-mobile fade"></div>
   </div>
 </Panel>
 
@@ -292,7 +324,28 @@
   .column {
     width: 100%;
     display: grid;
-    gap: calc(8 * var(--u));
+    scroll-padding-top: calc(4 * var(--u)); /* what scrolls into view stops under the number line */
+  }
+  /* The line of the issue number and date stays at the top while the
+     column scrolls: the rest passes under it (the band's colour behind
+     it, down to the abstract's first line: the 2 units of a label).
+     Not on phones, where the column is the page */
+  .head {
+    padding-bottom: calc(2 * var(--u));
+  }
+  @media (min-width: 768px) {
+    .head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--band);
+    }
+  }
+  /* Contents (or details) and, on phones, the cover: two lines of the
+     large type under what comes before */
+  .below,
+  .cover-mobile {
+    margin-top: calc(8 * var(--u));
   }
   /* The gallery: as wide and as high as the space right of the band; it
      scrolls sideways, one image per screenful, each in the middle (the
@@ -386,8 +439,8 @@
     width: min(100cqw, 100cqh * var(--ratio));
   }
 
-  /* The line of the issue number: Buy and Colophon follow it, apart as
-     the items of the menu */
+  /* The lines above and under the abstract (number and date; Colophon,
+     Buy, Cite): their words apart as the items of the menu */
   .tags {
     display: flex;
     gap: calc(4 * var(--u));
@@ -408,9 +461,11 @@
     outline-offset: calc(var(--u) / 2);
   }
 
-  /* The table of contents: entries 4 units apart;
-     the title in capitals (.label, at the size of the small Styrene,
-     --type-ui) and, one unit under it, the people in Louize (--type-text),
+  /* The table of contents: entries 4 units apart, 9 columns wide — one
+     fewer than the band's content; on phones the whole width;
+     the title in Styrene at the size that matches the people's Louize
+     (--type-band-title, as the title on an article's band), written as
+     it is (title capitals) and, on the next line (no space between), the people in Louize (--type-text),
      as on their article's page. The whole entry is
      the link */
   .contents {
@@ -422,6 +477,7 @@
   }
   .entry {
     position: relative;
+    max-width: calc(9 * var(--col));
   }
   .entry a::after {
     content: '';
@@ -433,11 +489,10 @@
     display: block;
   }
   .title {
-    font: var(--type-ui);
+    font: var(--type-band-title);
   }
   .by {
     font: var(--type-text);
-    margin-top: var(--u);
   }
   .cover-mobile {
     display: none;
@@ -446,6 +501,9 @@
   @media (max-width: 767px) {
     .views {
       display: none;
+    }
+    .entry {
+      max-width: none;
     }
     .cover-mobile {
       display: block;

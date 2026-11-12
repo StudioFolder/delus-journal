@@ -1,5 +1,6 @@
 import {error} from '@sveltejs/kit';
-import {issues, people} from '#lib/data/fixtures.ts';
+import {issues, people, site} from '#lib/data/fixtures.ts';
+import {issueCitationOf} from '#lib/data/format.ts';
 import type {EntryGenerator, PageLoad} from './$types';
 
 // Which URLs to generate (placeholder list until Sanity is connected)
@@ -29,5 +30,7 @@ export const load: PageLoad = ({params}) => {
     }))
   ];
   const contents = entries.map((entry, i) => ({...entry, image: {ratio: formats[i % formats.length]}}));
-  return {issue, contents};
+  // How to cite the issue (not before it is published)
+  const citation = issue.publication.forthcoming ? undefined : issueCitationOf(issue, `DELUS: ${site.tagline}`);
+  return {issue, contents, citation};
 };

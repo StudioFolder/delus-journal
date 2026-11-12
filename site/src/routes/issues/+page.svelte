@@ -45,7 +45,7 @@
   import {leave} from '#lib/motion/leave.ts';
   import {carry} from '#lib/motion/carry.ts';
   import {time} from '#lib/motion/time.ts';
-  import Acronyms from '#lib/type/Acronyms.svelte';
+  import Inlines from '#lib/article/Inlines.svelte';
   import {issues} from '#lib/data/fixtures.ts';
   import {issueLabel, issueNumber} from '#lib/data/format.ts';
 
@@ -128,7 +128,7 @@
     out:leave|global
   >
     <p class="label">{issueLabel(newestFirst[shown].number)}</p>
-    <p class="display"><Acronyms text={newestFirst[shown].abstract} /></p>
+    <p class="display"><Inlines parts={newestFirst[shown].abstract} /></p>
   </div>
 </Panel>
 

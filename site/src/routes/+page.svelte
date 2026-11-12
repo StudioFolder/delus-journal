@@ -47,6 +47,7 @@
   import {time} from '#lib/motion/time.ts';
   import {home} from '#lib/data/fixtures.ts';
   import Acronyms from '#lib/type/Acronyms.svelte';
+  import Inlines from '#lib/article/Inlines.svelte';
 
   // waiting: hidden, about to start · words: appearing in the middle ·
   // rising: moving to the top · done: the final state
@@ -195,7 +196,7 @@
     out:leave|global
   >
     <p class="label">{highlights[at].label}</p>
-    <p class="display"><Acronyms text={highlights[at].text} /></p>
+    <p class="display"><Inlines parts={highlights[at].text} /></p>
   </div>
 </Panel>
 
@@ -224,7 +225,7 @@
       {#each highlights as highlight}
         <section class="labelled">
           <p class="label">{highlight.label}</p>
-          <p class="display"><Acronyms text={highlight.text} /></p>
+          <p class="display"><Inlines parts={highlight.text} /></p>
           <div class="image cover"></div>
         </section>
       {/each}

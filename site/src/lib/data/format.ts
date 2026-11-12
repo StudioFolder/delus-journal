@@ -81,3 +81,21 @@ export function citationOf(
   const named = issue.title === 'DELUS' ? '' : `, ${issue.title}`;
   return `${by}. “${title}” ${journal} ${issueNumber(issue.number)}${named} (${issue.date})${pages}.`;
 }
+
+/**
+ * How to cite a whole issue (the text "Cite" copies on the issue's
+ * page), in the same style: the editors, the first surname first, the
+ * journal with the issue's number, title and season.
+ *   Frikech, Sara, and Johanna Just, eds. DELUS: Journal for Landscape
+ *   and Urban Studies 01, Chasing Water (Autumn 2024).
+ */
+export function issueCitationOf(issue: Issue, journal: string): string {
+  const editors = issue.publication.editedBy.split(', ');
+  const names = editors.map((name, i) => (i ? name : name.replace(/^(.*) (\S+)$/, '$2, $1')));
+  const by =
+    names.length > 2
+      ? `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`
+      : names.join(', and ');
+  const named = issue.title === 'DELUS' ? '' : `, ${issue.title}`;
+  return `${by}, ${editors.length > 1 ? 'eds' : 'ed'}. ${journal} ${issueNumber(issue.number)}${named} (${issue.date}).`;
+}
