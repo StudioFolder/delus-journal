@@ -5,6 +5,7 @@
   a word follows it ("A landscape", "I am"), nor before a full stop or a
   hyphen (initials: "O. Martins"; "T-shirt"). "and"/"or" don't count as
   a following word: in "A and B" both letters are small capitals.
+  Roman numerals too: Henry VIII, Charles I.
   Use it for running text in Louize: <Acronyms text={…} />
   The letters stay capitals in the page itself (for copying, search and
   screen readers); only their drawing changes (.sc in styles.css).

@@ -18,6 +18,9 @@
   columns, two fewer than head and abstract; a long text scrolls the
   whole height of the screen, with 12 units of space after its last line.
 
+  FORTHCOMING ISSUE — its texts are not final: only the people (on the
+  band; on mobile at the top of the column), nothing in the column.
+
   MOBILE — one column under the header; the people in small capitals
   above the title (the band is the header there).
 -->
@@ -45,11 +48,13 @@
   <article class="fade" style:--text-cols={TEXT_COLUMNS} out:leave|global>
     <!-- Mobile only: on desktop the people are on the band -->
     <p class="label people-mobile">{data.authors.join(', ')}</p>
-    <ArticleHeader title={data.contribution.title} />
-    {#if data.contribution.abstract}
-      <ArticleAbstract text={data.contribution.abstract} />
+    {#if !data.issue.publication.forthcoming}
+      <ArticleHeader title={data.contribution.title} />
+      {#if data.contribution.abstract}
+        <ArticleAbstract text={data.contribution.abstract} />
+      {/if}
+      <ArticleBody blocks={data.contribution.body ?? placeholderArticle} />
     {/if}
-    <ArticleBody blocks={data.contribution.body ?? placeholderArticle} />
   </article>
 </Panel>
 
