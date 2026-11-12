@@ -3,8 +3,8 @@
   text: the image (for now an empty box in its proportions) in the middle
   of the space to the right of the band, as large as the screen allows
   (at most 20 columns wide, and 16 units kept free above and below). Its
-  letter and caption are at the bottom, centred, their last line on the
-  footer's line.
+  caption is at the bottom, centred, its last line on the footer's line
+  (without the figure's letter: the text that names it is not there).
 
   GALLERY — from the figure that was clicked, all the figures of the
   article can be seen, in the order of their letters (`figures`), round
@@ -15,6 +15,16 @@
     — Previous, Next, Close (use:word, #lib/pointer). Esc closes too.
   - The left and right arrow keys; on touch screens a swipe to the left
     or to the right (a tap closes).
+
+  GRID — all the figures together, as the images of an issue (the same
+  switch, on the footer's line: ViewSwitch; not on phones): the figure
+  on view and its caption fade out, then the figures appear one after
+  another, four per row, in the order of their letters, the rows sharing
+  the height between the top and the bottom of the band's content. No
+  captions there. A click on one shows it large (the pointer says Open);
+  a click anywhere else closes, as Esc. Closing from the grid, nothing
+  travels: the grid fades out and the text comes back, at the passage
+  of the figure last seen large.
 
   HOW IT OPENS AND CLOSES — the miniature itself seems to grow:
     1. the text fades out (the page does it: `hidden`), while the large
@@ -35,6 +45,7 @@
 <script lang="ts">
   import {tick} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
+  import ViewSwitch from '#lib/grid/ViewSwitch.svelte';
   import {time} from '#lib/motion/time.ts';
   import {word} from '#lib/pointer/word.svelte.ts';
   import Inlines from './Inlines.svelte';
@@ -43,7 +54,10 @@
   let {figures, hidden = $bindable(false)}: {figures: Figure[]; hidden?: boolean} = $props();
 
   let figure = $state<Figure>(); // the one shown (it stays while closing)
-  let phase = $state<'closed' | 'opening' | 'open' | 'changing' | 'closing'>('closed');
+  let phase = $state<'closed' | 'opening' | 'open' | 'changing' | 'grid' | 'closing'>('closed');
+  let grid = $state(false); // what the switch says: all the figures together
+  let plain = $state(false); // closing from the grid: the large image stays out of it
+  const rows = $derived(Math.ceil(figures.length / 4)); // of the grid
   let moving = $state(false); // the image is travelling: its move is animated
   let place = $state(''); // the transform that puts the large image on its miniature
   let image = $state<HTMLElement>();
@@ -93,8 +107,26 @@
     phase = 'open'; // …and the other one fades in
   }
 
+  // The switch: to the grid, or back to the figure that was on view
+  function toggle() {
+    if (grid && phase === 'open') phase = 'grid';
+    else if (!grid && phase === 'grid') pick(figure!);
+    else grid = phase === 'grid'; // in the middle of something else: as it was
+  }
+  // From the grid to one figure, large
+  async function pick(which: Figure) {
+    if (phase !== 'grid') return;
+    grid = false;
+    phase = 'changing'; // the grid fades out…
+    await wait(time('--fade-out-time'));
+    figure = which;
+    await tick();
+    phase = 'open'; // …and the figure fades in
+  }
+
   async function close() {
-    if (phase !== 'open' || !figure) return;
+    if ((phase !== 'open' && phase !== 'grid') || !figure) return;
+    plain = phase === 'grid';
     // Back onto the miniature of the figure on view: if it is another one
     // than the one that was opened, the text goes to its passage first
     const own = document.querySelector<HTMLElement>(`[data-figure="${figure.label}"] .image`);
@@ -103,13 +135,14 @@
       own.scrollIntoView({block: 'center'});
     }
     phase = 'closing'; // the caption fades out…
-    moving = !still(); // …while the image goes back
+    moving = !plain && !still(); // …while the image goes back
     place = onMiniature();
     await wait(moving ? time('--move-time') : time('--fade-out-time'));
     hidden = false; // the text fades in
     await wait(time('--fade-time'));
     moving = false;
     phase = 'closed';
+    grid = plain = false;
     if (byKeyboard) miniature?.focus({preventScroll: true});
   }
 
@@ -118,7 +151,7 @@
     else if (e.key === 'ArrowRight') step(1);
     else if (e.key === 'ArrowLeft') step(-1);
   }
-  const shown = $derived(phase === 'open' || phase === 'changing');
+  const shown = $derived(phase === 'open' || phase === 'changing' || phase === 'grid');
 
   // SWIPE (touch screens): to the left, the next figure; to the right,
   // the one before. The tap that ends a swipe doesn't close.
@@ -154,7 +187,7 @@
       use:word={shown ? 'Close' : ''}
     ></button>
     <!-- Beside it: the one before, the next one -->
-    {#if figures.length > 1}
+    {#if figures.length > 1 && phase !== 'grid'}
       <button
         type="button"
         class="beside before"
@@ -165,7 +198,11 @@
       ></button>
     {/if}
     {#if figure}
-      <div class="large fade now" class:is-hidden={phase === 'changing'} style:--ratio={figure.ratio}>
+      <div
+        class="large fade now"
+        class:is-hidden={phase === 'changing' || phase === 'grid' || plain}
+        style:--ratio={figure.ratio}
+      >
         <div
           bind:this={image}
           class="image"
@@ -177,10 +214,10 @@
         ></div>
       </div>
       <p class="caption fade now" class:is-hidden={phase !== 'open'}>
-        <span class="n">{figure.label}</span><Inlines parts={figure.caption} />
+        <Inlines parts={figure.caption} />
       </p>
     {/if}
-    {#if figures.length > 1}
+    {#if figures.length > 1 && phase !== 'grid'}
       <button
         type="button"
         class="beside after"
@@ -190,8 +227,29 @@
         use:word={shown ? 'Next' : ''}
       ></button>
     {/if}
+    <!-- All the figures together -->
+    {#if figures.length > 1}
+      <div class="grid" inert={phase !== 'grid'} style:--rows={rows}>
+        {#each figures as each, i (each.label)}
+          <div class="cell fade next" class:is-hidden={phase !== 'grid'} style:--i={i}>
+            <button
+              type="button"
+              class="thumb"
+              aria-label="Figure {each.label}"
+              style:--ratio={each.ratio}
+              onclick={tap(() => pick(each))}
+              use:word={phase === 'grid' ? 'Open' : ''}
+            ></button>
+          </div>
+        {/each}
+      </div>
+    {/if}
   </div>
 </Panel>
+
+{#if shown && figures.length > 1}
+  <ViewSwitch bind:grid what="figures" onswitch={toggle} />
+{/if}
 
 
 <style>
@@ -265,12 +323,53 @@
     color: var(--ink-quiet);
     pointer-events: none;
   }
-  .n {
-    display: inline-block;
-    width: calc(3 * var(--u)); /* as a note's number */
-    text-align: left;
-    font: var(--type-ui);
-    color: var(--ink);
+  /* The grid, as the images of an issue (routes/issues/[slug]): four
+     cells per row, two columns apart, one column clear at the sides; the
+     rows, 8 units apart, share the height between the top and the bottom
+     of the band's content. Each figure is as large as fits in its cell,
+     in the middle of it. Between the figures a click goes to the button
+     around (Close) */
+  .grid {
+    --gap: calc(8 * var(--u));
+    position: absolute;
+    inset: 0;
+    padding: calc(12 * var(--u)) var(--col);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
+    gap: var(--gap) calc(2 * var(--col));
+    align-content: start;
+    pointer-events: none;
+  }
+  /* The figures appear one after another (CASCADE), once the large one
+     has faded out; they disappear together */
+  .cell.fade.next {
+    transition-delay: calc(var(--fade-out-time) + var(--i) * var(--cascade-step));
+  }
+  .cell.fade.is-hidden {
+    transition-delay: 0s;
+  }
+  .cell {
+    container-type: size;
+    display: grid;
+    place-items: center;
+  }
+  .thumb {
+    display: block;
+    width: min(100cqw, 100cqh * var(--ratio));
+    aspect-ratio: var(--ratio);
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
+  }
+  .cell:not(.is-hidden) .thumb {
+    pointer-events: auto;
+  }
+  @media (hover: hover) {
+    .thumb {
+      transition: --lit var(--hover);
+    }
+    .thumb:hover {
+      --lit: 1;
+    }
   }
   /* Mobile: the image as wide as the column (nothing beside it: swipe);
      the caption at the foot of the column */
@@ -288,6 +387,9 @@
     .caption {
       bottom: 0;
       max-width: 100%;
+    }
+    .grid {
+      display: none;
     }
   }
 </style>

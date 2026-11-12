@@ -67,6 +67,7 @@ export const issue = defineType({
         defineField({name: 'title', title: 'Title', type: 'string', initialValue: 'A Note from the Editors'}),
         defineField({name: 'authors', title: 'Authors', type: 'string'}),
         defineField({name: 'text', title: 'Text', type: 'richText'}),
+        defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
       ],
     }),
 
@@ -87,6 +88,7 @@ export const issue = defineType({
     defineField({name: 'binding', title: 'Binding', type: 'string', group: 'publication', description: 'e.g. Paperback with lay-flat binding'}),
     defineField({name: 'format', title: 'Format', type: 'string', group: 'publication', description: 'e.g. 210 × 240 mm'}),
     defineField({name: 'isbn', title: 'ISBN', type: 'string', group: 'publication'}),
+    defineField({name: 'doi', title: 'DOI', type: 'string', group: 'publication', description: 'Of the whole issue, without https://doi.org/ — e.g. 10.61608/9783775758758'}),
     defineField({
       name: 'pdf',
       title: 'PDF',

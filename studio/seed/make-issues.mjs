@@ -49,7 +49,8 @@ const rich = (body, notes) =>
         : block('h3', b.heading, `b${i}`)
   );
 
-const real = (text) => text && !text.startsWith('Placeholder');
+// (an abstract is plain text or a list of pieces: look at its first words)
+const real = (text) => text && !String(typeof text === 'string' ? text : text[0]).startsWith('Placeholder');
 const docs = issues.map((issue) => {
   const p = issue.publication;
   return {
@@ -69,10 +70,13 @@ const docs = issues.map((issue) => {
       slug: {_type: 'slug', current: c.slug},
       people: c.people.map((slug) => ({_key: slug, _type: 'reference', _ref: `person-${slug}`})),
       ...(c.page && {pages: String(c.page)}), // the first page only, for now
+      ...(c.doi && {doi: c.doi}),
       ...(c.abstract && {abstract: simple(c.abstract)}),
       ...(c.body && {text: rich(c.body, c.notes ?? [])})
     })),
+    ...(issue.editorial?.doi && {editorial: {doi: issue.editorial.doi}}), // its text is not carried yet
     ...(p.isbn && {isbn: p.isbn}),
+    ...(p.doi && {doi: p.doi}),
     ...(p.buyUrl && {buyUrl: p.buyUrl}),
     ...(p.pdfUrl && {pdfUrl: p.pdfUrl}),
     availability: p.forthcoming ? 'forthcoming' : 'available'

@@ -43,6 +43,7 @@ export type Contribution = {
   people: string[];
   page?: number;
   pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
+  doi?: string; // as registered by the publisher, without https://doi.org/ (not shown on the site yet)
   abstract?: string;
   body?: Block[];
   notes?: Inline[][];
@@ -57,8 +58,9 @@ export type Issue = {
   abstract: string | Inline[]; // plain text, or with italics
   // The editorial ("A Note from the Editors"): its text and notes, as a
   // contribution's (Sanity: the issue's Editorial field). Issue 01 only, so far.
-  // `page`: its first page in print.
-  editorial?: {page?: number; body: Block[]; notes?: Inline[][]};
+  // `page`: its first page in print. `doi`: as a contribution's (Issue 00
+  // has only that, so far).
+  editorial?: {page?: number; doi?: string; body?: Block[]; notes?: Inline[][]};
   publication: {
     editedBy: string;
     designedBy: string;
@@ -66,6 +68,7 @@ export type Issue = {
     binding: string;
     format: string;
     isbn?: string;
+    doi?: string; // of the whole issue
     buyUrl?: string;
     pdfUrl?: string;
     forthcoming: boolean;
@@ -85,6 +88,7 @@ const contents0: Entry[] = [
     title: 'Salted Waters: Cooking, Land and Resistance',
     people: ['luiza-prado-de-o-martins'],
     page: 10,
+    doi: '10.61608/9783775756372-001',
     abstract:
       'Luiza Prado de O. Martins shows how artefacts of domestic labour allow for unravelling relations of land, body and class within capitalist/colonialist frameworks. She brings us on a journey from biopolitics of coloniality studied through technology to a more personal and profound story exploring how land/body can be understood as part of each other.'
   },
@@ -92,6 +96,7 @@ const contents0: Entry[] = [
     title: 'Rivers, Sturgeons and Dragons',
     people: ['christina-gruber'],
     page: 16,
+    doi: '10.61608/9783775756372-002',
     abstract:
       'Christina Gruber follows sturgeons in the Danube to investigate the evolution of dragon myths along the stream, asking whether the majestic fish can help re-calibrate the relationship between bodies of water and human bodies.'
   },
@@ -99,6 +104,7 @@ const contents0: Entry[] = [
     title: 'Feminist Responses to the Prolonged Colonialities of Exploited Landscapes',
     people: ['karin-reisinger'],
     page: 34,
+    doi: '10.61608/9783775756372-003',
     abstract:
       'In conversation with Karin Reisinger, we reflect on historical research methods combined with participatory formats. She brings out marginalized voices and material relations and examines the prolonged coloniality of exploited mining landscapes in the peripheries of northern Sweden.'
   },
@@ -106,6 +112,7 @@ const contents0: Entry[] = [
     title: 'Melting Ecologies',
     people: ['institute-for-postnatural-studies'],
     page: 46,
+    doi: '10.61608/9783775756372-004',
     abstract:
       'The Institute for Postnatural Studies employs storytelling and artistic research methods to challenge the aesthetic qualities of a melting world – taking as a starting point the concept of postnature as a framework for creation.'
   },
@@ -113,6 +120,7 @@ const contents0: Entry[] = [
     title: 'Speculative Ecologies: The Future of Urban Wastelands',
     people: ['sandra-jasper'],
     page: 56,
+    doi: '10.61608/9783775756372-005',
     abstract:
       'In conversation with Sandra Jasper, we delve into acoustic and cinematographic research methods to gain new perspectives on urban ecologies and to unpack more-than-human histories of so-called wastelands in Berlin.'
   },
@@ -120,22 +128,25 @@ const contents0: Entry[] = [
     title: 'The Trap of Time: Prototyping a Summer School',
     people: ['federico-perez-villoro'],
     page: 66,
+    doi: '10.61608/9783775756372-006',
     abstract:
       'Federico Pérez Villoro tests alternate curricula with Materia Abierta, a summer school in Mexico City, reiterating learning models and offering a space to reflect on the ethics of the present and the future.'
   }
 ];
 const contents1: Entry[] = [
-  {title: 'Navel Gazing', people: ['yumna-al-arashi'], page: 8},
+  {title: 'Navel Gazing', people: ['yumna-al-arashi'], page: 8, doi: '10.61608/9783775758758-navel'},
   {
     title: 'The Draining of the Fens: Enclosures, Resistance and Wilderness',
     people: ['mathilde-redoute'],
     page: 14,
+    doi: '10.61608/9783775758758-001',
     ...redoute // the whole text, from the printed issue
   },
   {
     title: 'Embroidered Waterscapes: Unpacking Relationships Through Artisanal Map-making',
     people: ['akshar-gajjar', 'bhavya-jain'],
     page: 24,
+    doi: '10.61608/9783775758758-002',
     abstract:
       'Akshar Gajjar and Bhavya Jain urge us to behold a nineteenth-century pashmina shawl, a masterpiece intricately charting Srinagar’s waterways. They juxtapose artisanal insight and colonial mapping, advocating an embroidered ethos. Through threads and layered textiles, they defy the hegemony of Cartesian water cartography.'
   },
@@ -143,6 +154,7 @@ const contents1: Entry[] = [
     title: 'Liquid Shadows',
     people: ['valentina-noce'],
     page: 32,
+    doi: '10.61608/9783775758758-003',
     abstract:
       'Valentina Noce ventures into the eerie realm of water, drawing parallels to Pascal’s abyss. Through ‘Liquid Shadows,’ she creates a digital odyssey, exploring water’s unsettling essence, mysterious allure and haunting ambiguity.'
   },
@@ -150,12 +162,14 @@ const contents1: Entry[] = [
     title: 'Not a Drop Is Lost',
     people: ['stefan-breit', 'insa-jelena-streit'],
     page: 38,
+    doi: '10.61608/9783775758758-004',
     ...breit // the whole text, from the printed issue
   },
   {
     title: 'On Thirst: Anecdotes on Chasing the Waters',
     people: ['elnaz-najar-najafi', 'negar-sanaan-bensi'],
     page: 50,
+    doi: '10.61608/9783775758758-005',
     abstract:
       'Elnaz Najar Najafi and Negar Sanaan Bensi delve into the historical and cultural perceptions of thirst and its impact on settlements and cultivation within the deserts of the Iranian Plateau. By challenging the negative connotations associated with thirst and exploring the innovative water management techniques of inhabitants, they reveal how thirst has been a positive driving force for imagination, care and the nurturing of life in arid environments.'
   },
@@ -163,6 +177,7 @@ const contents1: Entry[] = [
     title: 'Men Talk but the Women Fetch the Water',
     people: ['stavroula-michael'],
     page: 58,
+    doi: '10.61608/9783775758758-006',
     abstract:
       'Stavroula Michael examines the coloniality of water infrastructures in Cyprus during late British colonialism and the early years of independence, highlighting how these systems perpetuated systemic inequalities. She unearths hidden histories of water attending neglected narratives of women and their relationships to material constructions such as village fountains.'
   },
@@ -170,6 +185,7 @@ const contents1: Entry[] = [
     title: 'Bordoclima: New Calligraphies of Fluid Borders',
     people: ['lucia-rebolino', 'federica-pessotto'],
     page: 66,
+    doi: '10.61608/9783775758758-007',
     abstract:
       'Lucia Rebolino and Federica Pessotto challenge the notion of fixed borders within contemporary geopolitics by conceptualizing them as dynamic entities. Their approach advocates the sovereignty of water in shaping borders and proposes a fluid understanding characterized by constant change and permeability.'
   },
@@ -177,6 +193,7 @@ const contents1: Entry[] = [
     title: 'Desalination and a New Environmental Public',
     people: ['linda-schilling-cuellar'],
     page: 74,
+    doi: '10.61608/9783775758758-008',
     abstract:
       'Linda Schilling Cuellar tackles the complexities surrounding water management in Chile, questioning the polarizing allure of desalination. She reveals the multifaceted implications of landscape solutionism – technological interventions, privatization debates and ecological repercussions. In her exploration, water emerges as a critical lifeline amidst the ever-pressing climate crisis.'
   },
@@ -184,6 +201,7 @@ const contents1: Entry[] = [
     title: 'Dam Circumsonic',
     people: ['oskar-frederick-johanson'],
     page: 82,
+    doi: '10.61608/9783775758758-009',
     abstract:
       'Oskar Frederick Johanson delves into the sonic environment of Warragamba Dam, a metaphor for broader water management issues in Australia. Through the lens of the Dyarubbin/Hawkesbury-Nepean watershed, embodied by the dam, he reveals the melodious yet dissonant complexities of controlling water amidst colonial legacies, urbanization pressures and environmental risks.'
   }
@@ -205,6 +223,7 @@ export const issues: Issue[] = [
     number: 0,
     title: 'DELUS',
     date: 'Autumn 2023',
+    editorial: {doi: '10.61608/9783775756372-fm002'}, // its text is not on the site yet
     abstract: [
       'Placeholder for the abstract of Issue 00, ',
       {em: 'DELUS'},
@@ -215,6 +234,7 @@ export const issues: Issue[] = [
       designedBy: 'Studio Folder',
       ...placeholder,
       isbn: '978-3-7757-5636-5',
+      doi: '10.61608/9783775756372',
       buyUrl: 'https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies',
       pdfUrl: 'https://library.oapen.org/handle/20.500.12657/97869',
       forthcoming: false
@@ -226,7 +246,7 @@ export const issues: Issue[] = [
     number: 1,
     title: 'Chasing Water',
     date: 'Autumn 2024',
-    editorial: {page: 4, ...editorial01}, // the whole text, from the printed issue
+    editorial: {page: 4, doi: '10.61608/9783775758758-note', ...editorial01}, // the whole text, from the printed issue
     abstract: [
       'Placeholder for the abstract of Issue 01, ',
       {em: 'Chasing Water'},
@@ -237,6 +257,7 @@ export const issues: Issue[] = [
       designedBy: 'Studio Folder',
       ...placeholder,
       isbn: '978-3-7757-5874-1',
+      doi: '10.61608/9783775758758',
       buyUrl: 'https://www.hatjecantz.com/products/77075-delus-journal-for-landscape-and-urban-studies',
       forthcoming: false
     },

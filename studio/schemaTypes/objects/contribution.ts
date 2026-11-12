@@ -44,6 +44,7 @@ export const contribution = defineType({
       validation: (r) => r.required().min(1),
     }),
     defineField({name: 'pages', title: 'Pages', type: 'string', description: 'e.g. 15–17'}),
+    defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
     defineField({name: 'abstract', title: 'Abstract', type: 'simpleText'}),
     defineField({
       name: 'text',

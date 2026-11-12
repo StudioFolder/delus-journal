@@ -32,8 +32,11 @@
 
   NOTES — on the band, at the bottom, above those two words (4 units):
   a note is there only while its number in the text is on the screen
-  (ArticleNotes; the text says which numbers are on view). Mobile: all
-  the notes after the text instead.
+  (ArticleNotes; the text says which numbers are on view) and only
+  while the pointer is over the space of the text: over the band, or
+  out of the window, they fade out. Where there is no pointer to hover
+  with (touch screens) they stay. Mobile: all the notes after the text
+  instead.
   Two lines of space between these blocks. All together:
 
   TEXT — in the space to the right of the band, as the news texts and
@@ -61,6 +64,7 @@
   above the title (the band is the header there).
 -->
 <script lang="ts">
+  import {onMount} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
   import {TEXT_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
@@ -84,7 +88,24 @@
   );
   let textHidden = $state(false); // a figure is shown large, in place of the text
   let swapped = $state(false); // a figure has been opened: from then on the text comes back at once
+
+  // The notes show only while the pointer is over the space of the text
+  // (see NOTES above)
+  let text: HTMLElement; // the article: its panel is that space
+  let hovers = $state(false); // there is a pointer that can hover
+  let overText = $state(false);
+  onMount(() => {
+    hovers = matchMedia('(hover: hover)').matches;
+    overText = !hovers;
+  });
+  function point(event: PointerEvent) {
+    if (!hovers || event.pointerType !== 'mouse') return;
+    overText = event.clientX >= text.parentElement!.getBoundingClientRect().left;
+  }
 </script>
+
+<svelte:window onpointermove={point} />
+<svelte:document onmouseleave={() => hovers && (overText = false)} />
 
 <Panel area="band" inset class="on-band from-top">
   <div class="head fade" out:leave|global>
@@ -103,7 +124,7 @@
   <Panel area="band" inset class="on-band from-bottom">
     <div class="foot fade" out:leave|global>
       {#if data.contribution.notes}
-        <div class="band-notes fade" class:now={swapped} class:is-hidden={textHidden}>
+        <div class="band-notes fade" class:now={swapped || hovers} class:is-hidden={textHidden || !overText}>
           <ArticleNotes notes={data.contribution.notes} only={onView} />
         </div>
       {/if}
@@ -114,6 +135,7 @@
 
 <Panel area="rest" class="on-ground from-top">
   <article
+    bind:this={text}
     class="fade"
     class:now={swapped}
     class:is-hidden={textHidden}
