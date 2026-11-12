@@ -28,14 +28,15 @@
   import Inlines from './Inlines.svelte';
   import ArticleFigure from './ArticleFigure.svelte';
   import ArticleNotes from './ArticleNotes.svelte';
-  import type {Block, Inline} from '#lib/data/fixtures.ts';
+  import type {Block, Figure, Inline} from '#lib/data/fixtures.ts';
 
   type Props = {
     blocks: Block[];
     notes?: Inline[][];
     onview?: (numbers: number[]) => void; // the note numbers on the screen, in order
+    onfigure?: (figure: Figure) => void; // a figure was clicked: to see it larger
   };
-  let {blocks, notes = [], onview}: Props = $props();
+  let {blocks, notes = [], onview, onfigure}: Props = $props();
 
   // Which note numbers are on the screen: told to the page at every change
   let body: HTMLElement;
@@ -130,7 +131,7 @@
     {:else if 'quote' in block}
       <blockquote><Inlines parts={block.quote} sc={false} /></blockquote>
     {:else if 'figure' in block}
-      <ArticleFigure figure={block.figure} top={tops[i]} />
+      <ArticleFigure figure={block.figure} top={tops[i]} onopen={() => onfigure?.(block.figure)} />
     {:else}
       <h2>{block.heading}</h2>
     {/if}

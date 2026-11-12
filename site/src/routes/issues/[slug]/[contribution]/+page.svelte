@@ -16,6 +16,11 @@
   (ArticleBody: paragraphs, quotes, chapter titles; two essays of
   Issue 01 so far).
 
+  FIGURE, LARGE — a click on a figure's miniature: the text and the
+  notes fade out and the figure is shown large in their place
+  (ArticleLightbox); a click there, or Esc, brings the text back where
+  it was. One figure at a time.
+
   DOWNLOAD, CITE — two words at the bottom of the band, above the footer
   (ArticleActions): the link to the article's PDF and a button that
   copies how to cite it. Mobile: after the text and its notes.
@@ -47,10 +52,14 @@
   import ArticleBody from '#lib/article/ArticleBody.svelte';
   import ArticleNotes from '#lib/article/ArticleNotes.svelte';
   import ArticleActions from '#lib/article/ArticleActions.svelte';
+  import ArticleLightbox from '#lib/article/ArticleLightbox.svelte';
+  import type {Figure} from '#lib/data/fixtures.ts';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
   let titleOnView = $state(true); // the title in the text is on the screen
+  let large = $state<Figure>(); // the figure shown large, in place of the text
+  let swapped = $state(false); // a figure has been opened: from then on the text comes back at once
 </script>
 
 <Panel area="band" inset class="on-band from-top">
@@ -70,7 +79,9 @@
   <Panel area="band" inset class="on-band from-bottom">
     <div class="foot fade" out:leave|global>
       {#if data.contribution.notes}
-        <ArticleNotes notes={data.contribution.notes} only={onView} />
+        <div class="band-notes fade next" class:is-hidden={large}>
+          <ArticleNotes notes={data.contribution.notes} only={onView} />
+        </div>
       {/if}
       <ArticleActions pdf={data.contribution.pdf} citation={data.citation} />
     </div>
@@ -78,7 +89,13 @@
 {/if}
 
 <Panel area="rest" class="on-ground from-top">
-  <article class="fade" style:--text-cols={TEXT_COLUMNS} out:leave|global>
+  <article
+    class="fade"
+    class:next={swapped}
+    class:is-hidden={large}
+    style:--text-cols={TEXT_COLUMNS}
+    out:leave|global
+  >
     <!-- Mobile only: on desktop the people are on the band -->
     <p class="label people-mobile">{data.authors.join(', ')}</p>
     {#if !data.issue.publication.forthcoming}
@@ -91,6 +108,7 @@
           blocks={data.contribution.body}
           notes={data.contribution.notes}
           onview={(numbers) => (onView = numbers)}
+          onfigure={(figure) => ((swapped = true), (large = figure))}
         />
       {/if}
       <!-- Mobile only: on desktop they are on the band -->
@@ -100,6 +118,8 @@
     {/if}
   </article>
 </Panel>
+
+<ArticleLightbox figure={large} onclose={() => (large = undefined)} />
 
 <style>
   .people {
@@ -123,6 +143,12 @@
   }
   .actions-mobile {
     display: none;
+  }
+  /* The text and the notes go at once when a figure is opened (only
+     their return waits for the figure to fade out) */
+  article.is-hidden,
+  .band-notes.is-hidden {
+    transition-delay: 0s;
   }
 
   /* Head, abstract and text one under the other, two lines of the

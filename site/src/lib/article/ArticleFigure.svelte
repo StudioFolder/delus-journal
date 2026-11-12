@@ -11,6 +11,8 @@
   kept, so nothing moves. Under the pointer the box also stands out a
   little more from the background (see the styles).
   On touch screens it is always there.
+  The box is a button: a click on it asks the page to show the figure
+  large (`onopen`; ArticleLightbox).
   - In the text's column (mobile; and before the page has placed it): it
     follows the paragraph that refers to it, half the text wide.
   - `top` given (desktop, by ArticleBody): a miniature in the margin to
@@ -21,7 +23,7 @@
   import Acronyms from '#lib/type/Acronyms.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
-  let {figure, top}: {figure: Figure; top?: number} = $props();
+  let {figure, top, onopen}: {figure: Figure; top?: number; onopen?: () => void} = $props();
 
   // A word on its own can't tell an article from a letter ("A Mapp"), so
   // only words with two capitals in a row go in small capitals (RA, UK)
@@ -42,14 +44,14 @@
   });
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<figure
-  class="figure"
-  class:placed={top !== undefined}
-  style:top={top === undefined ? null : `${top}px`}
-  tabindex="0"
->
-  <div class="image" role="img" aria-label="Figure {figure.label}" style:aspect-ratio={figure.ratio}></div>
+<figure class="figure" class:placed={top !== undefined} style:top={top === undefined ? null : `${top}px`}>
+  <button
+    type="button"
+    class="image"
+    aria-label="Figure {figure.label}: see it larger"
+    style:aspect-ratio={figure.ratio}
+    onclick={onopen}
+  ></button>
   <figcaption>
     <span class="n">{figure.label}</span>{#each words as word, i (i)}{#if word.n < 0}{' '}{:else}<span
           class="word"
@@ -68,7 +70,12 @@
     gap: var(--u);
   }
   .image {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
+    cursor: zoom-in;
   }
   figcaption {
     font: var(--type-note);
@@ -94,7 +101,7 @@
       transition: --lit var(--hover);
     }
     .figure:hover .image,
-    .figure:focus-visible .image {
+    .figure:focus-within .image {
       --lit: 1;
     }
     .word {
@@ -102,7 +109,7 @@
       transition: opacity var(--hover);
     }
     .figure:hover .word,
-    .figure:focus-visible .word {
+    .figure:focus-within .word {
       opacity: 1;
       /* twice as fast as the home statement */
       transition: opacity calc(var(--word-time) / 2) ease-in-out calc(var(--n) * var(--word-step) / 2);
