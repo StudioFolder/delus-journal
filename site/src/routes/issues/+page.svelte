@@ -24,7 +24,7 @@
   another one is pointed at. The row of the issue on view is in full ink.
 
   GRID — a button on the footer's line, at the left of the space right
-  of the band (the mirror of the tone switch), turns the carousel into a
+  of the band (ViewSwitch, the mirror of the tone switch), turns the carousel into a
   grid of all the covers, and back: two per row, rows half the screen
   high, a cover in the middle of each cell — its top at the height of
   the band's content, its bottom where the abstract ends. Only the
@@ -40,6 +40,7 @@
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
+  import ViewSwitch from '#lib/grid/ViewSwitch.svelte';
   import {COVER_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {carry} from '#lib/motion/carry.ts';
@@ -73,10 +74,6 @@
   // Carousel or grid
   let grid = $state(false);
   let switched = $state(false); // true once the view has been changed
-  const toggle = () => {
-    grid = !grid;
-    switched = true;
-  };
   // Full rows: the empty cells still carry the dividers
   const cells = Math.ceil(newestFirst.length / 2) * 2;
 </script>
@@ -120,18 +117,7 @@
   </div>
 </Panel>
 
-<Panel area="rest" class="view-switch">
-  <button
-    class="switch fade"
-    class:is-grid={grid}
-    aria-label={grid ? 'Show the covers one by one' : 'Show all the covers'}
-    onclick={toggle}
-    out:leave|global
-  >
-    <span class="icon to-grid"></span>
-    <span class="icon to-carousel"></span>
-  </button>
-</Panel>
+<ViewSwitch bind:grid onswitch={() => (switched = true)} />
 
 <Panel area="band" inset class="on-band from-bottom">
   <div
@@ -240,69 +226,6 @@
     width: min(100cqh * 518 / 626, 100cqw - 2 * var(--col));
   }
 
-  /* The switch: on the footer's line, its left edge one column in from
-     the band — the mirror of the tone switch. 1.5 units square, filled
-     shapes like the sun and moon (Marco's request), inside
-     a larger area that catches the click (--dot-hit, as the tone switch).
-     Quiet, full ink under the pointer. */
-  :global(.panel.view-switch) {
-    z-index: 1;
-    pointer-events: none;
-  }
-  .switch {
-    --size: calc(1.5 * var(--u));
-    --edge: calc((var(--dot-hit) - var(--size)) / 2);
-    position: absolute;
-    left: calc(var(--col) - var(--edge));
-    bottom: calc(6 * var(--u) - var(--dot-hit) / 2); /* centre on the centre of the footer's line */
-    width: var(--dot-hit);
-    height: var(--dot-hit);
-    padding: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-    pointer-events: auto;
-  }
-  .switch:hover .icon {
-    --lit: 1;
-  }
-  .switch:focus-visible {
-    outline: 1px solid var(--ink-quiet);
-    outline-offset: calc(-1 * var(--u));
-  }
-  /* The icon shows the view the button leads to; one fades into the
-     other with the time and curve of every icon (--icon, styles.css) */
-  .icon {
-    /* At rest the quiet grey taken a quarter towards the background: a
-       full shape reads darker than thin text, so this is what looks like
-       the footer's tagline (Marco's choice among four) */
-    --rest: color-mix(in srgb, var(--ink-quiet) 75%, var(--bg));
-    position: absolute;
-    inset: var(--edge);
-    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--rest));
-    transition:
-      opacity var(--icon),
-      --lit var(--hover);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .icon {
-      transition: --lit var(--hover);
-    }
-  }
-  /* A full square cut in four by a 1px cross, as the grid */
-  .to-grid {
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M0 0h5.5v5.5H0zM6.5 0H12v5.5H6.5zM0 6.5h5.5V12H0zM6.5 6.5H12V12H6.5z'/%3E%3C/svg%3E")
-      center / contain no-repeat;
-  }
-  /* One cover: a full upright 3:4 block, as tall as the grid icon (9 × 12) */
-  .to-carousel {
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.5 0h9v12h-9z'/%3E%3C/svg%3E")
-      center / contain no-repeat;
-  }
-  .switch:not(.is-grid) .to-carousel,
-  .switch.is-grid .to-grid {
-    opacity: 0;
-  }
   .covers-mobile {
     display: none;
   }
@@ -315,8 +238,7 @@
     }
     .covers,
     .abstract,
-    .grid,
-    .switch {
+    .grid {
       display: none; /* the abstracts are not on mobile yet; no grid */
     }
     .covers-mobile {

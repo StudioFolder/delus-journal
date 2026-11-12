@@ -98,6 +98,7 @@
   /* Hover effects (see HOVER below) */
   --hover-time: 200ms;
   --copied-time: 1600ms; /* how long "Copied" stands in for "Cite" (ArticleActions) */
+  --return-time: 800ms; /* how long an issue's gallery waits, with the pointer elsewhere, before going back to the cover */
   --hover: var(--hover-time) ease;
 
   /* Change from one tone to another (see TONES below): same time and
