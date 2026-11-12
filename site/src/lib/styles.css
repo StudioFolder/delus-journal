@@ -16,6 +16,9 @@
   */
   --type-ui: 14px/16px var(--sans); /* menu, footer, links */
   --type-label: 11px/16px var(--sans); /* small capitals: use the .label class */
+  /* Titles of essays: the large type's size and line, in Styrene B (whose
+     taller lowercase reads a step above Louize); letter-spacing 0.02em */
+  --type-title: 28px/32px var(--sans);
   --type-text: 18px/24px var(--serif); /* titles in lists, running text */
   --type-display: 28px/32px var(--display); /* large statements */
   /* Large statements on a Medium band: one size smaller, size and line
