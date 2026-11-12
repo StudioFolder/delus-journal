@@ -7,8 +7,10 @@
   - A quote (Sanity: the Quote style): in Styrene B, optically the same
     size, on the same line (--type-quote), indented three columns, as in
     the Figma layout; line breaks typed in it (verse) are kept.
-  - A chapter title (Sanity: the Heading style): the quote's type,
-    centred, close to the text below.
+  - A chapter title (Sanity: the Heading style): the quote's type in
+    small capitals (Styrene B has them), centred, 8 columns wide (half
+    the text), so a long one takes two lines; two lines of space above
+    it, one below.
   Where it sits on the page is up to the page.
 -->
 <script lang="ts">
@@ -47,12 +49,16 @@
     letter-spacing: 0.02em;
     white-space: pre-line;
   }
-  /* A chapter title (Sanity: the Heading style), after the Figma layout:
-     the quote's type, centred on the text; two lines of space above it,
-     none below — it sits on the text it opens */
+  /* A chapter title (Sanity: the Heading style): the quote's type in
+     small capitals (Styrene B's own), centred on the text and half as
+     wide (8 columns), so a long title takes two lines; two lines of
+     space above it, one line below, before the chapter starts */
   h2 {
-    margin: calc(4 * var(--u)) 0 calc(-4 * var(--u));
+    width: calc(8 * var(--col));
+    justify-self: center;
+    margin: calc(4 * var(--u)) 0 0;
     font: var(--type-quote);
+    font-variant-caps: all-small-caps;
     letter-spacing: 0.02em;
     text-align: center;
   }
@@ -60,6 +66,9 @@
   @media (max-width: 767px) {
     blockquote {
       padding-left: calc(3 * var(--u));
+    }
+    h2 {
+      width: auto; /* the text's width: 8 columns are too few here */
     }
   }
 </style>
