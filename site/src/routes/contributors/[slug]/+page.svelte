@@ -8,8 +8,8 @@
 
   HEAD — its title in Styrene B (ArticleHeader), level with the first
   name; then, if it has one, the abstract (ArticleAbstract,
-  for now in the same type as the text); then the text (ArticleBody:
-  paragraphs and quotes; the placeholder text when there is none).
+  for now in the same type as the text); then, if it has one, the text
+  (ArticleBody: paragraphs and quotes; two essays of Issue 01 so far).
   Two lines of space between these blocks. All together:
 
   TEXT — in the space to the right of the band, as the news texts and
@@ -28,7 +28,6 @@
   import Panel from '#lib/grid/Panel.svelte';
   import {TEXT_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
-  import {placeholderArticle} from '#lib/data/fixtures.ts';
   import ArticleHeader from '#lib/article/ArticleHeader.svelte';
   import ArticleAbstract from '#lib/article/ArticleAbstract.svelte';
   import ArticleBody from '#lib/article/ArticleBody.svelte';
@@ -53,7 +52,9 @@
       {#if data.contribution.abstract}
         <ArticleAbstract text={data.contribution.abstract} />
       {/if}
-      <ArticleBody blocks={data.contribution.body ?? placeholderArticle} />
+      {#if data.contribution.body}
+        <ArticleBody blocks={data.contribution.body} />
+      {/if}
     {/if}
   </article>
 </Panel>

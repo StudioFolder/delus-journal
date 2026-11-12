@@ -20,8 +20,9 @@ export type Block = string | Inline[] | {quote: string | Inline[]} | {heading: s
 
 // One entry of an issue's table of contents (Sanity's contribution):
 // its title, its people (slugs of `people`, below), its first page, its
-// abstract (Sanity: `abstract`), its text (`body`; not in Sanity yet —
-// the placeholder text otherwise) and its notes (`notes[0]` = note 1).
+// abstract (Sanity: `abstract`; from the printed issues), its text
+// (`body`; not in Sanity yet — two essays of Issue 01 have it, the others
+// show title and abstract only) and its notes (`notes[0]` = note 1).
 export type Contribution = {
   title: string;
   people: string[];
@@ -55,12 +56,48 @@ export type Issue = {
 // The tables of contents, from the printed issues (Issue 02: order as
 // given by the editors, no page numbers yet)
 const contents0: Contribution[] = [
-  {title: 'Salted Waters: Cooking, Land and Resistance', people: ['luiza-prado-de-o-martins'], page: 10},
-  {title: 'Rivers, Sturgeons and Dragons', people: ['christina-gruber'], page: 16},
-  {title: 'Feminist Responses to the Prolonged Colonialities of Exploited Landscapes', people: ['karin-reisinger'], page: 34},
-  {title: 'Melting Ecologies', people: ['institute-for-postnatural-studies'], page: 46},
-  {title: 'Speculative Ecologies: The Future of Urban Wastelands', people: ['sandra-jasper'], page: 56},
-  {title: 'The Trap of Time: Prototyping a Summer School', people: ['federico-perez-villoro'], page: 66}
+  {
+    title: 'Salted Waters: Cooking, Land and Resistance',
+    people: ['luiza-prado-de-o-martins'],
+    page: 10,
+    abstract:
+      'Luiza Prado de O. Martins shows how artefacts of domestic labour allow for unravelling relations of land, body and class within capitalist/colonialist frameworks. She brings us on a journey from biopolitics of coloniality studied through technology to a more personal and profound story exploring how land/body can be understood as part of each other.'
+  },
+  {
+    title: 'Rivers, Sturgeons and Dragons',
+    people: ['christina-gruber'],
+    page: 16,
+    abstract:
+      'Christina Gruber follows sturgeons in the Danube to investigate the evolution of dragon myths along the stream, asking whether the majestic fish can help re-calibrate the relationship between bodies of water and human bodies.'
+  },
+  {
+    title: 'Feminist Responses to the Prolonged Colonialities of Exploited Landscapes',
+    people: ['karin-reisinger'],
+    page: 34,
+    abstract:
+      'In conversation with Karin Reisinger, we reflect on historical research methods combined with participatory formats. She brings out marginalized voices and material relations and examines the prolonged coloniality of exploited mining landscapes in the peripheries of northern Sweden.'
+  },
+  {
+    title: 'Melting Ecologies',
+    people: ['institute-for-postnatural-studies'],
+    page: 46,
+    abstract:
+      'The Institute for Postnatural Studies employs storytelling and artistic research methods to challenge the aesthetic qualities of a melting world – taking as a starting point the concept of postnature as a framework for creation.'
+  },
+  {
+    title: 'Speculative Ecologies: The Future of Urban Wastelands',
+    people: ['sandra-jasper'],
+    page: 56,
+    abstract:
+      'In conversation with Sandra Jasper, we delve into acoustic and cinematographic research methods to gain new perspectives on urban ecologies and to unpack more-than-human histories of so-called wastelands in Berlin.'
+  },
+  {
+    title: 'The Trap of Time: Prototyping a Summer School',
+    people: ['federico-perez-villoro'],
+    page: 66,
+    abstract:
+      'Federico Pérez Villoro tests alternate curricula with Materia Abierta, a summer school in Mexico City, reiterating learning models and offering a space to reflect on the ethics of the present and the future.'
+  }
 ];
 const contents1: Contribution[] = [
   {title: 'Navel Gazing', people: ['yumna-al-arashi'], page: 8},
@@ -70,19 +107,61 @@ const contents1: Contribution[] = [
     page: 14,
     ...redoute // the whole text, from the printed issue
   },
-  {title: 'Embroidered Waterscapes: Unpacking Relationships Through Artisanal Map-making', people: ['akshar-gajjar', 'bhavya-jain'], page: 24},
-  {title: 'Liquid Shadows', people: ['valentina-noce'], page: 32},
+  {
+    title: 'Embroidered Waterscapes: Unpacking Relationships Through Artisanal Map-making',
+    people: ['akshar-gajjar', 'bhavya-jain'],
+    page: 24,
+    abstract:
+      'Akshar Gajjar and Bhavya Jain urge us to behold a nineteenth-century pashmina shawl, a masterpiece intricately charting Srinagar’s waterways. They juxtapose artisanal insight and colonial mapping, advocating an embroidered ethos. Through threads and layered textiles, they defy the hegemony of Cartesian water cartography.'
+  },
+  {
+    title: 'Liquid Shadows',
+    people: ['valentina-noce'],
+    page: 32,
+    abstract:
+      'Valentina Noce ventures into the eerie realm of water, drawing parallels to Pascal’s abyss. Through ‘Liquid Shadows,’ she creates a digital odyssey, exploring water’s unsettling essence, mysterious allure and haunting ambiguity.'
+  },
   {
     title: 'Not a Drop Is Lost',
     people: ['stefan-breit', 'insa-jelena-streit'],
     page: 38,
     ...breit // the whole text, from the printed issue
   },
-  {title: 'On Thirst: Anecdotes on Chasing the Waters', people: ['elnaz-najar-najafi', 'negar-sanaan-bensi'], page: 50},
-  {title: 'Men Talk but the Women Fetch the Water', people: ['stavroula-michael'], page: 58},
-  {title: 'Bordoclima: New Calligraphies of Fluid Borders', people: ['lucia-rebolino', 'federica-pessotto'], page: 66},
-  {title: 'Desalination and a New Environmental Public', people: ['linda-schilling-cuellar'], page: 74},
-  {title: 'Dam Circumsonic', people: ['oskar-frederick-johanson'], page: 82}
+  {
+    title: 'On Thirst: Anecdotes on Chasing the Waters',
+    people: ['elnaz-najar-najafi', 'negar-sanaan-bensi'],
+    page: 50,
+    abstract:
+      'Elnaz Najar Najafi and Negar Sanaan Bensi delve into the historical and cultural perceptions of thirst and its impact on settlements and cultivation within the deserts of the Iranian Plateau. By challenging the negative connotations associated with thirst and exploring the innovative water management techniques of inhabitants, they reveal how thirst has been a positive driving force for imagination, care and the nurturing of life in arid environments.'
+  },
+  {
+    title: 'Men Talk but the Women Fetch the Water',
+    people: ['stavroula-michael'],
+    page: 58,
+    abstract:
+      'Stavroula Michael examines the coloniality of water infrastructures in Cyprus during late British colonialism and the early years of independence, highlighting how these systems perpetuated systemic inequalities. She unearths hidden histories of water attending neglected narratives of women and their relationships to material constructions such as village fountains.'
+  },
+  {
+    title: 'Bordoclima: New Calligraphies of Fluid Borders',
+    people: ['lucia-rebolino', 'federica-pessotto'],
+    page: 66,
+    abstract:
+      'Lucia Rebolino and Federica Pessotto challenge the notion of fixed borders within contemporary geopolitics by conceptualizing them as dynamic entities. Their approach advocates the sovereignty of water in shaping borders and proposes a fluid understanding characterized by constant change and permeability.'
+  },
+  {
+    title: 'Desalination and a New Environmental Public',
+    people: ['linda-schilling-cuellar'],
+    page: 74,
+    abstract:
+      'Linda Schilling Cuellar tackles the complexities surrounding water management in Chile, questioning the polarizing allure of desalination. She reveals the multifaceted implications of landscape solutionism – technological interventions, privatization debates and ecological repercussions. In her exploration, water emerges as a critical lifeline amidst the ever-pressing climate crisis.'
+  },
+  {
+    title: 'Dam Circumsonic',
+    people: ['oskar-frederick-johanson'],
+    page: 82,
+    abstract:
+      'Oskar Frederick Johanson delves into the sonic environment of Warragamba Dam, a metaphor for broader water management issues in Australia. Through the lens of the Dyarubbin/Hawkesbury-Nepean watershed, embodied by the dam, he reveals the melodious yet dissonant complexities of controlling water amidst colonial legacies, urbanization pressures and environmental risks.'
+  }
 ];
 const contents2: Contribution[] = [
   {title: 'Grounds of Delay', people: ['salome-katamadze']},
@@ -181,17 +260,6 @@ export const people = [
   {slug: 'viral-mehta', name: 'Viral Mehta', sortName: 'Mehta, Viral', issues: [2]},
   {slug: 'yosuke-nakamoto', name: 'Yosuke Nakamoto', sortName: 'Nakamoto, Yosuke', issues: [2]},
   {slug: 'emily-schlickman', name: 'Emily Schlickman', sortName: 'Schlickman, Emily', issues: [2]}
-];
-
-// The text of a contribution (an "article"), as a placeholder: one
-// string per paragraph. The editors' note of Issue 01 from the Figma
-// layout. Shown for every contributor for now.
-// (Sanity's contribution has no field for its text yet.)
-export const placeholderArticle: Block[] = [
-  'Material appears to flow down the slope. Is it soil, or merely water? A lorry, half tilted, interrupts the scene, a witness to the artificiality embedded within the material. It is only when we read the title underneath the photo, that we recognise what we are seeing: Asphalt Rundown (Smithson 1969). In this work, asphalt becomes more than surface; it becomes an agent that reveals the hidden contours of the terrain. It runs across the ground, absorbing each depression, outlining the micro-reliefs that our eyes might have overlooked unless the added material declared them visible by contrasting the existing surface. The photo makes the asphalt stiffen, transforming it to something that preserves. The asphalt follows its own course, allowing us to see, along lines shaped by gravity and chance, the steep decline of the hill. The asphalt shifts our reading of the geology from the ordinary to the sculptural. The photograph amplifies this contrast, becoming more than a record, perhaps an interpretation, or an encounter that stands on its own.',
-  'When we introduce a sculptural form that contrasts with the landscape, do we see things that we would not have seen otherwise? Each winter, the first snow arrives as a quiet shock, restricting and redefining our freedom to move. It covers familiar paths and gentle slopes, silencing the details beneath a uniform white surface. Beneath it, roads and tracks vanish. In response, the snowplough begins its work, removing the forgiving layer that restricts our movement. In this fragile negotiation between weather and human will, the priorities of society reveal themselves in lines of salt and cleared asphalt. Routes once trusted may become inaccessible, shaped by the snowplough’s passage. Banks and piles of snow become boundaries that separate what is accessible and revealed from what which remains hidden.',
-  'May emerge through repetition and the mechanical limits of the plough. As temperatures shift between thaw and freeze, edges harden and become more defined. These urban snow ridges function as both obstacles and monuments, evidence of how snow, machinery, and daily routine combine to form a temporary structure in the city.',
-  'A landscape is never static. It transforms with time, and how we approach the pedagogy of landscape design must reflect this constant transformation. Rather than beginning with drawings or abstract plans, we start with an experience of the specific place. The workshop has been developed since 2019, with a focus on using performative engagement as a process of discussing the use of public space.'
 ];
 
 // Eight invented news items, newest first. `slug` is what the CMS
