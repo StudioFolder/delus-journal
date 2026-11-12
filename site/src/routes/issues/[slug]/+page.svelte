@@ -108,7 +108,12 @@
   // Gallery or grid. The grid's rows (four images each) share the height
   // between the band's content top and bottom; from the fifth row on
   // they scroll
-  const rows = $derived(Math.min(Math.ceil(data.contents.length / 4), 4));
+  // (three per row on Medium and Narrow screens, as every grid of images:
+  // there at most three rows on the screen, so the images keep their size)
+  const rows = $derived({
+    four: Math.min(Math.ceil(data.contents.length / 4), 4),
+    three: Math.min(Math.ceil(data.contents.length / 3), 3)
+  });
   let grid = $state(false);
   let changed = $state(false); // true once the view has been changed
 
@@ -226,7 +231,7 @@
       {/each}
     </div>
 
-    <div class="grid" inert={!grid} style:--rows={rows}>
+    <div class="grid" inert={!grid} style:--rows-4={rows.four} style:--rows-3={rows.three}>
       {#each data.contents as entry, i (entry.href)}
         <div class="cell fade next" class:is-hidden={!grid} style:--i={i} out:leave|global>
           <a
@@ -392,6 +397,7 @@
      in its cell, in the middle of it */
   .grid {
     --gap: calc(8 * var(--u));
+    --rows: var(--rows-4);
     position: absolute;
     inset: 0;
     padding: calc(12 * var(--u)) var(--col);
@@ -402,6 +408,13 @@
     grid-auto-rows: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
     gap: var(--gap) calc(2 * var(--col));
     align-content: start;
+  }
+  /* Medium and Narrow: three per row */
+  @media (min-width: 768px) and (max-width: 1439px) {
+    .grid {
+      --rows: var(--rows-3);
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
   /* The images appear one after another (CASCADE), once the gallery has
      faded out; they disappear together */

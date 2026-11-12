@@ -1,5 +1,5 @@
 import {figure} from './objects/figure'
-import {simpleText, richText} from './objects/text'
+import {articleLink, simpleText, richText} from './objects/text'
 import {contribution} from './objects/contribution'
 import {issue} from './documents/issue'
 import {person} from './documents/person'
@@ -10,6 +10,7 @@ export const singletonTypes = new Set(['about', 'donate', 'shop', 'siteSettings'
 
 export const schemaTypes = [
   figure,
+  articleLink,
   simpleText,
   richText,
   contribution,

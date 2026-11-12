@@ -43,6 +43,20 @@ export const contribution = defineType({
       of: [defineArrayMember({type: 'reference', to: [{type: 'person'}]})],
       validation: (r) => r.required().min(1),
     }),
+    defineField({
+      name: 'kind',
+      title: 'Type',
+      type: 'string',
+      description: 'A photo essay — images first — is shown with all its images together in a grid after the text, instead of small beside the text.',
+      options: {
+        list: [
+          {title: 'Essay', value: 'essay'},
+          {title: 'Photo essay', value: 'photoEssay'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'essay',
+    }),
     defineField({name: 'pages', title: 'Pages', type: 'string', description: 'e.g. 15–17'}),
     defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
     defineField({name: 'abstract', title: 'Abstract', type: 'simpleText'}),

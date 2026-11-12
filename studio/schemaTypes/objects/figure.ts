@@ -17,7 +17,7 @@ export const figure = defineType({
       name: 'label',
       title: 'Figure letter',
       type: 'string',
-      description: 'In an article: the letter the text refers to, e.g. A for (FIG. A). Leave empty elsewhere.',
+      description: 'In an article: the letter the text refers to, e.g. A for (FIG. A). Leave empty when the text doesn’t refer to the image, and elsewhere.',
     }),
     // Formatted (italics for titles, links), not plain text
     defineField({name: 'caption', title: 'Caption', type: 'simpleText'}),

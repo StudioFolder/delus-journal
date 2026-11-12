@@ -1,10 +1,49 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {ArticlePicker} from '../../components/ArticlePicker'
 
+// A link to a page of the journal: an issue and, in it, a contribution
+// (by its key), the editors' note ("editorial") or nothing (the issue's
+// own page). Chosen from one list (components/ArticlePicker.tsx); the
+// site turns it into the page's address.
+export const articleLink = defineType({
+  name: 'articleLink',
+  title: 'Article of the journal',
+  type: 'object',
+  fields: [
+    defineField({name: 'issue', type: 'reference', to: [{type: 'issue'}], weak: true}),
+    defineField({name: 'key', type: 'string'}),
+  ],
+  components: {input: ArticlePicker},
+})
+
+// A link on some words of a text: to an article of the journal, picked
+// from the list, or to a web address — one of the two.
 const link = {
   name: 'link',
   title: 'Link',
   type: 'object',
-  fields: [defineField({name: 'href', title: 'URL', type: 'url', validation: (r) => r.uri({scheme: ['http', 'https', 'mailto']})})],
+  fields: [
+    defineField({
+      name: 'article',
+      title: 'Article of the journal',
+      type: 'articleLink',
+      description: 'To link to an article, an editors’ note or an issue of the journal: choose it here.',
+    }),
+    defineField({
+      name: 'href',
+      title: 'or a web address',
+      type: 'url',
+      description: 'For any other link: https://… (or mailto:… for an email address).',
+      validation: (r: any) => r.uri({scheme: ['http', 'https', 'mailto']}),
+    }),
+  ],
+  validation: (r: any) =>
+    r.custom((value?: {article?: {issue?: unknown}; href?: string}) => {
+      const article = Boolean(value?.article?.issue)
+      const address = Boolean(value?.href)
+      if (article && address) return 'Choose an article or write a web address, not both'
+      return article || address || 'Choose an article of the journal or write a web address'
+    }),
 }
 
 // Short formatted text: italics, bold, links. For abstracts, bios, credits, intros.

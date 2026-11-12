@@ -32,7 +32,10 @@
 
   NOTES — on the band, at the bottom, above those two words (4 units):
   a note is there only while its number in the text is on the screen
-  (ArticleNotes; the text says which numbers are on view) and only
+  (ArticleNotes; the text says which numbers are on view — once they
+  have settled, so fast scrolling doesn't scatter them), never higher
+  than 4 units under the people and the title (`room`: the notes that
+  don't fit wait) and only
   while the pointer is over the space of the text: over the band, or
   out of the window, they fade out. Where there is no pointer to hover
   with (touch screens) they stay. Mobile: all the notes after the text
@@ -44,6 +47,13 @@
   at the height of the band's content (--edge) — the text itself 16
   columns, two fewer than head and abstract; a long text scrolls the
   whole height of the screen, with 12 units of space after its last line.
+
+  PHOTO ESSAY (the contribution's `kind`) — a piece that is images
+  first: the same page, but its figures are not miniatures in the
+  margin: they come all together after the text, as a grid — the one
+  of an issue's images — from which a click opens the gallery
+  (ArticleBody, `photos`). On every screen, Narrow included; on phones,
+  where there is no grid, large, one under the other.
 
   FORTHCOMING ISSUE — its texts are not final: only the people (on the
   band; on mobile at the top of the column), nothing in the column.
@@ -80,11 +90,16 @@
   let onView = $state<number[]>([]); // the note numbers on the screen
   let titleOnView = $state(true); // the title in the text is on the screen
   let lightbox: ArticleLightbox;
-  // The figures of the article, in the order of their letters (the gallery)
+  // The figures of the article as they come in the text, and in the
+  // order of the gallery: by letter; the ones without a letter (the text
+  // doesn't refer to them) after, as they come
+  const inText = $derived(
+    (data.contribution.body ?? []).flatMap((b) => (typeof b === 'object' && 'figure' in b ? [b.figure] : []))
+  );
   const figures = $derived(
-    (data.contribution.body ?? [])
-      .flatMap((b) => (typeof b === 'object' && 'figure' in b ? [b.figure] : []))
-      .toSorted((a, b) => a.label.localeCompare(b.label))
+    inText.toSorted((a, b) =>
+      a.label && b.label ? a.label.localeCompare(b.label) : a.label ? -1 : b.label ? 1 : 0
+    )
   );
   let textHidden = $state(false); // a figure is shown large, in place of the text
   let swapped = $state(false); // a figure has been opened: from then on the text comes back at once
@@ -98,6 +113,27 @@
     hovers = matchMedia('(hover: hover)').matches;
     overText = !hovers;
   });
+
+  // The height there is for the notes: from 4 units under the people and
+  // the title on the band down to where the notes end (see NOTES above)
+  let head: HTMLElement;
+  let bandNotes = $state<HTMLElement>();
+  let room = $state<number>();
+  onMount(() => {
+    const measure = () => {
+      if (!bandNotes) return;
+      const unit = parseFloat(getComputedStyle(head).getPropertyValue('--u')) || 8;
+      room = Math.max(
+        0,
+        bandNotes.getBoundingClientRect().bottom - head.getBoundingClientRect().bottom - 4 * unit
+      );
+    };
+    measure();
+    const watch = new ResizeObserver(measure);
+    watch.observe(head);
+    watch.observe(document.documentElement);
+    return () => watch.disconnect();
+  });
   function point(event: PointerEvent) {
     if (!hovers || event.pointerType !== 'mouse') return;
     overText = event.clientX >= text.parentElement!.getBoundingClientRect().left;
@@ -108,7 +144,7 @@
 <svelte:document onmouseleave={() => hovers && (overText = false)} />
 
 <Panel area="band" inset class="on-band from-top">
-  <div class="head fade" out:leave|global>
+  <div class="head fade" bind:this={head} out:leave|global>
     <ul class="people">
       {#each data.authors as name (name)}
         <li>{name}</li>
@@ -124,8 +160,13 @@
   <Panel area="band" inset class="on-band from-bottom">
     <div class="foot fade" out:leave|global>
       {#if data.contribution.notes}
-        <div class="band-notes fade" class:now={swapped || hovers} class:is-hidden={textHidden || !overText}>
-          <ArticleNotes notes={data.contribution.notes} only={onView} />
+        <div
+          class="band-notes fade"
+          class:now={swapped || hovers}
+          class:is-hidden={textHidden || !overText}
+          bind:this={bandNotes}
+        >
+          <ArticleNotes notes={data.contribution.notes} only={onView} {room} />
         </div>
       {/if}
       <ArticleActions pdf={data.contribution.pdf} citation={data.citation} />
@@ -153,6 +194,7 @@
         <ArticleBody
           blocks={data.contribution.body}
           notes={data.contribution.notes}
+          photos={data.contribution.kind === 'photoEssay'}
           onview={(numbers) => (onView = numbers)}
           onfigure={(figure, miniature) => ((swapped = true), lightbox.show(figure, miniature))}
         />
@@ -165,7 +207,7 @@
   </article>
 </Panel>
 
-<ArticleLightbox bind:this={lightbox} {figures} bind:hidden={textHidden} />
+<ArticleLightbox bind:this={lightbox} {figures} {inText} bind:hidden={textHidden} />
 
 <!-- The word that stands for the pointer on the figures (Open, Close, Previous, Next) -->
 <PointerWord />

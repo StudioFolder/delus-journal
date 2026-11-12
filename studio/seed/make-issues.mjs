@@ -10,7 +10,24 @@ import {writeFileSync} from 'node:fs';
 
 const {issues} = await import(new URL('../../site/src/lib/data/fixtures.ts', import.meta.url));
 
-// Text pieces → the spans of a block. `em` → Italic. A note reference →
+// An address of the site that is an issue, its editors' note or one of
+// its contributions → the CMS's link to it (the "Article of the journal"
+// of a Link: the issue and the contribution's key)
+function articleLink(href) {
+  for (const issue of issues) {
+    const base = `/issues/${issue.slug}/`;
+    if (!href.startsWith(base)) continue;
+    const to = {_type: 'articleLink', issue: {_type: 'reference', _ref: `issue-${issue.slug}`, _weak: true}};
+    if (href === base) return to;
+    if (href === `${base}editorial/`) return {...to, key: 'editorial'};
+    const i = issue.contributions.findIndex((c) => href === `${base}${c.slug}/`);
+    if (i >= 0) return {...to, key: `c${i}`};
+  }
+}
+
+// Text pieces → the spans of a block. `em` → Italic. `link` → a Link on
+// its words (to an article of the journal when its address is one). A
+// note reference →
 // a Footnote on the last word before it (as an editor would set it).
 function spans(parts, notes, defs, id) {
   const out = [];
@@ -18,6 +35,12 @@ function spans(parts, notes, defs, id) {
   for (const part of typeof parts === 'string' ? [parts] : parts) {
     if (typeof part === 'string') push(part, []);
     else if ('em' in part) push(part.em, ['em']);
+    else if ('link' in part) {
+      const key = `${id}link${defs.length}`;
+      const article = articleLink(part.href);
+      defs.push({_key: key, _type: 'link', ...(article ? {article} : {href: part.href})});
+      push(part.link, [key]);
+    }
     else {
       const key = `note${part.note}`;
       defs.push({_key: key, _type: 'footnote', text: simple(notes[part.note - 1], `${key}-`)});
@@ -71,10 +94,16 @@ const docs = issues.map((issue) => {
       people: c.people.map((slug) => ({_key: slug, _type: 'reference', _ref: `person-${slug}`})),
       ...(c.page && {pages: String(c.page)}), // the first page only, for now
       ...(c.doi && {doi: c.doi}),
+      kind: c.kind ?? 'essay',
       ...(c.abstract && {abstract: simple(c.abstract)}),
       ...(c.body && {text: rich(c.body, c.notes ?? [])})
     })),
-    ...(issue.editorial?.doi && {editorial: {doi: issue.editorial.doi}}), // its text is not carried yet
+    ...(issue.editorial && {
+      editorial: {
+        ...(issue.editorial.doi && {doi: issue.editorial.doi}),
+        ...(issue.editorial.body && {text: rich(issue.editorial.body, issue.editorial.notes ?? [])})
+      }
+    }),
     ...(p.isbn && {isbn: p.isbn}),
     ...(p.doi && {doi: p.doi}),
     ...(p.buyUrl && {buyUrl: p.buyUrl}),

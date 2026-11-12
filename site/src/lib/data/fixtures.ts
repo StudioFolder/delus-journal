@@ -2,6 +2,7 @@ import {articleHref, issueLabel, slugOf, type Credit} from './format.ts';
 import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
 import * as editorial01 from './articles/editorial01.ts';
+import * as navel from './articles/navel.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
 // The abstracts are placeholders (the issue's title in italics, then
@@ -14,12 +15,17 @@ const editors = 'Sara Frikech, Johanna Just';
 // The text of a contribution, as Sanity's rich text: blocks of inline
 // pieces — plain text, italics (Sanity: the Italic decorator) and note
 // references (the Footnote annotation; the notes themselves are kept on
-// the contribution). Line breaks typed in a block are kept.
-export type Inline = string | {em: string} | {note: number};
-// A figure of an article: its letter, as the text refers to it (FIG. A),
+// the contribution) and links (the Link annotation: the words that carry
+// it and its address — within the site written from the root, as
+// "/issues/01-chasing-water/liquid-shadows/"). Line breaks typed in a
+// block are kept.
+export type Inline = string | {em: string} | {link: string; href: string} | {note: number};
+// A figure of an article: its letter, as the text refers to it (FIG. A)
+// — none when the text doesn't refer to its figures (an editors' note,
+// a visual essay) —,
 // its proportions (width / height; Sanity knows them from the image) and
 // its caption. No image yet: the site shows an empty box.
-export type Figure = {label: string; ratio: number; caption: Inline[]};
+export type Figure = {label?: string; ratio: number; caption: Inline[]};
 // A block: a paragraph (a plain string, or inline pieces), a quote
 // (Sanity: the Quote style), a chapter title (Sanity: the Heading style)
 // or a figure (Sanity: an image between two paragraphs), placed after the
@@ -37,10 +43,14 @@ export type Block =
 // abstract (Sanity: `abstract`; from the printed issues), its text
 // (`body`; Sanity: the contribution's `text` — two essays of Issue 01 have it, the others
 // show title and abstract only) and its notes (`notes[0]` = note 1).
+// `kind`: a photo essay — images first — has a layout of its own (the
+// images large, in the column; see the article's page). Anything else
+// is an essay (Sanity: the contribution's Type).
 export type Contribution = {
   title: string;
   slug: string;
   people: string[];
+  kind?: 'photoEssay';
   page?: number;
   pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
   doi?: string; // as registered by the publisher, without https://doi.org/ (not shown on the site yet)
@@ -134,7 +144,14 @@ const contents0: Entry[] = [
   }
 ];
 const contents1: Entry[] = [
-  {title: 'Navel Gazing', people: ['yumna-al-arashi'], page: 8, doi: '10.61608/9783775758758-navel'},
+  {
+    title: 'Navel Gazing',
+    people: ['yumna-al-arashi'],
+    page: 8,
+    doi: '10.61608/9783775758758-navel',
+    kind: 'photoEssay',
+    ...navel // the whole piece, from the printed issue
+  },
   {
     title: 'The Draining of the Fens: Enclosures, Resistance and Wilderness',
     people: ['mathilde-redoute'],

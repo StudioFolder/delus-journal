@@ -110,6 +110,7 @@
 
   /* Pauses */
   --copied-time: 1600ms; /* how long "Copied" stands in for "Cite" (Cite.svelte) */
+  --settle-time: 300ms; /* how long the note numbers on the screen must stay the same before an article's notes follow (ArticleBody) */
   --return-time: 800ms; /* how long an issue's gallery waits, with the pointer elsewhere, before going back to the cover */
 
   /* Change from one tone to another (see TONES below): same time and
@@ -457,6 +458,19 @@ dd {
   transition: --lit var(--hover);
 }
 .link:hover::after {
+  --lit: 1;
+}
+/* A link on some words of a running text (an essay, the editors' note):
+   no arrow, a thin line under the words — quiet, full ink under the
+   pointer. On the link itself. */
+.underlined {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
+  text-underline-offset: 0.2em;
+  transition: --lit var(--hover);
+}
+.underlined:hover {
   --lit: 1;
 }
 

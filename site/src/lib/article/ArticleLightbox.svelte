@@ -7,8 +7,9 @@
   (without the figure's letter: the text that names it is not there).
 
   GALLERY — from the figure that was clicked, all the figures of the
-  article can be seen, in the order of their letters (`figures`), round
-  and round. One figure fades out, the next fades in.
+  article can be seen, in the order of their letters (`figures`; the
+  ones without a letter after, as they come in the text), round and
+  round. One figure fades out, the next fades in.
   - To the left of the image a click shows the one before, to its right
     the next one; on the image (and above and under it) a click closes.
     Everywhere the pointer itself becomes the word for what a click does
@@ -19,7 +20,8 @@
   GRID — all the figures together, as the images of an issue (the same
   switch, on the footer's line: ViewSwitch; not on phones): the figure
   on view and its caption fade out, then the figures appear one after
-  another, four per row, in the order of their letters, the rows sharing
+  another, four per row (three on Medium and Narrow screens, as every
+  grid of images), in the order of their letters, the rows sharing
   the height between the top and the bottom of the band's content. No
   captions there. A click on one shows it large (the pointer says Open);
   a click anywhere else closes, as Esc. Closing from the grid, nothing
@@ -40,7 +42,8 @@
 
   From the page: `bind:this`, then `show(figure, miniature)`; `hidden`
   (bind) says when the text and the notes must be out of the way. The
-  miniatures are found by their letter (`data-figure`, ArticleFigure).
+  miniatures are found by their place among the figures of the text
+  (`inText`; `data-figure`, ArticleFigure).
 -->
 <script lang="ts">
   import {tick} from 'svelte';
@@ -51,13 +54,18 @@
   import Inlines from './Inlines.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
-  let {figures, hidden = $bindable(false)}: {figures: Figure[]; hidden?: boolean} = $props();
+  let {
+    figures,
+    inText,
+    hidden = $bindable(false)
+  }: {figures: Figure[]; inText: Figure[]; hidden?: boolean} = $props();
 
-  let figure = $state<Figure>(); // the one shown (it stays while closing)
+  let figure = $state.raw<Figure>(); // the one shown (it stays while closing)
   let phase = $state<'closed' | 'opening' | 'open' | 'changing' | 'grid' | 'closing'>('closed');
   let grid = $state(false); // what the switch says: all the figures together
   let plain = $state(false); // closing from the grid: the large image stays out of it
-  const rows = $derived(Math.ceil(figures.length / 4)); // of the grid
+  // The rows of the grid, with four and with three figures per row
+  const rows = $derived({four: Math.ceil(figures.length / 4), three: Math.ceil(figures.length / 3)});
   let moving = $state(false); // the image is travelling: its move is animated
   let place = $state(''); // the transform that puts the large image on its miniature
   let image = $state<HTMLElement>();
@@ -101,7 +109,7 @@
     if (phase !== 'open' || !figure || figures.length < 2) return;
     phase = 'changing'; // the figure fades out…
     await wait(time('--fade-out-time'));
-    const at = figures.findIndex((f) => f.label === figure!.label);
+    const at = figures.indexOf(figure);
     figure = figures[(at + by + figures.length) % figures.length];
     await tick();
     phase = 'open'; // …and the other one fades in
@@ -129,7 +137,7 @@
     plain = phase === 'grid';
     // Back onto the miniature of the figure on view: if it is another one
     // than the one that was opened, the text goes to its passage first
-    const own = document.querySelector<HTMLElement>(`[data-figure="${figure.label}"] .image`);
+    const own = document.querySelector<HTMLElement>(`[data-figure="${inText.indexOf(figure)}"] .image`);
     if (own && own !== miniature) {
       miniature = own;
       own.scrollIntoView({block: 'center'});
@@ -209,7 +217,7 @@
           class:moving
           class:small={phase === 'opening' && place !== ''}
           role="img"
-          aria-label="Figure {figure.label}"
+          aria-label={figure.label ? `Figure ${figure.label}` : 'Image'}
           style:transform={place || null}
         ></div>
       </div>
@@ -229,13 +237,13 @@
     {/if}
     <!-- All the figures together -->
     {#if figures.length > 1}
-      <div class="grid" inert={phase !== 'grid'} style:--rows={rows}>
-        {#each figures as each, i (each.label)}
+      <div class="grid" inert={phase !== 'grid'} style:--rows-4={rows.four} style:--rows-3={rows.three}>
+        {#each figures as each, i (i)}
           <div class="cell fade next" class:is-hidden={phase !== 'grid'} style:--i={i}>
             <button
               type="button"
               class="thumb"
-              aria-label="Figure {each.label}"
+              aria-label={each.label ? `Figure ${each.label}` : `Image ${i + 1}`}
               style:--ratio={each.ratio}
               onclick={tap(() => pick(each))}
               use:word={phase === 'grid' ? 'Open' : ''}
@@ -331,6 +339,7 @@
      around (Close) */
   .grid {
     --gap: calc(8 * var(--u));
+    --rows: var(--rows-4);
     position: absolute;
     inset: 0;
     padding: calc(12 * var(--u)) var(--col);
@@ -340,6 +349,13 @@
     gap: var(--gap) calc(2 * var(--col));
     align-content: start;
     pointer-events: none;
+  }
+  /* Medium and Narrow: three per row */
+  @media (min-width: 768px) and (max-width: 1439px) {
+    .grid {
+      --rows: var(--rows-3);
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
   /* The figures appear one after another (CASCADE), once the large one
      has faded out; they disappear together */

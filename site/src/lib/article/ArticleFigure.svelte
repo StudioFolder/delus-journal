@@ -3,7 +3,8 @@
   every image on the site) and its caption: the letter the text refers
   to (FIG. A) in the small Styrene, full ink, then the caption in the
   notes' type (--type-note), quiet, its text starting 3 units in — as a
-  note. The letter is always there; where a pointer can hover, the text
+  note. A figure the text doesn't refer to has no letter: its caption
+  starts at the left. The letter is always there; where a pointer can hover, the text
   of the caption shows only while the pointer is on the figure (or the
   keyboard is): it appears word by word, as the statement on the home
   page but twice as fast (--word-time, --word-step, halved), and goes
@@ -20,13 +21,27 @@
   - `top` given (desktop, by ArticleBody): a miniature in the margin to
     the right of the text — one column after it, 4 columns wide — that
     far down from the start of the text.
+  - `photo` (a photo essay; ArticleBody puts each one in a cell of its
+    grid): as large as fits in its cell, without its caption. On phones
+    as wide as the text — or less, so that the whole image fits the
+    height of the screen (12 units kept free above and below) —, its
+    caption, if it has one, always there.
+  - `covered`: the miniature of a linked article lies on it for a moment
+    (ArticleBody): it fades out, softly, and comes back after.
 -->
 <script lang="ts">
   import Acronyms from '#lib/type/Acronyms.svelte';
   import {word} from '#lib/pointer/word.svelte.ts';
   import type {Figure} from '#lib/data/fixtures.ts';
 
-  let {figure, top, onopen}: {figure: Figure; top?: number; onopen?: (miniature: HTMLElement) => void} = $props();
+  let {
+    figure,
+    id,
+    top,
+    covered = false,
+    photo = false,
+    onopen
+  }: {figure: Figure; id: number; top?: number; photo?: boolean; covered?: boolean; onopen?: (miniature: HTMLElement) => void} = $props();
 
   // A word on its own can't tell an article from a letter ("A Mapp"), so
   // only words with two capitals in a row go in small capitals (RA, UK)
@@ -50,13 +65,16 @@
 <figure
   class="figure"
   class:placed={top !== undefined}
+  class:covered
+  class:photo
+  style:--ratio={figure.ratio}
   style:top={top === undefined ? null : `${top}px`}
-  data-figure={figure.label}
+  data-figure={id}
 >
   <button
     type="button"
     class="image"
-    aria-label="Figure {figure.label}: see it larger"
+    aria-label={figure.label ? `Figure ${figure.label}: see it larger` : 'See the image larger'}
     style:aspect-ratio={figure.ratio}
     use:word={'Open'}
     onclick={(e) => {
@@ -65,14 +83,16 @@
       onopen?.(e.currentTarget);
     }}
   ></button>
+  {#if figure.label || words.length}
   <figcaption>
-    <span class="n">{figure.label}</span>{#each words as word, i (i)}{#if word.n < 0}{' '}{:else}<span
+    {#if figure.label}<span class="n">{figure.label}</span>{/if}{#each words as word, i (i)}{#if word.n < 0}{' '}{:else}<span
           class="word"
           class:em={word.em}
           style:--n={word.n}
           >{#if acronym.test(word.text)}<Acronyms text={word.text} />{:else}{word.text}{/if}</span
         >{/if}{/each}
   </figcaption>
+  {/if}
 </figure>
 
 <style>
@@ -81,6 +101,20 @@
     width: 50%;
     display: grid;
     gap: var(--u);
+  }
+  /* A photo essay's image (see `photo` above): on phones large, in the
+     column; from Narrow up in its cell of the grid, which is measured
+     (container units) */
+  .photo {
+    width: min(100%, (100vh - 24 * var(--u)) * var(--ratio));
+  }
+  @media (min-width: 768px) {
+    .photo {
+      width: min(100cqw, 100cqh * var(--ratio));
+    }
+    .photo figcaption {
+      display: none;
+    }
   }
   .image {
     display: block;
@@ -118,8 +152,12 @@
       opacity: 0;
       transition: opacity var(--hover);
     }
-    .figure:hover .word,
-    .image:focus-visible + figcaption .word {
+    .photo .word {
+      opacity: 1;
+      transition: none;
+    }
+    .figure:not(.photo):hover .word,
+    .figure:not(.photo) .image:focus-visible + figcaption .word {
       opacity: 1;
       /* twice as fast as the home statement */
       transition: opacity calc(var(--word-time) / 2) ease-in-out calc(var(--n) * var(--word-step) / 2);
@@ -133,7 +171,7 @@
   /* Narrow (768–1199px): the text takes the margin's place; no figures
      for now (see the article's page) */
   @media (min-width: 768px) and (max-width: 1199px) {
-    .figure {
+    .figure:not(.photo) {
       display: none;
     }
   }
@@ -142,6 +180,10 @@
       position: absolute;
       left: calc(100% + var(--col));
       width: calc(4 * var(--col));
+      transition: opacity var(--hover);
+    }
+    .placed.covered {
+      opacity: 0;
     }
   }
 </style>
