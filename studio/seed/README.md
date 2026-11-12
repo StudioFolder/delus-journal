@@ -30,7 +30,8 @@ this content is kept until the site reads from the CMS:
   anything edited in the Studio since would be lost. Use it only while the
   site's data is the master copy, before the editors start working on the
   issues in the Studio.
-- Not in the file: covers and images, page counts, binding and format
+- Not in the file: covers and images (the figures of the essays included:
+  they are added in the Studio, with their image files), page counts, binding and format
   (still placeholders on the site), the editorial, the abstracts of Issues
   00 and 01 themselves (placeholders on the site). A contribution's
   "Pages" holds its first page only.

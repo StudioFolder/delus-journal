@@ -14,9 +14,20 @@ const editors = 'Sara Frikech, Johanna Just';
 // references (the Footnote annotation; the notes themselves are kept on
 // the contribution). Line breaks typed in a block are kept.
 export type Inline = string | {em: string} | {note: number};
+// A figure of an article: its letter, as the text refers to it (FIG. A),
+// its proportions (width / height; Sanity knows them from the image) and
+// its caption. No image yet: the site shows an empty box.
+export type Figure = {label: string; ratio: number; caption: Inline[]};
 // A block: a paragraph (a plain string, or inline pieces), a quote
-// (Sanity: the Quote style) or a chapter title (Sanity: the Heading style).
-export type Block = string | Inline[] | {quote: string | Inline[]} | {heading: string};
+// (Sanity: the Quote style), a chapter title (Sanity: the Heading style)
+// or a figure (Sanity: an image between two paragraphs), placed after the
+// paragraph that refers to it.
+export type Block =
+  | string
+  | Inline[]
+  | {quote: string | Inline[]}
+  | {heading: string}
+  | {figure: Figure};
 
 // One entry of an issue's table of contents (Sanity's contribution):
 // its title, its URL name (`slug`, made from the title as the CMS does:

@@ -37,8 +37,11 @@ const block = (style, parts, id, notes = []) => {
 // Short text (abstracts, footnotes): one paragraph
 const simple = (parts, id = '') => [block('normal', parts, `${id}p0`)];
 // Long text: paragraphs, quotes (Quote), chapter titles (Heading)
+// (figures are left out: they need their image files, loaded by hand)
 const rich = (body, notes) =>
-  body.map((b, i) =>
+  body
+    .filter((b) => typeof b === 'string' || Array.isArray(b) || !('figure' in b))
+    .map((b, i) =>
     typeof b === 'string' || Array.isArray(b)
       ? block('normal', b, `b${i}`, notes)
       : 'quote' in b

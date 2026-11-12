@@ -6,6 +6,9 @@
 
   PEOPLE — on the band, at the top (as the content of other bands): one
   name per line, in the running text type, as in the Figma layout.
+  Under them, once the title in the text has scrolled off the screen,
+  the TITLE again, in the small Styrene (--type-ui): it fades in and out
+  at once (nothing moves).
 
   HEAD — its title in Styrene B (ArticleHeader), level with the first
   name; then, if it has one, the abstract (ArticleAbstract,
@@ -42,14 +45,20 @@
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
+  let titleOnView = $state(true); // the title in the text is on the screen
 </script>
 
 <Panel area="band" inset class="on-band from-top">
-  <ul class="people fade" out:leave|global>
-    {#each data.authors as name (name)}
-      <li>{name}</li>
-    {/each}
-  </ul>
+  <div class="head fade" out:leave|global>
+    <ul class="people">
+      {#each data.authors as name (name)}
+        <li>{name}</li>
+      {/each}
+    </ul>
+    {#if !data.issue.publication.forthcoming}
+      <p class="running-title fade now" class:is-hidden={titleOnView}>{data.contribution.title}</p>
+    {/if}
+  </div>
 </Panel>
 
 {#if data.contribution.notes && !data.issue.publication.forthcoming}
@@ -65,7 +74,7 @@
     <!-- Mobile only: on desktop the people are on the band -->
     <p class="label people-mobile">{data.authors.join(', ')}</p>
     {#if !data.issue.publication.forthcoming}
-      <ArticleHeader title={data.contribution.title} />
+      <ArticleHeader title={data.contribution.title} onview={(visible) => (titleOnView = visible)} />
       {#if data.contribution.abstract}
         <ArticleAbstract text={data.contribution.abstract} />
       {/if}
@@ -88,6 +97,11 @@
   }
   .people-mobile {
     display: none;
+  }
+  /* The title on the band, two units under the people */
+  .running-title {
+    margin-top: calc(2 * var(--u));
+    font: var(--type-ui);
   }
   .notes {
     width: 100%;
@@ -112,7 +126,7 @@
   }
 
   @media (max-width: 767px) {
-    .people,
+    .head,
     .notes {
       display: none;
     }
