@@ -11,16 +11,43 @@
     small capitals (Styrene B has them), centred, 8 columns wide (half
     the text), so a long one takes two lines; two lines of space above
     it, one below.
+  - The notes (ArticleNotes): on mobile, one list after the text. On
+    desktop they are not here but on the band, each one only while its
+    number is on the screen: this component tells the page which numbers
+    are on view (`onview`).
   Where it sits on the page is up to the page.
 -->
 <script lang="ts">
+  import {onMount} from 'svelte';
   import Inlines from './Inlines.svelte';
-  import type {Block} from '#lib/data/fixtures.ts';
+  import ArticleNotes from './ArticleNotes.svelte';
+  import type {Block, Inline} from '#lib/data/fixtures.ts';
 
-  let {blocks}: {blocks: Block[]} = $props();
+  type Props = {
+    blocks: Block[];
+    notes?: Inline[][];
+    onview?: (numbers: number[]) => void; // the note numbers on the screen, in order
+  };
+  let {blocks, notes = [], onview}: Props = $props();
+
+  // Which note numbers are on the screen: told to the page at every change
+  let body: HTMLElement;
+  onMount(() => {
+    const seen = new Set<number>();
+    const watch = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const n = Number((e.target as HTMLElement).dataset.note);
+        if (e.isIntersecting) seen.add(n);
+        else seen.delete(n);
+      }
+      onview?.([...seen].sort((a, b) => a - b));
+    });
+    for (const ref of body.querySelectorAll('.ref')) watch.observe(ref);
+    return () => watch.disconnect();
+  });
 </script>
 
-<div class="body">
+<div class="body" bind:this={body}>
   {#each blocks as block, i (i)}
     {#if typeof block === 'string' || Array.isArray(block)}
       <p><Inlines parts={block} /></p>
@@ -30,6 +57,9 @@
       <h2>{block.heading}</h2>
     {/if}
   {/each}
+  {#if notes.length}
+    <div class="end"><ArticleNotes {notes} /></div>
+  {/if}
 </div>
 
 <style>
@@ -62,6 +92,11 @@
     letter-spacing: 0.02em;
     text-align: center;
   }
+  /* The notes after the text: on mobile only (desktop: on the band),
+     two lines of space above them */
+  .end {
+    display: none;
+  }
   /* Mobile: the grid columns are too narrow, a fixed indent instead */
   @media (max-width: 767px) {
     blockquote {
@@ -69,6 +104,10 @@
     }
     h2 {
       width: auto; /* the text's width: 8 columns are too few here */
+    }
+    .end {
+      display: block;
+      margin-top: calc(4 * var(--u));
     }
   }
 </style>

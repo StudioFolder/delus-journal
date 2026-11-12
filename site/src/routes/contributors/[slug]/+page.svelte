@@ -9,7 +9,13 @@
   HEAD — its title in Styrene B (ArticleHeader), level with the first
   name; then, if it has one, the abstract (ArticleAbstract,
   for now in the same type as the text); then, if it has one, the text
-  (ArticleBody: paragraphs and quotes; two essays of Issue 01 so far).
+  (ArticleBody: paragraphs, quotes, chapter titles; two essays of
+  Issue 01 so far).
+
+  NOTES — on the band, at the bottom (as the abstracts of other bands):
+  a note is there only while its number in the text is on the screen
+  (ArticleNotes; the text says which numbers are on view). Mobile: all
+  the notes after the text instead.
   Two lines of space between these blocks. All together:
 
   TEXT — in the space to the right of the band, as the news texts and
@@ -31,8 +37,10 @@
   import ArticleHeader from '#lib/article/ArticleHeader.svelte';
   import ArticleAbstract from '#lib/article/ArticleAbstract.svelte';
   import ArticleBody from '#lib/article/ArticleBody.svelte';
+  import ArticleNotes from '#lib/article/ArticleNotes.svelte';
 
   let {data} = $props();
+  let onView = $state<number[]>([]); // the note numbers on the screen
 </script>
 
 <Panel area="band" inset class="on-band from-top">
@@ -42,6 +50,14 @@
     {/each}
   </ul>
 </Panel>
+
+{#if data.contribution.notes && !data.issue.publication.forthcoming}
+  <Panel area="band" inset class="on-band from-bottom">
+    <div class="notes fade" out:leave|global>
+      <ArticleNotes notes={data.contribution.notes} only={onView} />
+    </div>
+  </Panel>
+{/if}
 
 <Panel area="rest" class="on-ground from-top">
   <article class="fade" style:--text-cols={TEXT_COLUMNS} out:leave|global>
@@ -53,7 +69,11 @@
         <ArticleAbstract text={data.contribution.abstract} />
       {/if}
       {#if data.contribution.body}
-        <ArticleBody blocks={data.contribution.body} />
+        <ArticleBody
+          blocks={data.contribution.body}
+          notes={data.contribution.notes}
+          onview={(numbers) => (onView = numbers)}
+        />
       {/if}
     {/if}
   </article>
@@ -67,6 +87,9 @@
   }
   .people-mobile {
     display: none;
+  }
+  .notes {
+    width: 100%;
   }
 
   /* Head, abstract and text one under the other, two lines of the
@@ -88,7 +111,8 @@
   }
 
   @media (max-width: 767px) {
-    .people {
+    .people,
+    .notes {
       display: none;
     }
     .people-mobile {
