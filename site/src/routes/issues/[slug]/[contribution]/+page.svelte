@@ -17,9 +17,10 @@
   Issue 01 so far).
 
   FIGURE, LARGE — a click on a figure's miniature: the text and the
-  notes fade out and the figure is shown large in their place
-  (ArticleLightbox); a click there, or Esc, brings the text back where
-  it was. One figure at a time.
+  notes fade out, then the miniature grows into the large figure in
+  their place (ArticleLightbox, which also says when the text must be
+  out of the way: `textHidden`); a click there, or Esc, and it shrinks
+  back, then the text returns where it was. One figure at a time.
 
   DOWNLOAD, CITE — two words at the bottom of the band, above the footer
   (ArticleActions): the link to the article's PDF and a button that
@@ -53,12 +54,12 @@
   import ArticleNotes from '#lib/article/ArticleNotes.svelte';
   import ArticleActions from '#lib/article/ArticleActions.svelte';
   import ArticleLightbox from '#lib/article/ArticleLightbox.svelte';
-  import type {Figure} from '#lib/data/fixtures.ts';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
   let titleOnView = $state(true); // the title in the text is on the screen
-  let large = $state<Figure>(); // the figure shown large, in place of the text
+  let lightbox: ArticleLightbox;
+  let textHidden = $state(false); // a figure is shown large, in place of the text
   let swapped = $state(false); // a figure has been opened: from then on the text comes back at once
 </script>
 
@@ -79,7 +80,7 @@
   <Panel area="band" inset class="on-band from-bottom">
     <div class="foot fade" out:leave|global>
       {#if data.contribution.notes}
-        <div class="band-notes fade next" class:is-hidden={large}>
+        <div class="band-notes fade" class:now={swapped} class:is-hidden={textHidden}>
           <ArticleNotes notes={data.contribution.notes} only={onView} />
         </div>
       {/if}
@@ -91,8 +92,8 @@
 <Panel area="rest" class="on-ground from-top">
   <article
     class="fade"
-    class:next={swapped}
-    class:is-hidden={large}
+    class:now={swapped}
+    class:is-hidden={textHidden}
     style:--text-cols={TEXT_COLUMNS}
     out:leave|global
   >
@@ -108,7 +109,7 @@
           blocks={data.contribution.body}
           notes={data.contribution.notes}
           onview={(numbers) => (onView = numbers)}
-          onfigure={(figure) => ((swapped = true), (large = figure))}
+          onfigure={(figure, miniature) => ((swapped = true), lightbox.show(figure, miniature))}
         />
       {/if}
       <!-- Mobile only: on desktop they are on the band -->
@@ -119,7 +120,7 @@
   </article>
 </Panel>
 
-<ArticleLightbox figure={large} onclose={() => (large = undefined)} />
+<ArticleLightbox bind:this={lightbox} bind:hidden={textHidden} />
 
 <style>
   .people {
@@ -143,12 +144,6 @@
   }
   .actions-mobile {
     display: none;
-  }
-  /* The text and the notes go at once when a figure is opened (only
-     their return waits for the figure to fade out) */
-  article.is-hidden,
-  .band-notes.is-hidden {
-    transition-delay: 0s;
   }
 
   /* Head, abstract and text one under the other, two lines of the

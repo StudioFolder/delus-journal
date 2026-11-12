@@ -23,7 +23,7 @@
   import Acronyms from '#lib/type/Acronyms.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
-  let {figure, top, onopen}: {figure: Figure; top?: number; onopen?: () => void} = $props();
+  let {figure, top, onopen}: {figure: Figure; top?: number; onopen?: (miniature: HTMLElement) => void} = $props();
 
   // A word on its own can't tell an article from a letter ("A Mapp"), so
   // only words with two capitals in a row go in small capitals (RA, UK)
@@ -50,7 +50,7 @@
     class="image"
     aria-label="Figure {figure.label}: see it larger"
     style:aspect-ratio={figure.ratio}
-    onclick={onopen}
+    onclick={(e) => onopen?.(e.currentTarget)}
   ></button>
   <figcaption>
     <span class="n">{figure.label}</span>{#each words as word, i (i)}{#if word.n < 0}{' '}{:else}<span

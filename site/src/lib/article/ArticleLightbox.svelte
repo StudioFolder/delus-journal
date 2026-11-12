@@ -1,46 +1,109 @@
 <!--
-  A figure of an article seen large — in place of the text, which the
-  page fades out meanwhile: the image (for now an empty box in its
-  proportions) in the middle of the space to the right of the band, as
-  large as the screen allows (at most 20 columns wide, and 16 units kept
-  free above and below), with its letter and caption under it, as under
-  the miniature but always shown.
-  One figure at a time. A click anywhere in that space, or Esc, closes
-  it. It appears once the text has faded out (.fade.next) and fades out
-  at once.
-  `figure`: the one to show; it stays in place while fading out.
+  A figure of an article seen large — in place of the text: the image
+  (for now an empty box in its proportions) in the middle of the space to
+  the right of the band, as large as the screen allows (at most 20
+  columns wide, and 16 units kept free above and below), with its letter
+  and caption under it, as under the miniature but always shown.
+  One figure at a time. A click anywhere in that space, or Esc, closes it.
+
+  HOW IT OPENS AND CLOSES — the miniature itself seems to grow:
+    1. the text fades out (the page does it: `hidden`), while the large
+       image already lies exactly on the miniature, at its size;
+    2. the image moves to the middle and grows (--move, as the band);
+    3. its caption fades in.
+  Closing is the same backwards: the caption fades out while the image
+  goes back onto its miniature, then the text fades in.
+  With reduced motion the image doesn't travel: it changes place at once.
+
+  From the page: `bind:this`, then `show(figure, miniature)`; `hidden`
+  (bind) says when the text and the notes must be out of the way.
 -->
 <script lang="ts">
+  import {tick} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
-  import {leave} from '#lib/motion/leave.ts';
+  import {time} from '#lib/motion/time.ts';
   import Inlines from './Inlines.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
-  let {figure, onclose}: {figure?: Figure; onclose: () => void} = $props();
+  let {hidden = $bindable(false)}: {hidden?: boolean} = $props();
 
-  // The last figure shown stays while the lightbox fades out
-  let last = $state<Figure>();
-  $effect(() => {
-    if (figure) last = figure;
-  });
+  let figure = $state<Figure>(); // the one shown (it stays while closing)
+  let phase = $state<'closed' | 'opening' | 'open' | 'closing'>('closed');
+  let moving = $state(false); // the image is travelling: its move is animated
+  let place = $state(''); // the transform that puts the large image on its miniature
+  let image = $state<HTMLElement>();
+  let miniature: HTMLElement | undefined;
+
+  const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));
+  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // The move and scale that lay the large image on the miniature
+  function onMiniature() {
+    if (!image || !miniature) return '';
+    const was = image.style.transform;
+    image.style.transform = 'none';
+    const to = image.getBoundingClientRect();
+    image.style.transform = was;
+    const from = miniature.getBoundingClientRect();
+    return `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width})`;
+  }
+
+  export async function show(which: Figure, from: HTMLElement) {
+    if (phase !== 'closed') return;
+    figure = which;
+    miniature = from;
+    await tick();
+    moving = false;
+    place = onMiniature();
+    phase = 'opening';
+    hidden = true; // 1. the text fades out
+    await wait(time('--fade-out-time'));
+    moving = !still(); // 2. the image goes to the middle
+    place = '';
+    await wait(moving ? time('--move-time') : 0);
+    moving = false;
+    phase = 'open'; // 3. the caption fades in
+  }
+
+  async function close() {
+    if (phase !== 'open') return;
+    phase = 'closing'; // the caption fades out…
+    moving = !still(); // …while the image goes back
+    place = onMiniature();
+    await wait(moving ? time('--move-time') : time('--fade-out-time'));
+    hidden = false; // the text fades in
+    await wait(time('--fade-time'));
+    moving = false;
+    phase = 'closed';
+    miniature?.focus({preventScroll: true});
+  }
 </script>
 
-<svelte:window onkeydown={(e) => figure && e.key === 'Escape' && onclose()} />
+<svelte:window onkeydown={(e) => e.key === 'Escape' && close()} />
 
 <Panel area="rest" class="on-ground from-top lightbox">
   <button
     type="button"
-    class="view fade next"
-    class:is-hidden={!figure}
+    class="view"
+    class:is-on={phase !== 'closed'}
     aria-label="Close the image"
-    tabindex={figure ? 0 : -1}
-    onclick={onclose}
-    out:leave|global
+    tabindex={phase === 'open' ? 0 : -1}
+    onclick={close}
   >
-    {#if last}
-      <span class="large" style:--ratio={last.ratio}>
-        <span class="image" role="img" aria-label="Figure {last.label}"></span>
-        <span class="caption"><span class="n">{last.label}</span><Inlines parts={last.caption} /></span>
+    {#if figure}
+      <span class="large" style:--ratio={figure.ratio}>
+        <span
+          bind:this={image}
+          class="image"
+          class:moving
+          class:small={phase === 'opening' && place !== ''}
+          role="img"
+          aria-label="Figure {figure.label}"
+          style:transform={place || null}
+        ></span>
+        <span class="caption fade now" class:is-hidden={phase !== 'open'}>
+          <span class="n">{figure.label}</span><Inlines parts={figure.caption} />
+        </span>
       </span>
     {/if}
   </button>
@@ -63,13 +126,11 @@
     display: grid;
     place-items: center;
     cursor: zoom-out;
+    visibility: hidden;
   }
-  .view:not(.is-hidden) {
+  .view.is-on {
+    visibility: visible;
     pointer-events: auto;
-  }
-  /* It goes at once (only its arrival waits for the text to fade out) */
-  .view.is-hidden {
-    transition-delay: 0s;
   }
   .large {
     --free: calc(100vh - 32 * var(--u)); /* the height left for the image */
@@ -77,9 +138,20 @@
     display: grid;
     gap: calc(2 * var(--u));
   }
+  /* When it leaves its miniature (.small) it has the miniature's hover
+     colour, which it loses on the way */
   .image {
     aspect-ratio: var(--ratio);
-    background: var(--band);
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
+    transform-origin: 0 0;
+  }
+  .image.small {
+    --lit: 1;
+  }
+  .image.moving {
+    transition:
+      transform var(--move),
+      --lit var(--move);
   }
   .caption {
     font: var(--type-note);

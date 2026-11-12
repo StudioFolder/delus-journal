@@ -34,7 +34,7 @@
     blocks: Block[];
     notes?: Inline[][];
     onview?: (numbers: number[]) => void; // the note numbers on the screen, in order
-    onfigure?: (figure: Figure) => void; // a figure was clicked: to see it larger
+    onfigure?: (figure: Figure, miniature: HTMLElement) => void; // a figure was clicked: to see it larger
   };
   let {blocks, notes = [], onview, onfigure}: Props = $props();
 
@@ -131,7 +131,7 @@
     {:else if 'quote' in block}
       <blockquote><Inlines parts={block.quote} sc={false} /></blockquote>
     {:else if 'figure' in block}
-      <ArticleFigure figure={block.figure} top={tops[i]} onopen={() => onfigure?.(block.figure)} />
+      <ArticleFigure figure={block.figure} top={tops[i]} onopen={(el) => onfigure?.(block.figure, el)} />
     {:else}
       <h2>{block.heading}</h2>
     {/if}
