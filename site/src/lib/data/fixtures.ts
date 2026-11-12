@@ -1,6 +1,7 @@
 import {issueLabel, slugOf, type Credit} from './format.ts';
 import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
+import * as editorial01 from './articles/editorial01.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
 // The abstracts are placeholders (the issue's title in italics, then
@@ -54,6 +55,9 @@ export type Issue = {
   title: string;
   date: string;
   abstract: string | Inline[]; // plain text, or with italics
+  // The editorial ("A Note from the Editors"): its text and notes, as a
+  // contribution's (Sanity: the issue's Editorial field). Issue 01 only, so far.
+  editorial?: {body: Block[]; notes?: Inline[][]};
   publication: {
     editedBy: string;
     designedBy: string;
@@ -221,6 +225,7 @@ export const issues: Issue[] = [
     number: 1,
     title: 'Chasing Water',
     date: 'Autumn 2024',
+    editorial: editorial01, // the whole text, from the printed issue
     abstract: [
       'Placeholder for the abstract of Issue 01, ',
       {em: 'Chasing Water'},
