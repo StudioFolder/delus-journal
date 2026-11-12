@@ -1,4 +1,4 @@
-import {issueLabel, slugOf, type Credit} from './format.ts';
+import {articleHref, issueLabel, slugOf, type Credit} from './format.ts';
 import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
 import * as editorial01 from './articles/editorial01.ts';
@@ -35,7 +35,7 @@ export type Block =
 // its title, its URL name (`slug`, made from the title as the CMS does:
 // the article is at /issues/<issue>/<slug>/), its people (slugs of `people`, below), its first page, its
 // abstract (Sanity: `abstract`; from the printed issues), its text
-// (`body`; not in Sanity yet — two essays of Issue 01 have it, the others
+// (`body`; Sanity: the contribution's `text` — two essays of Issue 01 have it, the others
 // show title and abstract only) and its notes (`notes[0]` = note 1).
 export type Contribution = {
   title: string;
@@ -57,7 +57,8 @@ export type Issue = {
   abstract: string | Inline[]; // plain text, or with italics
   // The editorial ("A Note from the Editors"): its text and notes, as a
   // contribution's (Sanity: the issue's Editorial field). Issue 01 only, so far.
-  editorial?: {body: Block[]; notes?: Inline[][]};
+  // `page`: its first page in print.
+  editorial?: {page?: number; body: Block[]; notes?: Inline[][]};
   publication: {
     editedBy: string;
     designedBy: string;
@@ -225,7 +226,7 @@ export const issues: Issue[] = [
     number: 1,
     title: 'Chasing Water',
     date: 'Autumn 2024',
-    editorial: editorial01, // the whole text, from the printed issue
+    editorial: {page: 4, ...editorial01}, // the whole text, from the printed issue
     abstract: [
       'Placeholder for the abstract of Issue 01, ',
       {em: 'Chasing Water'},
@@ -260,6 +261,9 @@ export const issues: Issue[] = [
     contributions: withSlugs(contents2)
   }
 ];
+
+// The issues, newest first: the order of every list of them
+export const newestFirst = issues.toSorted((a, b) => b.number - a.number);
 
 // The contributors of Issues 0, 1 and 2 (the same entries as studio/seed/people.ndjson).
 // `sortName` gives the alphabetical order; `issues` the issues they appear in.
@@ -349,13 +353,16 @@ export const posts: Post[] = [
   {slug: 'news-title-h', kind: 'News', date: '2025-09-30', title: 'News title H'}
 ];
 
-// About: the text from the Figma About page.
 // The site's tagline (Site settings → Footer text in the CMS): in the
 // footer, and the measure of the newsletter's line.
 export const site = {
   tagline: 'Journal for Landscape and Urban Studies'
 };
 
+// The journal's full name, as citations write it
+export const journal = `DELUS: ${site.tagline}`;
+
+// About: the text from the Figma About page.
 export const about = {
   text: 'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the Institute for Landscape and Urban Studies (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.',
   // The colophon: Sanity's `credits` (label + value). Here each value is
@@ -376,16 +383,19 @@ export const home = {
   // Highlights: what the home page shows, one at a time, in this order.
   // For now the issues, newest first; later chosen and ordered by the
   // editors in the CMS.
-  highlights: issues
-    .toSorted((a, b) => b.number - a.number)
-    .map((issue) => ({label: issueLabel(issue.number), text: issue.abstract}))
+  highlights: newestFirst.map((issue) => ({label: issueLabel(issue.number), text: issue.abstract}))
 };
+
+// The people of a contribution, in their order (a slug without an
+// entry stands for itself)
+export const peopleOf = (contribution: Contribution) =>
+  contribution.people.map((slug) => people.find((x) => x.slug === slug) ?? {name: slug, sortName: slug});
 
 // The article of a person: their (first) contribution and its issue —
 // where a name in the contributors list leads, for now
 export function articleOf(person: string) {
   for (const issue of issues) {
     const contribution = issue.contributions.find((c) => c.people.includes(person));
-    if (contribution) return {issue, contribution, href: `/issues/${issue.slug}/${contribution.slug}/`};
+    if (contribution) return {issue, contribution, href: articleHref(issue, contribution)};
   }
 }

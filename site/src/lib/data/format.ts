@@ -20,6 +20,32 @@ export const slugOf = (title: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
+/** "Sara Frikech" → "Frikech, Sara" (the last word is taken as the surname) */
+export const surnameFirst = (name: string) => name.replace(/^(.*) (\S+)$/, '$2, $1');
+
+/**
+ * Names in a row, the first one surname first, as a citation starts:
+ * "Breit, Stefan, and Insa Jelena Streit"; three or more: "A, B, and C".
+ */
+export function nameList(names: string[]): string {
+  return names.length > 2
+    ? `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`
+    : names.join(names[0]?.includes(',') ? ', and ' : ' and ');
+}
+
+/** The editors of an issue, by name ("Edited by" lists them, comma separated) */
+export const editorsOf = (issue: Issue) => issue.publication.editedBy.split(', ');
+
+/** The title of every issue's editorial (CMS: the issue's Editorial field has its own) */
+export const editorialTitle = 'A Note from the Editors';
+
+/** Where an article lives: under its issue */
+export const articleHref = (issue: Issue, contribution: Contribution) =>
+  `/issues/${issue.slug}/${contribution.slug}/`;
+
+/** Where an issue's editorial lives */
+export const editorialHref = (issue: Issue) => `/issues/${issue.slug}/editorial/`;
+
 /** Issue numbers always have two digits: 0 → "00", 1 → "01", 12 → "12" */
 export const issueNumber = (n: number) => String(n).padStart(2, '0');
 
@@ -36,7 +62,7 @@ export const monthYear = (date: string) => fullDate(date.slice(0, 7));
 export function issueDetails(issue: Issue): Credit[] {
   const p = issue.publication;
   const rows: Credit[] = [
-    {label: 'Edited by', value: p.editedBy.split(', ').map((text) => ({text}))},
+    {label: 'Edited by', value: editorsOf(issue).map((text) => ({text}))},
     {label: 'Designed by', value: [{text: p.designedBy}]},
     {label: 'Publisher', value: [{text: 'Hatje Cantz', href: p.buyUrl}]},
     {label: 'Published', value: [{text: p.forthcoming ? `Forthcoming, ${issue.date}` : issue.date}]},
@@ -60,7 +86,8 @@ export function issueDetails(issue: Issue): Credit[] {
  * `authors`: the people in their order, with their name and their name
  * for sorting (surname first). The pages run to the page before the next
  * contribution's first one (the last contribution: its first page only)
- * — until the CMS gives the real ones ("Pages").
+ * — until the CMS gives the real ones ("Pages"). The editorial is not
+ * among the contributions: it comes before the first of them.
  */
 export function citationOf(
   issue: Issue,
@@ -68,13 +95,10 @@ export function citationOf(
   authors: {name: string; sortName: string}[],
   journal: string
 ): string {
-  const names = authors.map((a, i) => (i ? a.name : a.sortName));
-  const by =
-    names.length > 2
-      ? `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`
-      : names.join(names[0]?.includes(',') ? ', and ' : ' and ');
+  const by = nameList(authors.map((a, i) => (i ? a.name : a.sortName)));
   const title = /[?!]$/.test(contribution.title) ? contribution.title : `${contribution.title}.`;
-  const next = issue.contributions[issue.contributions.indexOf(contribution) + 1]?.page;
+  const place = issue.contributions.indexOf(contribution); // -1: the editorial, before them all
+  const next = issue.contributions[place + 1]?.page;
   const pages = contribution.page
     ? `: ${contribution.page}${next && next - 1 > contribution.page ? `–${next - 1}` : ''}`
     : '';
@@ -90,12 +114,8 @@ export function citationOf(
  *   and Urban Studies 01, Chasing Water (Autumn 2024).
  */
 export function issueCitationOf(issue: Issue, journal: string): string {
-  const editors = issue.publication.editedBy.split(', ');
-  const names = editors.map((name, i) => (i ? name : name.replace(/^(.*) (\S+)$/, '$2, $1')));
-  const by =
-    names.length > 2
-      ? `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`
-      : names.join(', and ');
+  const editors = editorsOf(issue);
+  const by = nameList(editors.map((name, i) => (i ? name : surnameFirst(name))));
   const named = issue.title === 'DELUS' ? '' : `, ${issue.title}`;
   return `${by}, ${editors.length > 1 ? 'eds' : 'ed'}. ${journal} ${issueNumber(issue.number)}${named} (${issue.date}).`;
 }

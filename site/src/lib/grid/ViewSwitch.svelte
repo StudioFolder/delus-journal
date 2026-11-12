@@ -2,7 +2,8 @@
   The switch between two views of the images beside the band — one at a
   time (a carousel, a gallery) or all together in a grid: the issues
   list, an issue's page. `grid` says which view is on (bind it);
-  `onswitch` is called at each change.
+  `onswitch` is called at each change; `what` names the images for
+  those who can't see the icon ("covers", "images").
 
   A button on the footer's line, its left edge one column in from the
   band — the mirror of the tone switch. It shows the view it leads to.
@@ -12,14 +13,19 @@
   import Panel from './Panel.svelte';
   import {leave} from '#lib/motion/leave.ts';
 
-  let {grid = $bindable(false), onswitch}: {grid?: boolean; onswitch?: () => void} = $props();
+  let {
+    grid = $bindable(false),
+    what = 'covers',
+    onswitch
+  }: {grid?: boolean; what?: string; onswitch?: () => void} = $props();
 </script>
 
 <Panel area="rest" class="view-switch">
   <button
     class="switch fade"
     class:is-grid={grid}
-    aria-label={grid ? 'Show the covers one by one' : 'Show all the covers'}
+    type="button"
+    aria-label={grid ? `Show the ${what} one by one` : `Show all the ${what}`}
     onclick={() => ((grid = !grid), onswitch?.())}
     out:leave|global
   >
@@ -46,18 +52,12 @@
     bottom: calc(6 * var(--u) - var(--dot-hit) / 2); /* centre on the centre of the footer's line */
     width: var(--dot-hit);
     height: var(--dot-hit);
-    padding: 0;
-    border: 0;
-    background: none;
+    --focus-offset: calc(-1 * var(--u));
     cursor: pointer;
     pointer-events: auto;
   }
   .switch:hover .icon {
     --lit: 1;
-  }
-  .switch:focus-visible {
-    outline: 1px solid var(--ink-quiet);
-    outline-offset: calc(-1 * var(--u));
   }
   /* The icon shows the view the button leads to; one fades into the
      other with the time and curve of every icon (--icon, styles.css) */

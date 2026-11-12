@@ -213,11 +213,6 @@
     visibility: visible;
     pointer-events: auto;
   }
-  button {
-    padding: 0;
-    border: 0;
-    background: none;
-  }
   .around {
     position: absolute;
     inset: 0;
@@ -245,7 +240,7 @@
      colour, which it loses on the way */
   .image {
     aspect-ratio: var(--ratio);
-    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
     transform-origin: 0 0;
   }
   .image.small {

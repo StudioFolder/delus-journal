@@ -1,4 +1,8 @@
-<!-- The 36 columns, drawn over the page. Press G to show / hide. -->
+<!--
+  The 36 columns, drawn over the page. Press G to show / hide.
+  A tool for building the site, not part of its design: its colour and
+  its small figures are its own, outside the tokens of styles.css.
+-->
 <script lang="ts">
   import {COLUMNS} from './layouts.ts';
 
@@ -14,7 +18,7 @@
 <svelte:window {onkeydown} />
 
 {#if visible}
-  <div class="grid" aria-hidden="true">
+  <div class="grid" style:--columns={COLUMNS} aria-hidden="true">
     {#each {length: COLUMNS} as _, i}
       <div class="col"><span>{i + 1}</span></div>
     {/each}
@@ -26,7 +30,7 @@
     position: fixed;
     inset: 0;
     display: grid;
-    grid-template-columns: repeat(36, 1fr);
+    grid-template-columns: repeat(var(--columns), 1fr);
     pointer-events: none;
     z-index: 1000;
   }

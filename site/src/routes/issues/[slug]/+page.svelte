@@ -13,11 +13,13 @@
     Buy — the link to the publisher's page of the issue (only if the
     issue has one);
     Cite — copies how to cite the issue; the word then reads "Copied"
-    for a moment (--copied-time), as on an article. Not for a
-    forthcoming issue.
+    for a moment (Cite.svelte, as on an article). Not for a forthcoming
+    issue.
   - Below the abstract the table of contents: title, people; each
-    entry is the link to its article. Or, after Colophon, the
-    publication details (Credits). One fades out, the other fades in.
+    entry is the link to its article. The first entry is the editorial
+    ("A Note from the Editors", by the issue's editors). Or, after Colophon, the
+    publication details (Credits, compact: all in the small Styrene).
+    One fades out, the other fades in.
   - The cover on the background, in the middle of the space to the
     right of the band.
 
@@ -29,8 +31,8 @@
   cover's box.
   The scroll is free and stops with an image in the middle (scroll
   snap); a wheel that only turns up and down moves it by one image per
-  gesture. Pointing at an entry of the contents slides the gallery to
-  its image, as pointing at a row does on the issues list. The title of
+  gesture. Pointing at an entry of the contents (or reaching it with the
+  keyboard) slides the gallery to its image, as pointing at a row does on the issues list. The title of
   the image on view is in full ink in the contents (which scroll to show
   it, unless the pointer is on them); the image is the link to its
   article, as its title. With the pointer neither on an entry nor on an
@@ -57,6 +59,8 @@
   fade in one after another, from the top left to the bottom right.
   Back: they fade out together, then the gallery fades in. Pointing at
   an image of the grid puts its title in full ink, as in the gallery.
+  The view that is off can't be pointed at nor reached with the keyboard
+  (inert).
 
   LIT — where a pointer can hover, the image under the pointer, or whose
   title is under it, stands out a little more from the background, as
@@ -73,9 +77,11 @@
   import {leave} from '#lib/motion/leave.ts';
   import {arriving, land} from '#lib/motion/carry.ts';
   import {time} from '#lib/motion/time.ts';
+  import {steps} from '#lib/motion/wheel.ts';
   import {opens} from '#lib/type/links.ts';
   import Inlines from '#lib/article/Inlines.svelte';
   import Credits from '#lib/type/Credits.svelte';
+  import Cite from '#lib/article/Cite.svelte';
   import {issueDetails, issueLabel} from '#lib/data/format.ts';
 
   let {data} = $props();
@@ -100,26 +106,11 @@
   });
 
   // Gallery or grid. The grid's rows (four images each) share the height
-  // of the screen; from the fifth row on they scroll
+  // between the band's content top and bottom; from the fifth row on
+  // they scroll
   const rows = $derived(Math.min(Math.ceil(data.contents.length / 4), 4));
   let grid = $state(false);
   let changed = $state(false); // true once the view has been changed
-
-  // Cite: copies how to cite the issue; "Copied" stands in for a moment
-  // (as ArticleActions)
-  let copied = $state(false);
-  let uncopy: ReturnType<typeof setTimeout>;
-  async function cite() {
-    if (!data.citation) return;
-    try {
-      await navigator.clipboard.writeText(data.citation);
-    } catch {
-      return; // the browser refused: nothing was copied, so nothing is claimed
-    }
-    copied = true;
-    clearTimeout(uncopy);
-    uncopy = setTimeout(() => (copied = false), time('--copied-time'));
-  }
 
   // The gallery: which image is on view (0 = the cover, then the entries
   // of the contents, in their order)
@@ -140,8 +131,13 @@
   // Pointing at an entry of the contents: the gallery slides to its image
   function show(i: number) {
     if (at === i && towards === null) return;
-    at = towards = i;
-    gallery.scrollTo({left: i * gallery.clientWidth, behavior: still() ? 'auto' : 'smooth'});
+    at = i;
+    const left = i * gallery.clientWidth;
+    // Already there (e.g. pointed at in the grid): nothing will scroll,
+    // so there is nothing to wait for
+    if (Math.abs(gallery.scrollLeft - left) < 1) return void (towards = null);
+    towards = i;
+    gallery.scrollTo({left, behavior: still() ? 'auto' : 'smooth'});
   }
 
   // Back to the cover, a pause after the pointer has left the entries
@@ -159,29 +155,19 @@
   }
 
   // A wheel that turns up and down moves the gallery by one image per
-  // gesture (as the highlights on the home page: a new step needs a
-  // pause first). Sideways scrolling is the browser's own.
-  let travelled = 0;
-  let used = false;
-  let pause: ReturnType<typeof setTimeout>;
+  // gesture (motion/wheel.ts, as the highlights on the home page).
+  // Sideways scrolling is the browser's own.
+  const stepper = steps((dir) =>
+    gallery.scrollTo({
+      left: (at + dir) * gallery.clientWidth,
+      behavior: still() ? 'auto' : 'smooth'
+    })
+  );
   function onwheel(e: WheelEvent) {
     towards = null; // scrolling by hand takes over
-    if (Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return;
-    clearTimeout(pause);
-    pause = setTimeout(() => {
-      travelled = 0;
-      used = false;
-    }, 150);
-    if (used) return;
-    travelled += e.deltaY;
-    if (Math.abs(travelled) < 40) return;
-    used = true;
-    gallery.scrollTo({
-      left: (at + Math.sign(travelled)) * gallery.clientWidth,
-      behavior: still() ? 'auto' : 'smooth'
-    });
+    if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) stepper.wheel(e);
   }
-  onDestroy(() => (clearTimeout(pause), clearTimeout(uncopy), hold()));
+  onDestroy(() => (stepper.stop(), hold()));
 
   // The contents scroll to show the entry of the image on view — not
   // while the pointer is on them (they would slip from under it)
@@ -194,7 +180,7 @@
 
   // Where the abstract and the cover come from, when arriving from the
   // list: read once, as the page is created. (Going from one issue
-  // straight to another would reuse the page: not possible yet.)
+  // straight to another makes a new page: see +layout.svelte.)
   const slug = untrack(() => data.issue.slug);
   const from = {abstract: arriving(`abstract:${slug}`), cover: arriving(`cover:${slug}`)};
 </script>
@@ -208,6 +194,7 @@
       class:fade={changed}
       class:next={changed}
       class:is-hidden={grid}
+      inert={grid}
       bind:this={gallery}
       {onscroll}
       {onwheel}
@@ -239,7 +226,7 @@
       {/each}
     </div>
 
-    <div class="grid" class:on={grid} style:--rows={rows}>
+    <div class="grid" inert={!grid} style:--rows={rows}>
       {#each data.contents as entry, i (entry.href)}
         <div class="cell fade next" class:is-hidden={!grid} style:--i={i} out:leave|global>
           <a
@@ -259,7 +246,7 @@
   </div>
 </Panel>
 
-<ViewSwitch bind:grid onswitch={() => (changed = true)} />
+<ViewSwitch bind:grid what="images" onswitch={() => (changed = true)} />
 
 <Panel area="band" inset class="on-band from-top">
   <!-- The whole column lands from the list's abstract (its number line and
@@ -283,21 +270,19 @@
           </span>
         {/if}
         {#if data.citation}
-          <span class="hover fade" class:active={copied} style:--i={3}>
-            <button type="button" onclick={cite} aria-live="polite">{copied ? 'Copied' : 'Cite'}</button>
-          </span>
+          <Cite citation={data.citation} class="fade" i={issue.publication.buyUrl ? 3 : 2} />
         {/if}
       </p>
     </div>
 
     <div class="below fade" class:now={switched} class:is-hidden={hidden}>
       {#if shown}
-        <Credits rows={issueDetails(issue)} />
+        <Credits rows={issueDetails(issue)} compact />
       {:else}
         <ol class="contents">
           {#each data.contents as entry, i (entry.href)}
             <li
-              class="entry hover"
+              class="entry stretched hover"
               class:fade={!switched}
               class:active={at === i + 1}
               style:--i={4 + i}
@@ -324,7 +309,6 @@
   .column {
     width: 100%;
     display: grid;
-    scroll-padding-top: calc(4 * var(--u)); /* what scrolls into view stops under the number line */
   }
   /* The line of the issue number and date stays at the top while the
      column scrolls: the rest passes under it (the band's colour behind
@@ -334,6 +318,9 @@
     padding-bottom: calc(2 * var(--u));
   }
   @media (min-width: 768px) {
+    .column {
+      scroll-padding-top: calc(4 * var(--u)); /* what scrolls into view stops under the number line */
+    }
     .head {
       position: sticky;
       top: 0;
@@ -341,8 +328,8 @@
       background: var(--band);
     }
   }
-  /* Contents (or details) and, on phones, the cover: two lines of the
-     large type under what comes before */
+  /* Contents (or details) and, on phones, the cover: 8 units under what
+     comes before */
   .below,
   .cover-mobile {
     margin-top: calc(8 * var(--u));
@@ -379,17 +366,15 @@
      large as fits in the cover's box */
   a.cover {
     aspect-ratio: var(--ratio);
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
   }
   .slide a.cover {
-    width: calc(min(1, var(--ratio) * 626 / 518) * var(--cover-cols) * var(--col));
+    width: calc(min(1, var(--ratio) / (var(--cover-ratio))) * var(--cover-cols) * var(--col));
   }
 
   /* An entry's image under the pointer, or whose title is: a touch of
      the ink colour, softly (--lit, as .hover) — as the miniatures of an
      article's figures (ArticleFigure) */
-  a.cover {
-    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
-  }
   @media (hover: hover) {
     a.cover {
       transition: --lit var(--hover);
@@ -418,9 +403,6 @@
     gap: var(--gap) calc(2 * var(--col));
     align-content: start;
   }
-  .grid:not(.on) {
-    pointer-events: none; /* the gallery is underneath */
-  }
   /* The images appear one after another (CASCADE), once the gallery has
      faded out; they disappear together */
   .cell.fade.next {
@@ -446,19 +428,7 @@
     gap: calc(4 * var(--u));
   }
   .tags button {
-    padding: 0;
-    border: 0;
-    background: none;
-    font: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-    color: inherit;
     cursor: pointer;
-  }
-  /* Reached with the keyboard: a thin quiet line, as the issues switch */
-  .tags button:focus-visible {
-    outline: 1px solid var(--ink-quiet);
-    outline-offset: calc(var(--u) / 2);
   }
 
   /* The table of contents: entries 4 units apart, 9 columns wide — one
@@ -476,13 +446,7 @@
     gap: calc(4 * var(--u));
   }
   .entry {
-    position: relative;
     max-width: calc(9 * var(--col));
-  }
-  .entry a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
   }
   .title,
   .by {

@@ -97,8 +97,6 @@
     flex: none;
     width: calc(1.5 * var(--u));
     height: calc(1.5 * var(--u));
-    padding: 0;
-    border: 0;
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.25'%3E%3Cpath d='M10.5 1.5v5.5H2M5 4 2 7l3 3'/%3E%3C/svg%3E")
       center / contain no-repeat;

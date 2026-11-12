@@ -46,10 +46,8 @@
   import {carry} from '#lib/motion/carry.ts';
   import {time} from '#lib/motion/time.ts';
   import Inlines from '#lib/article/Inlines.svelte';
-  import {issues} from '#lib/data/fixtures.ts';
+  import {newestFirst} from '#lib/data/fixtures.ts';
   import {issueLabel, issueNumber} from '#lib/data/format.ts';
-
-  const newestFirst = issues.toSorted((a, b) => b.number - a.number);
 
   const step = COVER_COLUMNS + 1; // from one cover to the next: its width + one column
 
@@ -223,7 +221,7 @@
   /* The cover fills the cell's height, unless the cell is too narrow:
      then it keeps one column clear on each side */
   .cell .cover {
-    width: min(100cqh * 518 / 626, 100cqw - 2 * var(--col));
+    width: min(100cqh * (var(--cover-ratio)), 100cqw - 2 * var(--col));
   }
 
   .covers-mobile {

@@ -126,7 +126,7 @@
   <ul class="news" class:has-item={page.params.slug} class:is-list={!page.params.slug}>
     {#each posts as post, i (post.slug)}
       <li
-        class="entry hover fade"
+        class="entry stretched hover fade"
         class:active={post.slug === onView}
         style:--i={i}
         out:leave|global
@@ -167,9 +167,6 @@
     width: 100%;
     display: grid;
     gap: calc(3 * var(--u));
-  }
-  .entry {
-    position: relative;
   }
   /* Category from column 3, date from column 6 */
   .label {
@@ -212,12 +209,6 @@
     width: 100%;
     height: 100%;
     scroll-snap-type: y mandatory;
-  }
-
-  a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
   }
 
 </style>

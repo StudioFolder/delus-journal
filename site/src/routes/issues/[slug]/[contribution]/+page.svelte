@@ -1,7 +1,9 @@
 <!--
   A contribution (an "article"), under its issue:
-  /issues/<issue>/<contribution>/ — reached for now from a name in the
-  contributors list. The band for this URL (Small, Back → the issue) is
+  /issues/<issue>/<contribution>/ — reached from the issue's contents
+  and images, and from a name in the contributors list. An issue's
+  editorial is shown with this same page (editorial/+page.svelte). The
+  band for this URL (Small, Back → the issue) is
   set in #lib/grid/layouts.ts.
 
   PEOPLE — on the band, at the top (as the content of other bands): one
@@ -12,9 +14,9 @@
 
   HEAD — its title in Styrene B (ArticleHeader), level with the first
   name; then, if it has one, the abstract (ArticleAbstract,
-  for now in the same type as the text); then, if it has one, the text
-  (ArticleBody: paragraphs, quotes, chapter titles; two essays of
-  Issue 01 so far).
+  for now in the large type); then, if it has one, the text
+  (ArticleBody: paragraphs, quotes, chapter titles; two essays and the
+  editorial of Issue 01 so far).
 
   FIGURE, LARGE — a click on a figure's miniature: the text and the
   notes fade out, then the miniature grows into the large figure in

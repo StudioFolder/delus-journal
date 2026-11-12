@@ -85,9 +85,7 @@
   .image {
     display: block;
     width: 100%;
-    padding: 0;
-    border: 0;
-    background: color-mix(in srgb, var(--ink) calc(var(--lit) * 6%), var(--band));
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
   }
   figcaption {
     font: var(--type-note);

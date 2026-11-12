@@ -273,9 +273,6 @@
       top: calc((var(--header) - var(--dot-hit)) / 2);
       width: var(--dot-hit);
       height: var(--dot-hit);
-      padding: 0;
-      border: 0;
-      background: none;
       cursor: pointer;
     }
     .dot::before {

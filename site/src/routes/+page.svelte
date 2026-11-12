@@ -45,6 +45,7 @@
   import {leave} from '#lib/motion/leave.ts';
   import {hasPlayed, markPlayed} from '#lib/motion/once.ts';
   import {time} from '#lib/motion/time.ts';
+  import {STEP, steps} from '#lib/motion/wheel.ts';
   import {home} from '#lib/data/fixtures.ts';
   import Acronyms from '#lib/type/Acronyms.svelte';
   import Inlines from '#lib/article/Inlines.svelte';
@@ -118,23 +119,9 @@
     after(out + time('--fade-time'), () => (swapping = false));
   }
 
-  // One scroll gesture = one step, however long the trackpad keeps sending
-  // movement: a new step needs a pause first
-  let travelled = 0;
-  let used = false;
-  let pause: ReturnType<typeof setTimeout>;
-  function onwheel(e: WheelEvent) {
-    clearTimeout(pause);
-    pause = setTimeout(() => {
-      travelled = 0;
-      used = false;
-    }, 150);
-    if (used) return;
-    travelled += e.deltaY;
-    if (Math.abs(travelled) < 40) return;
-    used = true;
-    go(travelled > 0 ? 1 : -1);
-  }
+  // One scroll gesture = one step (motion/wheel.ts)
+  const stepper = steps(go);
+  const onwheel = stepper.wheel;
   function onkeydown(e: KeyboardEvent) {
     if (e.key === 'ArrowDown' || e.key === 'PageDown') go(1);
     if (e.key === 'ArrowUp' || e.key === 'PageUp') go(-1);
@@ -143,9 +130,9 @@
   const ontouchstart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
   function ontouchend(e: TouchEvent) {
     const moved = touchY - e.changedTouches[0].clientY;
-    if (Math.abs(moved) > 40) go(moved > 0 ? 1 : -1);
+    if (Math.abs(moved) > STEP) go(moved > 0 ? 1 : -1);
   }
-  onDestroy(() => clearTimeout(pause));
+  onDestroy(stepper.stop);
 
   // When the pointer is on the image the band shrinks and the image moves
   // left by this many columns; it must not slip from under the pointer

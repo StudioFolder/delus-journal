@@ -49,9 +49,7 @@
     bottom: calc(6 * var(--u) - var(--dot-hit) / 2);
     width: var(--dot-hit);
     height: var(--dot-hit);
-    padding: 0;
-    border: 0;
-    background: none;
+    --focus-offset: calc(-1 * var(--u));
     cursor: pointer;
   }
   @property --moon {
@@ -94,8 +92,6 @@
     }
   }
   .tone-dot:focus-visible {
-    outline: 1px solid var(--ink-quiet);
-    outline-offset: calc(-1 * var(--u));
     border-radius: 50%;
   }
 

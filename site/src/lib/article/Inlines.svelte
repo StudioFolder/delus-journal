@@ -1,11 +1,12 @@
 <!--
-  A block's inline pieces (see Inline in #lib/data/fixtures.ts): plain
-  text and italics, with acronyms in small capitals — not in Styrene B
-  (quotes, notes: sc={false}).
+  Inline pieces of text (see Inline in #lib/data/fixtures.ts) — a block
+  of an article, a note, an issue's abstract: plain text and italics,
+  with acronyms in small capitals — not in Styrene B (quotes:
+  sc={false}).
   A note reference: its number in Styrene B, in the font's own superior
   figures (drawn small and raised: nothing is scaled or shifted), in the
   quote's size; it adds nothing to the height of its line. The notes
-  themselves: ArticleBody.
+  themselves: ArticleNotes.
 -->
 <script lang="ts">
   import Acronyms from '#lib/type/Acronyms.svelte';
