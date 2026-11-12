@@ -56,6 +56,12 @@
      (16 was too tight, 24 too tall for the band) */
   --type-note: 16px/18px var(--serif);
   --type-text: 18px/24px var(--serif); /* titles in lists, running text */
+  /* An article's title on the band, under its people (who are in
+     --type-text), on their line: Styrene B at the size whose lowercase
+     matches theirs (16px ≈ 18px Louize, as the quotes match the text) —
+     and at their own size, 18px, on Wide screens (below, after :root),
+     where the band has the room (Marco, 12 Nov) */
+  --type-band-title: 16px/24px var(--sans);
   --type-display: 28px/32px var(--display); /* large statements */
   /* Large statements on a Medium band: one size smaller, size and line
      height reduced in proportion (× 0.75) — see .display below */
@@ -107,6 +113,13 @@
   --sans: 'Styrene B', system-ui, sans-serif;
   --serif: 'Louize', Georgia, serif;
   --display: 'Louize Display', 'Louize', Georgia, serif; /* large text */
+}
+
+/* Wide screens (SCREENS, above): what is larger there */
+@media (min-width: 1440px) {
+  :root {
+    --type-band-title: 18px/24px var(--sans);
+  }
 }
 
 /*

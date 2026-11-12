@@ -7,8 +7,8 @@
   PEOPLE — on the band, at the top (as the content of other bands): one
   name per line, in the running text type, as in the Figma layout.
   Under them, once the title in the text has scrolled off the screen,
-  the TITLE again, in the small Styrene (--type-ui): it fades in and out
-  at once (nothing moves).
+  the TITLE again, in Styrene at the people's size (--type-band-title):
+  it fades in and out at once (nothing moves).
 
   HEAD — its title in Styrene B (ArticleHeader), level with the first
   name; then, if it has one, the abstract (ArticleAbstract,
@@ -158,7 +158,7 @@
   /* The title on the band, two units under the people */
   .running-title {
     margin-top: calc(2 * var(--u));
-    font: var(--type-ui);
+    font: var(--type-band-title);
   }
   /* Notes, then Download and Cite, 4 units apart */
   .foot {
