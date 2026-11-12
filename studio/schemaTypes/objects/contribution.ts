@@ -1,5 +1,16 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
+// The URL name made from a title — the same rule as the site's
+// (site/src/lib/data/format.ts, slugOf): lower case, accents dropped,
+// anything that is not a letter or a figure becomes one hyphen
+const slugOf = (title: string) =>
+  title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
 // One entry in an issue's table of contents
 export const contribution = defineType({
   name: 'contribution',
@@ -7,6 +18,24 @@ export const contribution = defineType({
   type: 'object',
   fields: [
     defineField({name: 'title', title: 'Title', type: 'string', validation: (r) => r.required()}),
+    // The article's address: /issues/<issue>/<this>/
+    defineField({
+      name: 'slug',
+      title: 'URL name',
+      type: 'slug',
+      description: 'Generated from the title; can be shortened. The article is at /issues/<issue>/<URL name>/.',
+      options: {
+        source: (_doc: any, context: any) => context.parent?.title ?? '',
+        slugify: slugOf,
+        // Unique within its issue only
+        isUnique: (value: string, context: any) =>
+          (context.document?.contributions ?? []).filter((c: any) => c?.slug?.current === value).length <= 1,
+      },
+      validation: (r) =>
+        r.required().custom((slug) =>
+          slug?.current === 'editorial' ? 'This name is taken by the issue\u2019s editorial page' : true,
+        ),
+    }),
     defineField({
       name: 'people',
       title: 'Contributor(s)',
@@ -16,6 +45,12 @@ export const contribution = defineType({
     }),
     defineField({name: 'pages', title: 'Pages', type: 'string', description: 'e.g. 15–17'}),
     defineField({name: 'abstract', title: 'Abstract', type: 'simpleText'}),
+    defineField({
+      name: 'text',
+      title: 'Text',
+      type: 'richText',
+      description: 'The full text, when it is published on the website: paragraphs, chapter titles (Heading), quotes, footnotes.',
+    }),
     defineField({
       name: 'images',
       title: 'Images',

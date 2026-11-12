@@ -1,7 +1,11 @@
 <!--
   The notes of an article, as a list: each one opened by its number in
-  full ink, its text quiet, in the small Styrene (--type-ui); one unit
-  between notes. Italics as in the text (Inlines), no small capitals.
+  the small Styrene (--type-ui), full ink; its text in Louize
+  (--type-note), quiet, with italics and acronyms in small capitals as
+  in the text (Inlines); one unit between notes.
+  As in the printed issues, the text of a note starts at a fixed distance
+  from the left (3 units), whatever the width of its number — a wider
+  space than between words; its other lines start at the left.
   - All of them (mobile: after the text), or
   - `only`: the ones with these numbers (desktop: on the band, the notes
     whose numbers are on the screen). A note fades in and out as every
@@ -27,8 +31,7 @@
 <ol class="notes">
   {#each numbers as n (n)}
     <li in:appear out:vanish animate:slide>
-      <span class="n">{n}</span>
-      <Inlines parts={notes[n - 1]} sc={false} />
+      <span class="n">{n}</span><Inlines parts={notes[n - 1]} />
     </li>
   {/each}
 </ol>
@@ -40,11 +43,14 @@
     list-style: none;
     display: grid;
     gap: var(--u);
-    font: var(--type-ui);
+    font: var(--type-note);
     letter-spacing: normal;
     color: var(--ink-quiet);
   }
   .n {
+    display: inline-block;
+    width: calc(3 * var(--u)); /* the note's text starts here, as after a tab */
+    font: var(--type-ui);
     color: var(--ink);
   }
 </style>

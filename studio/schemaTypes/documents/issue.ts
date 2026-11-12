@@ -32,6 +32,13 @@ export const issue = defineType({
       validation: (r) => r.required(),
     }),
     defineField({name: 'season', title: 'Season', type: 'string', group: 'main', description: 'e.g. Autumn 2024'}),
+    defineField({
+      name: 'abstract',
+      title: 'Abstract',
+      type: 'simpleText',
+      group: 'main',
+      description: 'A few sentences introducing the issue: shown on the home page, in the list of issues and on the issue page.',
+    }),
     defineField({name: 'cover', title: 'Cover', type: 'figure', group: 'main'}),
     defineField({
       name: 'images',
@@ -86,6 +93,13 @@ export const issue = defineType({
       type: 'file',
       group: 'publication',
       options: {accept: 'application/pdf'},
+    }),
+    defineField({
+      name: 'pdfUrl',
+      title: 'PDF link',
+      type: 'url',
+      group: 'publication',
+      description: 'When the open-access PDF is hosted elsewhere (e.g. OAPEN), instead of a file above.',
     }),
     defineField({name: 'buyUrl', title: 'Hatje Cantz link', type: 'url', group: 'publication'}),
     defineField({

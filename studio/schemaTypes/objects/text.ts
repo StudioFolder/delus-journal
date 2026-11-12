@@ -28,7 +28,10 @@ export const simpleText = defineType({
   ],
 })
 
-// Long formatted text with headings, lists and footnotes. For the editorial, posts, About.
+// Long formatted text with headings, quotes, lists and footnotes. For the
+// editorial, the text of a contribution, posts, About.
+// A footnote is attached to the word it follows: select the last word
+// before the note's number, then Footnote. The site numbers them in order.
 export const richText = defineType({
   name: 'richText',
   title: 'Text',
@@ -57,11 +60,11 @@ export const richText = defineType({
             title: 'Footnote',
             type: 'object',
             fields: [
+              // Formatted (italics for titles, links), not plain text
               defineField({
                 name: 'text',
                 title: 'Footnote text',
-                type: 'text',
-                rows: 3,
+                type: 'simpleText',
                 validation: (r) => r.required(),
               }),
             ],

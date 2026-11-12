@@ -6,6 +6,20 @@ import type {Issue} from './fixtures.ts';
 /** A row of credits or details: a label, and one or more lines (some links) */
 export type Credit = {label: string; value: {text: string; href?: string}[]};
 
+/**
+ * The URL name made from a title, as the CMS makes it for a contribution
+ * (studio: contribution.ts, the same rule): lower case, accents dropped,
+ * anything that is not a letter or a figure becomes one hyphen.
+ * "Is Façade Landscape?" → "is-facade-landscape"
+ */
+export const slugOf = (title: string) =>
+  title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
 /** Issue numbers always have two digits: 0 → "00", 1 → "01", 12 → "12" */
 export const issueNumber = (n: number) => String(n).padStart(2, '0');
 

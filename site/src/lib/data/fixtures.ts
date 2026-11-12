@@ -1,4 +1,4 @@
-import {issueLabel, type Credit} from './format.ts';
+import {issueLabel, slugOf, type Credit} from './format.ts';
 import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
 
@@ -19,12 +19,14 @@ export type Inline = string | {em: string} | {note: number};
 export type Block = string | Inline[] | {quote: string | Inline[]} | {heading: string};
 
 // One entry of an issue's table of contents (Sanity's contribution):
-// its title, its people (slugs of `people`, below), its first page, its
+// its title, its URL name (`slug`, made from the title as the CMS does:
+// the article is at /issues/<issue>/<slug>/), its people (slugs of `people`, below), its first page, its
 // abstract (Sanity: `abstract`; from the printed issues), its text
 // (`body`; not in Sanity yet — two essays of Issue 01 have it, the others
 // show title and abstract only) and its notes (`notes[0]` = note 1).
 export type Contribution = {
   title: string;
+  slug: string;
   people: string[];
   page?: number;
   abstract?: string;
@@ -53,9 +55,14 @@ export type Issue = {
   contributions: Contribution[];
 };
 
+// The entries as written below, without their URL names, which are made
+// from the titles
+type Entry = Omit<Contribution, 'slug'>;
+const withSlugs = (list: Entry[]): Contribution[] => list.map((c) => ({...c, slug: slugOf(c.title)}));
+
 // The tables of contents, from the printed issues (Issue 02: order as
 // given by the editors, no page numbers yet)
-const contents0: Contribution[] = [
+const contents0: Entry[] = [
   {
     title: 'Salted Waters: Cooking, Land and Resistance',
     people: ['luiza-prado-de-o-martins'],
@@ -99,7 +106,7 @@ const contents0: Contribution[] = [
       'Federico Pérez Villoro tests alternate curricula with Materia Abierta, a summer school in Mexico City, reiterating learning models and offering a space to reflect on the ethics of the present and the future.'
   }
 ];
-const contents1: Contribution[] = [
+const contents1: Entry[] = [
   {title: 'Navel Gazing', people: ['yumna-al-arashi'], page: 8},
   {
     title: 'The Draining of the Fens: Enclosures, Resistance and Wilderness',
@@ -163,7 +170,7 @@ const contents1: Contribution[] = [
       'Oskar Frederick Johanson delves into the sonic environment of Warragamba Dam, a metaphor for broader water management issues in Australia. Through the lens of the Dyarubbin/Hawkesbury-Nepean watershed, embodied by the dam, he reveals the melodious yet dissonant complexities of controlling water amidst colonial legacies, urbanization pressures and environmental risks.'
   }
 ];
-const contents2: Contribution[] = [
+const contents2: Entry[] = [
   {title: 'Grounds of Delay', people: ['salome-katamadze']},
   {title: 'Ecological Double Exposure and the Failure of Synthetic Time', people: ['sina-hensel']},
   {title: 'Portrait of Trees', people: ['mattias-josefsson']},
@@ -191,7 +198,7 @@ export const issues: Issue[] = [
       pdfUrl: 'https://library.oapen.org/handle/20.500.12657/97869',
       forthcoming: false
     },
-    contributions: contents0
+    contributions: withSlugs(contents0)
   },
   {
     slug: '01-chasing-water',
@@ -208,7 +215,7 @@ export const issues: Issue[] = [
       buyUrl: 'https://www.hatjecantz.com/products/77075-delus-journal-for-landscape-and-urban-studies',
       forthcoming: false
     },
-    contributions: contents1
+    contributions: withSlugs(contents1)
   },
   {
     slug: '02-season-creep',
@@ -223,7 +230,7 @@ export const issues: Issue[] = [
       ...placeholder,
       forthcoming: true
     },
-    contributions: contents2
+    contributions: withSlugs(contents2)
   }
 ];
 
@@ -346,3 +353,12 @@ export const home = {
     .toSorted((a, b) => b.number - a.number)
     .map((issue) => ({label: issueLabel(issue.number), text: issue.abstract}))
 };
+
+// The article of a person: their (first) contribution and its issue —
+// where a name in the contributors list leads, for now
+export function articleOf(person: string) {
+  for (const issue of issues) {
+    const contribution = issue.contributions.find((c) => c.people.includes(person));
+    if (contribution) return {issue, contribution, href: `/issues/${issue.slug}/${contribution.slug}/`};
+  }
+}

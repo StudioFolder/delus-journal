@@ -5,12 +5,13 @@
 
   A table on the band under the menu: names from column 3, issues from
   column 10. Rows are quiet and turn to full ink under the pointer; the
-  whole row is the link to the contributor's page.
+  whole row is a link — for now to the contributor's article (their
+  first contribution), until the contributor's own page exists.
 -->
 <script lang="ts">
   import Panel from '#lib/grid/Panel.svelte';
   import {leave} from '#lib/motion/leave.ts';
-  import {people} from '#lib/data/fixtures.ts';
+  import {articleOf, people} from '#lib/data/fixtures.ts';
   import {issueNumber} from '#lib/data/format.ts';
 
   const sorted = people.toSorted((a, b) => a.sortName.localeCompare(b.sortName, 'en'));
@@ -22,7 +23,7 @@
     <ul>
       {#each sorted as person, i (person.slug)}
         <li class="row hover fade" style:--i={i} out:leave|global>
-          <a href="/contributors/{person.slug}/">{person.name}</a>
+          <a href={articleOf(person.slug)?.href ?? `/contributors/${person.slug}/`}>{person.name}</a>
           <span>{person.issues.map(issueNumber).join(', ')}</span>
         </li>
       {/each}

@@ -50,6 +50,8 @@ export const layouts: Record<string, Layout> = {
 
   '/issues/[slug]': {band: m},
   '/issues/[slug]/editorial': {band: s, back: (p) => `/issues/${p.slug}/`},
+  // An article (a contribution): under its issue
+  '/issues/[slug]/[contribution]': {band: s, back: (p) => `/issues/${p.slug}/`},
   '/contributors/[slug]': {band: s, back: '/contributors/'},
   '/events/[slug]': {band: m},
   '/donate': {band: m},

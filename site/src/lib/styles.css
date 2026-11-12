@@ -26,6 +26,11 @@
      taller than Louize's: 21px ≈ 24px) */
   --type-reading: 24px/32px var(--display);
   --type-quote: 21px/32px var(--sans);
+  /* Notes of essays: Louize at the size whose lowercase matches the small
+     Styrene's (14px ≈ 16px); their numbers stay in Styrene (--type-ui).
+     Its 18px line is the one line height that is not a multiple of 8px
+     (16 was too tight, 24 too tall for the band) */
+  --type-note: 16px/18px var(--serif);
   --type-text: 18px/24px var(--serif); /* titles in lists, running text */
   --type-display: 28px/32px var(--display); /* large statements */
   /* Large statements on a Medium band: one size smaller, size and line
