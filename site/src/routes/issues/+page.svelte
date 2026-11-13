@@ -156,7 +156,8 @@
         >
           <a href="/issues/{issue.slug}/">{issue.title}</a>
           <span>{issueNumber(issue.number)}</span>
-          <span>{issue.date}</span>
+          <!-- a forthcoming issue: the word in italics instead of its date -->
+          <span>{#if issue.publication.forthcoming}<em>forthcoming</em>{:else}{issue.date}{/if}</span>
         </li>
       {/each}
     </ul>

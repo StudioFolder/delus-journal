@@ -259,7 +259,9 @@
   <div class="column" class:fade={!from.abstract} use:land={from.abstract} out:leave|global>
     <p class="label tags head">
       <span>{issueLabel(issue.number)}</span>
-      <span class="fade" style:--i={0}>{issue.date}</span>
+      <span class="fade" style:--i={0}
+        >{#if issue.publication.forthcoming}<em>forthcoming</em>{:else}{issue.date}{/if}</span
+      >
     </p>
     <div class="labelled">
       <p class="display"><Inlines parts={issue.abstract} /></p>

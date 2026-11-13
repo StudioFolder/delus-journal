@@ -33,7 +33,7 @@
     {#if line.href}
       <dd class="link"><a href={line.href} {...opens(line.href)}>{line.text}</a></dd>
     {:else}
-      <dd>{line.text}</dd>
+      <dd>{#if line.em}<em>{line.text}</em>{:else}{line.text}{/if}</dd>
     {/if}
   {/each}
 {/snippet}

@@ -4,7 +4,7 @@
 import type {Contribution, Issue} from './fixtures.ts';
 
 /** A row of credits or details: a label, and one or more lines (some links) */
-export type Credit = {label: string; value: {text: string; href?: string}[]};
+export type Credit = {label: string; value: {text: string; href?: string; em?: boolean}[]};
 
 /**
  * The URL name made from a title, as the CMS makes it for a contribution
@@ -65,7 +65,8 @@ export function issueDetails(issue: Issue): Credit[] {
     {label: 'Edited by', value: editorsOf(issue).map((text) => ({text}))},
     {label: 'Designed by', value: [{text: p.designedBy}]},
     {label: 'Publisher', value: [{text: 'Hatje Cantz', href: p.buyUrl}]},
-    {label: 'Published', value: [{text: p.forthcoming ? `Forthcoming, ${issue.date}` : issue.date}]},
+    // a forthcoming issue: no date yet, the word in italics (as wherever its date would be)
+    {label: 'Published', value: [p.forthcoming ? {text: 'forthcoming', em: true} : {text: issue.date}]},
     {label: 'Pages', value: [{text: p.pages}]},
     {label: 'Binding', value: [{text: p.binding}]},
     {label: 'Format', value: [{text: p.format}]}
