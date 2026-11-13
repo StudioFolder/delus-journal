@@ -283,7 +283,23 @@ html,
 body {
   margin: 0;
   height: 100%;
-  overflow: hidden; /* desktop: the stage is the viewport; panels scroll inside */
+  overflow: hidden; /* the stage is the viewport; panels scroll inside */
+}
+/* Phone: the window is free to scroll. It does where a page lets its
+   content flow (FLOW, routes/+layout.svelte); elsewhere the stage is
+   still fixed to the screen and there is nothing to scroll. Its colour
+   is the tone's: what shows past the page's ends and around the
+   browser's bars */
+@media (max-width: 767px) {
+  html,
+  body {
+    height: auto;
+    overflow: visible;
+  }
+  html {
+    background: var(--bg);
+    scrollbar-width: none;
+  }
 }
 
 body {

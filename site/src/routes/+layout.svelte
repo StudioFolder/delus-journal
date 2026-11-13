@@ -13,6 +13,8 @@
   (a layer with its own background) slides down to half the screen to
   show it; the menu, then the tagline and the tone dot at its bottom,
   cascade in. Only the page moves, as one piece (a transform).
+  Where the page scrolls the window (FLOW, in the styles) it stays
+  meanwhile where it was scrolled to.
 -->
 <script lang="ts">
   import '#lib/styles.css';
@@ -27,6 +29,7 @@
   import ToneDot from '#lib/tone/ToneDot.svelte';
   import {snapshot} from '#lib/motion/carry.ts';
   import {leave} from '#lib/motion/leave.ts';
+  import {hold} from '#lib/motion/hold.ts';
   import {site, legal, issues} from '#lib/data/fixtures.ts';
   import {issueLabel} from '#lib/data/format.ts';
 
@@ -78,6 +81,12 @@
   // Phone: the section's name at the top of the page (not on pages with "Back")
   const section = $derived(small ? undefined : nav.find((item) => isActive(item.href))?.label);
 
+  // The window carries the tone as the stage does: on a phone its colour
+  // is what shows past the page's ends, and around the browser's bars
+  $effect(() => {
+    document.documentElement.dataset.tone = tone.current;
+  });
+
   // False during the very first load, when nothing moves (see FADE in styles.css)
   let live = $state(false);
   onMount(() => void (live = true));
@@ -85,26 +94,42 @@
   // Elements that travel to the next page: note where they are (motion/carry.ts)
   onNavigate(snapshot);
 
-  // Mobile menu
+  // Mobile menu. `held`: how far the window is scrolled while the page
+  // is pushed down — its edge is cut that much further (0 on the pages
+  // that scroll inside their panels). A finger doesn't scroll the window
+  // then (the page's edge would leave the menu's); if something else
+  // does (a wheel), the edge follows
   let menuOpen = $state(false);
+  let held = $state(0);
+  const toggle = () => {
+    if (!menuOpen) held = scrollY;
+    menuOpen = !menuOpen;
+  };
   afterNavigate(() => {
     menuOpen = false;
     away = false;
+    held = scrollY; // the new page's own place
   });
   const onkeydown = (e: KeyboardEvent) => e.key === 'Escape' && (menuOpen = false);
+  $effect(() => {
+    if (menuOpen && document.querySelector('.flows')) return hold();
+  });
 
   // Phone: the band (header) goes away while the page is scrolled down
   // and comes back as soon as it is scrolled up (or back to its top).
-  // Pages scroll inside their panels: scroll events don't bubble, so
-  // they are caught on their way down (capture). Sideways scrolling
-  // (scrollTop unchanged) and the bounce at the end are ignored.
+  // Pages scroll inside their panels, or the window itself (FLOW): scroll
+  // events don't bubble, so they are caught on their way down (capture).
+  // Sideways scrolling (scrollTop unchanged) and the bounce at the end
+  // are ignored.
   let away = $state(false);
   const tops = new WeakMap<Element, number>();
   onMount(() => {
     const phone = matchMedia('(max-width: 767px)');
     const onscroll = (e: Event) => {
-      const el = e.target;
-      if (!(el instanceof Element) || !phone.matches) return;
+      if (!phone.matches) return;
+      const el = e.target instanceof Element ? e.target : document.scrollingElement;
+      if (!el) return;
+      if (menuOpen && el === document.scrollingElement) held = scrollY;
       const top = el.scrollTop;
       const last = tops.get(el) ?? 0;
       tops.set(el, top);
@@ -128,77 +153,84 @@
   class:is-live={live}
   data-tone={tone.current}
   style:--items={nav.length + legal.length}
+  style:--held="{held}px"
 >
-  <Panel area="band" inset class="band-bg">
-    <!-- Mobile only -->
-    <button
-      class="menu-button"
-      aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-      aria-expanded={menuOpen}
-      onclick={() => (menuOpen = !menuOpen)}
-    ></button>
+  <!-- The band's place. Nothing in itself (the band is placed on the
+       stage) — except on phones where the page scrolls the window: there
+       it is the part of the screen the band stays in (FLOW, in the styles) -->
+  <div class="top">
+    <Panel area="band" inset class="band-bg">
+      <!-- Mobile only -->
+      <button
+        class="menu-button"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+        onclick={toggle}
+      ></button>
 
-    <!-- The two words lie in the same place: one fades out, then the
-         other fades in -->
-    <a class="back fade" class:is-hidden={!small} href={back}>
-      <span class="word-back" class:shown={!issue || overBand}>Back</span>
-      {#if issue}<span class:shown={!overBand}>{issueLabel(issue.number)}</span>{/if}
-    </a>
+      <!-- The two words lie in the same place: one fades out, then the
+           other fades in -->
+      <a class="back fade" class:is-hidden={!small} href={back}>
+        <span class="word-back" class:shown={!issue || overBand}>Back</span>
+        {#if issue}<span class:shown={!overBand}>{issueLabel(issue.number)}</span>{/if}
+      </a>
 
-    <!-- Phone only: the section's name, on the band, which extends down
-         under the header to hold it -->
-    {#key section}
-      {#if section}
-        <p class="section fade" style:--i={0} out:leave|global>{section}</p>
-      {/if}
-    {/key}
+      <!-- Phone only: the section's name, on the band, which extends down
+           under the header to hold it -->
+      {#key section}
+        {#if section}
+          <p class="section fade" style:--i={0} out:leave|global>{section}</p>
+        {/if}
+      {/key}
 
-    <nav>
-      {#each nav as item, i}
-        <span
-          class="item hover fade"
-          class:active={isActive(item.href)}
-          class:is-hidden={small}
-          class:glass={item.glass}
-          style:--i={i}
-        >
-          <a href={item.href}>{item.label}</a>
+      <nav>
+        {#each nav as item, i}
+          <span
+            class="item hover fade"
+            class:active={isActive(item.href)}
+            class:is-hidden={small}
+            class:glass={item.glass}
+            style:--i={i}
+          >
+            <a href={item.href}>{item.label}</a>
+          </span>
+        {/each}
+        <!-- Phone only: Imprint and Privacy, after a break (on desktop they
+             are in the footer) -->
+        {#each legal as text, j (text.slug)}
+          <span
+            class="item legal hover fade"
+            class:active={isActive(`/${text.slug}/`)}
+            class:is-hidden={small}
+            style:--i={nav.length + j}
+          >
+            <a href="/{text.slug}/">{text.title}</a>
+          </span>
+        {/each}
+      </nav>
+
+      <footer>
+        <a href="/">DELUS</a>
+        <!-- Text that doesn't fit the band fades out instead of being cut.
+             The tagline and the links lie in the same place: one fades out,
+             then the other fades in -->
+        <span class="line fade" class:is-hidden={bandCols < 10}>
+          <span class="tagline">{site.tagline}</span>
+          <span class="links">
+            {#each legal as text (text.slug)}
+              <span class="item hover" class:active={isActive(`/${text.slug}/`)}>
+                <a href="/{text.slug}/">{text.title}</a>
+              </span>
+            {/each}
+          </span>
         </span>
-      {/each}
-      <!-- Phone only: Imprint and Privacy, after a break (on desktop they
-           are in the footer) -->
-      {#each legal as text, j (text.slug)}
-        <span
-          class="item legal hover fade"
-          class:active={isActive(`/${text.slug}/`)}
-          class:is-hidden={small}
-          style:--i={nav.length + j}
-        >
-          <a href="/{text.slug}/">{text.title}</a>
-        </span>
-      {/each}
-    </nav>
+      </footer>
+    </Panel>
+  </div>
 
-    <footer>
-      <a href="/">DELUS</a>
-      <!-- Text that doesn't fit the band fades out instead of being cut.
-           The tagline and the links lie in the same place: one fades out,
-           then the other fades in -->
-      <span class="line fade" class:is-hidden={bandCols < 10}>
-        <span class="tagline">{site.tagline}</span>
-        <span class="links">
-          {#each legal as text (text.slug)}
-            <span class="item hover" class:active={isActive(`/${text.slug}/`)}>
-              <a href="/{text.slug}/">{text.title}</a>
-            </span>
-          {/each}
-        </span>
-      </span>
-    </footer>
-  </Panel>
-
-  <!-- The page: on mobile, pushed down while the menu is open; it still
-       scrolls then, and a tap on it closes the menu -->
+  <!-- The page: on mobile, pushed down while the menu is open; a tap on
+       it closes the menu (it still scrolls then, where it scrolls inside
+       its panels) -->
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="page" onclick={() => (menuOpen = false)}>
     {@render children()}
@@ -219,6 +251,15 @@
   .page {
     position: absolute;
     inset: 0;
+  }
+  .top {
+    display: contents;
+  }
+  /* Whether the page is cut at its sheet's edge, on mobile (below) */
+  @property --cut {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
   }
 
   .stage :global(.band-bg) {
@@ -525,18 +566,21 @@
     /* The content runs above the sheet's edge, under the band: pushed
        down, the page is cut at its edge (a clip, not a cover: on iOS the
        scrolling boxes are layers of their own and would show through
-       one), until it is back under the band */
+       one), until it is back under the band. --cut says whether it is
+       cut (1) or whole (0): a number of its own, so that the edge itself
+       can change meanwhile (--held, as the window's scroll does when a
+       page is opened from the menu) */
     .page {
-      clip-path: inset(0);
+      clip-path: inset(calc(var(--cut, 0) * (var(--held) + var(--sheet))) 0 0);
       transition:
         transform var(--move),
-        clip-path 0s linear var(--move-time);
+        --cut 0s linear var(--move-time);
     }
     .stage.menu-open .page {
-      clip-path: inset(var(--sheet) 0 0);
+      --cut: 1;
       transition:
         transform var(--move),
-        clip-path 0s;
+        --cut 0s;
     }
 
     /* Content that sits on the band on desktop goes on the page, under
@@ -697,6 +741,70 @@
     }
     .stage.menu-open nav a {
       pointer-events: auto;
+    }
+
+    /* ---------- FLOW: the page scrolls the window ----------
+
+       A phone's browser shrinks its bars only when the window itself
+       scrolls, and only then does the page run under them, to the very
+       bottom of the screen. So a page can let the window scroll its
+       content, instead of the panel that holds it: it gives that panel
+       the class `flows` (so far the article does; the other pages
+       follow, and then every `from-top` panel flows).
+
+       While there is such a panel the stage is not fixed to the screen:
+       it is as long as the page, and the window (free to scroll on
+       phones: styles.css) scrolls it. The panels that flow lie in it one over
+       the other (one cell), as panels do on the screen — so a page
+       leaving and the page arriving still overlap. What must stay on
+       the screen is fixed to it: the band's place, the tone dot in the
+       open menu, and any panel that doesn't flow (a page that scrolls
+       inside its panels, leaving or arriving).
+
+       The band's place (.top), not the band: the band slides away and
+       back inside it. An element that is itself fixed doesn't slide on
+       iOS while the window scrolls — it jumps. */
+    .stage:has(:global(.flows)) {
+      position: relative;
+      inset: auto;
+      min-height: 100svh;
+      overflow: clip; /* the page pushed down is cut at the bottom; nothing scrolls here */
+    }
+    .stage:has(:global(.flows)) .page {
+      position: relative;
+      inset: auto;
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      padding-inline: var(--pad);
+    }
+    .stage :global(.panel.flows) {
+      position: static;
+      grid-area: 1 / 1;
+    }
+    .stage :global(.panel.flows > *) {
+      max-height: none;
+      overflow: visible;
+    }
+    .stage:has(:global(.flows)) :global(:is(.tone-dot, .page > .panel:not(.flows))) {
+      position: fixed;
+    }
+    .stage:has(:global(.flows)) .top {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      height: var(--sheet);
+      z-index: 1;
+      pointer-events: none; /* with the band away, what is under it can be tapped */
+    }
+    .stage:has(:global(.flows)) .top > :global(.band-bg) {
+      pointer-events: auto;
+    }
+    /* The menu open: the page is pushed down by half the screen (not
+       half its own length), and stays where it was scrolled (`hold`,
+       above) */
+    .stage.menu-open:has(:global(.flows)) .page {
+      transform: translateY(calc(50dvh - var(--sheet)));
     }
   }
 </style>

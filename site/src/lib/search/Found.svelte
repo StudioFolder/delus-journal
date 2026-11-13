@@ -97,7 +97,12 @@
       if (moved) return;
       const {top, bottom} = ranges[0].getBoundingClientRect();
       const onView = top >= 0 && bottom < innerHeight * 0.8;
-      if (!onView) article.scrollTop += top - innerHeight / 3;
+      if (onView) return;
+      // (on phones the window scrolls, not the article: FLOW in
+      // routes/+layout.svelte — the one that doesn't scroll ignores it)
+      const by = top - innerHeight / 3;
+      article.scrollTop += by;
+      scrollBy(0, by);
     };
     show();
     const frame = requestAnimationFrame(show);

@@ -50,6 +50,7 @@
   import Panel from '#lib/grid/Panel.svelte';
   import ViewSwitch from '#lib/grid/ViewSwitch.svelte';
   import {time} from '#lib/motion/time.ts';
+  import {hold} from '#lib/motion/hold.ts';
   import {word} from '#lib/pointer/word.svelte.ts';
   import Inlines from './Inlines.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
@@ -161,6 +162,11 @@
   }
   const shown = $derived(phase === 'open' || phase === 'changing' || phase === 'grid');
 
+  // While the gallery is on, the page doesn't scroll under it
+  $effect(() => {
+    if (phase !== 'closed') return hold();
+  });
+
   // SWIPE (touch screens): to the left, the next figure; to the right,
   // the one before. The tap that ends a swipe doesn't close.
   let down: number | undefined;
@@ -182,7 +188,7 @@
 
 <svelte:window onkeydown={keys} />
 
-<Panel area="rest" class="on-ground from-top lightbox">
+<Panel area="rest" class="on-ground from-top flows lightbox">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="view" class:is-on={phase !== 'closed'} onpointerdown={press} onpointerup={release}>
     <!-- On the image, above and under it: close -->
@@ -417,6 +423,14 @@
     }
     .grid {
       display: none;
+    }
+    /* The page scrolls the window (`flows`: FLOW, routes/+layout.svelte),
+       so the panel is as long as the text: the view stays on the screen,
+       as high as it (the page doesn't scroll under it meanwhile: `hold`) */
+    .view {
+      position: sticky;
+      top: 0;
+      height: 100dvh;
     }
   }
 </style>

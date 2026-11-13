@@ -71,7 +71,9 @@
   figures for now (how to show them there is still to decide).
 
   PHONE — one column under the header; the people in small capitals
-  above the title (the band is the header there).
+  above the title (the band is the header there). The text scrolls the
+  window, not its panel (`flows`: FLOW in routes/+layout.svelte), so
+  the browser's bars shrink and the text runs to the bottom of the screen.
 -->
 <script lang="ts">
   import {onMount} from 'svelte';
@@ -190,7 +192,7 @@
   </Panel>
 {/if}
 
-<Panel area="rest" class="on-ground from-top">
+<Panel area="rest" class="on-ground from-top flows">
   <article
     bind:this={text}
     class="fade"

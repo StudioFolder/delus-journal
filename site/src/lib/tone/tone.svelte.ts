@@ -8,7 +8,7 @@
 export const tones = ['dark', 'light'] as const;
 export type Tone = (typeof tones)[number];
 
-let now = $state<Tone>('dark'); // the tone the site opens in
+let now = $state<Tone>('dark'); // the tone the site opens in (also on <html> in app.html, for the first paint)
 
 export const tone = {
   get current() {
