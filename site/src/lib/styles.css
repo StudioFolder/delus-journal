@@ -289,6 +289,10 @@ body {
 body {
   font: var(--type-text);
   -webkit-font-smoothing: antialiased;
+  /* iOS draws a grey box over whatever is tapped: over a figure, or over
+     the whole screen (the gallery's area that closes it), it flashed.
+     What is tapped answers with its own changes instead */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /*

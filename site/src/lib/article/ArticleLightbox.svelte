@@ -302,15 +302,26 @@
     pointer-events: none; /* …but a click on it closes too */
     width: min(20 * var(--col), var(--free) * var(--ratio));
   }
+  /* Opening, it is there at once, lying on its miniature (which has the
+     same colour): it doesn't fade in as it would arriving with a page —
+     the two fading across each other would dim for a moment */
+  @starting-style {
+    :global(.is-live) .large {
+      opacity: 1;
+    }
+  }
   /* When it leaves its miniature (.small) it has the miniature's hover
-     colour, which it loses on the way */
+     colour, which it loses on the way — only where there is a hover
+     (on a touch screen the miniature never had it) */
   .image {
     aspect-ratio: var(--ratio);
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
     transform-origin: 0 0;
   }
-  .image.small {
-    --lit: 1;
+  @media (hover: hover) {
+    .image.small {
+      --lit: 1;
+    }
   }
   .image.moving {
     transition:

@@ -28,7 +28,7 @@
 
   DOWNLOAD, CITE — two words at the bottom of the band, above the footer
   (ArticleActions): the link to the article's PDF and a button that
-  copies how to cite it. Mobile: after the text and its notes.
+  copies how to cite it. Mobile: after the text.
 
   NOTES — on the band, at the bottom, above those two words (4 units):
   a note is there only while its number in the text is on the screen
@@ -38,8 +38,8 @@
   don't fit wait) and only
   while the pointer is over the space of the text: over the band, or
   out of the window, they fade out. Where there is no pointer to hover
-  with (touch screens) they stay. Mobile: all the notes after the text
-  instead.
+  with (touch screens) they stay. Mobile: none on the band; a tap on a
+  note's number in the text opens it under its paragraph (ArticleBody).
   Two lines of space between these blocks. All together:
 
   TEXT — in the space to the right of the band, as the news texts and

@@ -39,20 +39,26 @@
     fades out for as long as the miniature is there.
     Only where the figures are in the margin (Medium and Wide screens)
     and a pointer can hover.
-  - The notes (ArticleNotes): on mobile, one list after the text. On
-    desktop they are not here but on the band, each one only while its
-    number is on the screen: this component tells the page which numbers
-    are on view (`onview`) — once they have stayed the same for a moment
-    (--settle-time): while the text is scrolled fast, numbers come and go
-    and the notes wait, then change once.
+  - The notes. On phones a note's number in the text is a link (thinly
+    underlined, as .underlined): a tap opens the note right under the
+    line where the number is (the paragraph or quote goes on under it),
+    unfolding, its words coming in one after another as a figure's
+    caption on desktop (ArticleNote); a tap on the number again,
+    or on the note, closes it; another number opens its own note instead.
+    On the larger screens they are not here but on the band
+    (ArticleNotes), each one only while its number is on the screen: this
+    component tells the page which numbers are on view (`onview`) — once
+    they have stayed the same for a moment (--settle-time): while the
+    text is scrolled fast, numbers come and go and the notes wait, then
+    change once.
   Where it sits on the page is up to the page.
 -->
 <script lang="ts">
-  import {onMount, tick} from 'svelte';
+  import {mount, onMount, tick, unmount} from 'svelte';
   import Inlines from './Inlines.svelte';
   import ArticleFigure from './ArticleFigure.svelte';
-  import ArticleNotes from './ArticleNotes.svelte';
   import {time} from '#lib/motion/time.ts';
+  import ArticleNote from './ArticleNote.svelte';
   import type {Block, Figure, Inline} from '#lib/data/fixtures.ts';
   import {imageAt} from '#lib/data/images.ts';
 
@@ -119,6 +125,9 @@
   }
 
   async function place() {
+    // on phones the figures stay in the column: nothing to place (and the
+    // notes unfolding there resize the text at every frame)
+    if (matchMedia('(max-width: 767px)').matches) return;
     const figures = [...body.querySelectorAll<HTMLElement>('.figure')];
     if (!figures.length || photos) return; // (a photo essay: they stay in the column)
     const indexes = blocks.flatMap((b, i) => (typeof b === 'object' && 'figure' in b ? [i] : []));
@@ -190,6 +199,101 @@
     covered = [];
   };
 
+  // PHONES — a note opens right under the line where its number is: the
+  // paragraph (or quote) is split there, the note (ArticleNote, a block
+  // of spans) is put in the text, and the text goes on under it. Its
+  // height unfolds from nothing; closing, it folds back and fades. One
+  // note is open at a time. Not with Svelte's own blocks: the place is
+  // known only once the text is laid out.
+  let opened: {n: number; box: HTMLElement; note: ReturnType<typeof mount>} | undefined;
+  let lit = $state<number>(); // the number of the open note: lit in the text
+  const easing = 'cubic-bezier(0.215, 0.61, 0.355, 1)'; // cubicOut
+
+  function tap(event: MouseEvent) {
+    if (!matchMedia('(max-width: 767px)').matches) return;
+    const ref = (event.target as Element).closest<HTMLElement>('.ref');
+    if (!ref) return;
+    const n = Number(ref.dataset.note);
+    const same = opened?.n === n;
+    close();
+    if (!same) open(ref, n);
+  }
+
+  // Where the line of `ref` ends: the first letter after it that lies
+  // lower down (it starts the next line); nothing on the block's last line
+  function nextLine(ref: HTMLElement, block: Element) {
+    const bottom = ref.getBoundingClientRect().bottom;
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+    const range = document.createRange();
+    for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
+      if (ref.contains(node) || !(ref.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)) continue;
+      for (let i = 0; i < node.data.length; i++) {
+        if (/\s/.test(node.data[i])) continue;
+        range.setStart(node, i);
+        range.setEnd(node, i + 1);
+        if (range.getBoundingClientRect().top > bottom) return {node, i};
+      }
+    }
+  }
+
+  function open(ref: HTMLElement, n: number) {
+    const block = ref.closest('[data-block]')!;
+    const box = document.createElement('span');
+    box.style.cssText = 'display: block; overflow: hidden';
+    // the whole width of the text, also in an indented block (a quote)
+    box.style.marginLeft = `${-parseFloat(getComputedStyle(block).paddingLeft)}px`;
+    const at = nextLine(ref, block);
+    if (at) {
+      const rest = at.node.splitText(at.i);
+      // never inside a link: after it
+      const link = rest.parentElement?.closest('a');
+      if (link && block.contains(link)) link.after(box);
+      else rest.before(box);
+    } else block.append(box);
+    const note = mount(ArticleNote, {target: box, props: {n, note: notes[n - 1], onclose: close}});
+    box.animate([{height: '0px'}, {height: `${box.offsetHeight}px`}], {duration: time('--fade-time'), easing});
+    opened = {n, box, note};
+    lit = n;
+  }
+
+  function close() {
+    if (!opened) return;
+    const {box, note} = opened;
+    opened = undefined;
+    lit = undefined;
+    const fold = box.animate(
+      [
+        {height: `${box.offsetHeight}px`, opacity: 1},
+        {height: '0px', opacity: 0}
+      ],
+      {duration: time('--fade-time'), easing, fill: 'forwards'}
+    );
+    fold.onfinish = () => {
+      unmount(note);
+      box.remove();
+    };
+  }
+
+  $effect(() => {
+    for (const ref of body.querySelectorAll<HTMLElement>('.ref'))
+      ref.classList.toggle('is-open', Number(ref.dataset.note) === lit);
+  });
+
+  // The lines change with the width: an open note closes (not when only
+  // the height changes, as the phone's bars come and go)
+  onMount(() => {
+    let width = innerWidth;
+    const resized = () => {
+      if (innerWidth !== width) close();
+      width = innerWidth;
+    };
+    addEventListener('resize', resized);
+    return () => {
+      removeEventListener('resize', resized);
+      if (opened) unmount(opened.note);
+    };
+  });
+
   onMount(() => {
     place();
     const watch = new ResizeObserver(place);
@@ -199,13 +303,13 @@
   });
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions, a11y_mouse_events_have_key_events -->
-<div class="body" bind:this={body} onmouseover={point} onmouseout={leave} onfocusin={point} onfocusout={leave}>
+<!-- svelte-ignore a11y_no_static_element_interactions, a11y_mouse_events_have_key_events, a11y_click_events_have_key_events -->
+<div class="body" bind:this={body} onmouseover={point} onmouseout={leave} onfocusin={point} onfocusout={leave} onclick={tap}>
   {#each blocks as block, i (i)}
     {#if typeof block === 'string' || Array.isArray(block)}
-      <p><Inlines parts={block} /></p>
+      <p data-block={i}><Inlines parts={block} /></p>
     {:else if 'quote' in block}
-      <blockquote><Inlines parts={block.quote} sc={false} /></blockquote>
+      <blockquote data-block={i}><Inlines parts={block.quote} sc={false} /></blockquote>
     {:else if 'figure' in block}
       {#if !photos}<ArticleFigure figure={block.figure} id={figureBlocks.indexOf(i)} top={tops[i]} covered={covered.includes(i)} onopen={(el) => onfigure?.(block.figure, el)} />{/if}
     {:else}
@@ -219,9 +323,6 @@
         <div class="cell"><ArticleFigure {figure} photo id={n} onopen={(el) => onfigure?.(figure, el)} /></div>
       {/each}
     </div>
-  {/if}
-  {#if notes.length}
-    <div class="end"><ArticleNotes {notes} /></div>
   {/if}
   {#if preview}
     <div
@@ -313,11 +414,6 @@
       opacity: 1;
     }
   }
-  /* The notes after the text: on mobile only (desktop: on the band),
-     two lines of space above them */
-  .end {
-    display: none;
-  }
   /* Narrow and Medium screens (SCREENS in styles.css): the columns are
      smaller and the text takes more of them, so a chapter title too —
      about half the text, as on Wide: 14 of the text's 25 columns on
@@ -340,9 +436,24 @@
     h2 {
       width: auto; /* the text's width: 8 columns are too few here */
     }
-    .end {
-      display: block;
-      margin-top: calc(4 * var(--u));
+    /* A note's number: a link, thinly underlined (as .underlined), quiet
+       → full ink while its note is open; it catches the tap around it */
+    .body :global(.ref) {
+      position: relative;
+      cursor: pointer;
+      text-decoration-line: underline;
+      text-decoration-thickness: 1px;
+      text-decoration-color: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
+      text-underline-offset: -0.1em; /* a little under the raised figure, not at the line's foot */
+      transition: --lit var(--hover);
+    }
+    .body :global(.ref.is-open) {
+      --lit: 1;
+    }
+    .body :global(.ref)::after {
+      content: '';
+      position: absolute;
+      inset: calc(-2 * var(--u)) calc(-1 * var(--u));
     }
   }
 </style>
