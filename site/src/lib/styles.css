@@ -134,14 +134,13 @@
     --type-band-title: 18px/24px var(--sans);
   }
 }
-/* Phone: an essay's text at the size of the large type there (21/24,
-   as the issues' abstracts), and its quotes, chapter titles and note
-   numbers in Styrene at the size that matches it (21 × 0.875 ≈ 18), on
-   the same line */
+/* Phone: an essay's text at the running text's size (18/24), and its
+   quotes, chapter titles and note numbers in Styrene at the size that
+   matches it (18 × 0.875 ≈ 16), on the same line */
 @media (max-width: 767px) {
   :root {
-    --type-reading: 21px/24px var(--display);
-    --type-quote: 18px/24px var(--sans);
+    --type-reading: 18px/24px var(--display);
+    --type-quote: 16px/24px var(--sans);
   }
 }
 

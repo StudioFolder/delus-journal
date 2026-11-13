@@ -83,8 +83,11 @@
 
     // Measure the statement in its final place, then start it in the middle
     const text = statement.getBoundingClientRect();
-    const panel = column.parentElement!.getBoundingClientRect(); // the space between header/menu and the bottom
-    drop = panel.top + panel.height / 2 - (text.top + text.height / 2);
+    // The space between the menu (or, on phones, the header) and the bottom;
+    // on phones the panel also runs under the header
+    const panel = column.parentElement!.getBoundingClientRect();
+    const top = innerWidth < 768 ? document.querySelector('.band-bg')!.getBoundingClientRect().bottom : panel.top;
+    drop = (top + panel.bottom) / 2 - (text.top + text.height / 2);
     // Arriving from another page, the band moves first
     wait = navigation.type === 'enter' ? 0 : time('--move-time');
     phase = 'words';
@@ -211,9 +214,9 @@
     <div class="highlights" class:is-below={below}>
       {#each highlights as highlight}
         <section class="labelled">
+          <div class="image cover"></div>
           <p class="label">{highlight.label}</p>
           <p class="display"><Inlines parts={highlight.text} /></p>
-          <div class="image cover"></div>
         </section>
       {/each}
     </div>
@@ -285,8 +288,9 @@
       display: grid;
       gap: calc(8 * var(--u));
     }
+    /* each highlight's image above its label and text */
     section .image {
-      margin-top: var(--u);
+      margin-bottom: var(--u);
     }
   }
 </style>

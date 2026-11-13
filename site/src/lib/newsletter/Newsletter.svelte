@@ -135,7 +135,7 @@
      is not shown, so the content above ends as on any page */
   @media (max-width: 767px) {
     :global(.stage .on-band.from-top.above-newsletter) {
-      padding-bottom: var(--header);
+      padding-bottom: 0;
     }
     .newsletter {
       display: none;

@@ -59,8 +59,35 @@
 
   // Mobile menu
   let menuOpen = $state(false);
-  afterNavigate(() => (menuOpen = false));
+  afterNavigate(() => {
+    menuOpen = false;
+    away = false;
+  });
   const onkeydown = (e: KeyboardEvent) => e.key === 'Escape' && (menuOpen = false);
+
+  // Phone: the band (header) goes away while the page is scrolled down
+  // and comes back as soon as it is scrolled up (or back to its top).
+  // Pages scroll inside their panels: scroll events don't bubble, so
+  // they are caught on their way down (capture). Sideways scrolling
+  // (scrollTop unchanged) and the bounce at the end are ignored.
+  let away = $state(false);
+  const tops = new WeakMap<Element, number>();
+  onMount(() => {
+    const phone = matchMedia('(max-width: 767px)');
+    const onscroll = (e: Event) => {
+      const el = e.target;
+      if (!(el instanceof Element) || !phone.matches) return;
+      const top = el.scrollTop;
+      const last = tops.get(el) ?? 0;
+      tops.set(el, top);
+      const end = el.scrollHeight - el.clientHeight;
+      if (top <= 0) away = false;
+      else if (top > last) away = true;
+      else if (top < last - 2 && top < end - 2) away = false;
+    };
+    addEventListener('scroll', onscroll, {capture: true, passive: true});
+    return () => removeEventListener('scroll', onscroll, {capture: true});
+  });
 </script>
 
 <svelte:window {onkeydown} />
@@ -68,6 +95,7 @@
 <div
   class="stage"
   class:menu-open={menuOpen}
+  class:band-away={away && !menuOpen}
   class:has-section={section}
   class:is-live={live}
   data-tone={tone.current}
@@ -260,7 +288,36 @@
       bottom: auto;
       height: var(--sheet);
       overflow: visible; /* the menu lies below the header */
-      transition: box-shadow var(--move);
+      transition:
+        box-shadow var(--move),
+        transform var(--move);
+    }
+    /* Scrolled down: the band slides up out of the screen. Only the band
+       moves: the content already runs under it (below), so it moves with
+       the finger alone */
+    .stage.band-away :global(.band-bg) {
+      transform: translateY(-100%);
+      box-shadow: none;
+    }
+    /* The soft edge: under the band, --pad of the page's colour fading
+       out, over the content passing under it; it follows the band (with
+       the band away, along the top of the screen) */
+    .stage :global(.band-bg::after) {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      height: var(--pad);
+      background: linear-gradient(var(--bg), transparent);
+      pointer-events: none;
+      /* while the menu is open it is not there: it goes at once, and
+         comes back only once the page is back under the band */
+      transition: opacity 0s linear var(--move-time);
+    }
+    .stage.menu-open :global(.band-bg::after) {
+      opacity: 0;
+      transition-delay: 0s;
     }
     /* Open, the header and the menu under it are one surface */
     .stage.menu-open :global(.band-bg) {
@@ -276,7 +333,6 @@
        from its content, closed or open */
     .page {
       z-index: 0; /* the sheet (z-index -1) stays under the page's content */
-      transition: transform var(--move);
     }
     .page::before {
       content: '';
@@ -285,9 +341,31 @@
       z-index: -1;
       background: var(--bg);
       box-shadow: 0 0 calc(3 * var(--u)) var(--shade);
+      transition: top 0s linear var(--move-time); /* back under the band once it has come back */
+    }
+    /* With the band away, the sheet reaches the top of the screen */
+    .stage.band-away .page::before {
+      top: 0;
+      transition-delay: 0s;
     }
     .stage.menu-open .page {
       transform: translateY(calc(50% - var(--sheet))); /* the sheet's edge halfway down the screen */
+    }
+    /* The content runs above the sheet's edge, under the band: pushed
+       down, the page is cut at its edge (a clip, not a cover: on iOS the
+       scrolling boxes are layers of their own and would show through
+       one), until it is back under the band */
+    .page {
+      clip-path: inset(0);
+      transition:
+        transform var(--move),
+        clip-path 0s linear var(--move-time);
+    }
+    .stage.menu-open .page {
+      clip-path: inset(var(--sheet) 0 0);
+      transition:
+        transform var(--move),
+        clip-path 0s;
     }
 
     /* Content that sits on the band on desktop goes on the page, under
@@ -299,20 +377,17 @@
       padding-inline: 0;
       top: var(--sheet);
     }
-    /* Content scrolls between the band and a zone of the header's height
-       at the bottom. It scrolls right up to the band, and its first --pad
-       under the band is a soft edge: at rest the content starts below
-       it; scrolling up, it fades out there instead of being cut */
+    /* Content scrolls the whole height of the screen, under the band
+       and to the bottom edge (no zone kept there: the tone dot is in the
+       menu). At rest it starts --pad under the band (the soft edge's
+       height, see .band-bg::after) */
     .stage :global(.on-band.from-top) {
+      top: 0;
       padding-top: 0;
-      padding-bottom: var(--header);
+      padding-bottom: 0;
     }
     .stage :global(.on-band.from-top > *) {
-      padding-top: var(--pad);
-    }
-    .stage :global(.on-band.from-top > *),
-    .stage :global(.on-ground.from-top > *) {
-      mask-image: linear-gradient(to bottom, transparent, #000 var(--pad));
+      padding-top: calc(var(--sheet) + var(--pad));
     }
     /* The section's name (About, Issues…) on the band, under DELUS, as a
        menu item; while the menu is open it gives way to the menu */
@@ -332,16 +407,16 @@
       padding-bottom: var(--header);
     }
     /* Content on the background with `from-top` takes the same place:
-       under the band, full width (e.g. a news text); what's inside keeps
-       --edge above itself, the soft edge's height */
+       the whole height, full width (e.g. a news text); what's inside keeps
+       --edge above itself: the band and the soft edge */
     .stage :global(.on-ground.from-top) {
-      --edge: var(--pad);
+      --edge: calc(var(--sheet) + var(--pad));
       left: var(--pad);
       right: var(--pad);
       width: auto;
-      top: var(--sheet);
+      top: 0;
       padding-top: 0;
-      padding-bottom: var(--header);
+      padding-bottom: 0;
     }
 
     /* Menu button: two short lines one unit apart; open, they turn into
@@ -417,15 +492,13 @@
       gap: var(--u);
     }
 
-    /* Back: right side of the header, just before the menu button */
+    /* No "Back" on phones (the browser's own back does it) */
     .back {
-      top: calc(3 * var(--u));
-      left: auto;
-      right: calc(var(--pad) + 4 * var(--u));
+      display: none;
     }
 
     /* Closed: menu and tagline hidden. Open: both shown (cascading in after
-       the band has opened), whatever the desktop rules say; Back hidden */
+       the band has opened), whatever the desktop rules say */
     .stage:not(.menu-open) nav .item,
     .stage:not(.menu-open) footer span {
       opacity: 0;
@@ -435,17 +508,17 @@
     .stage.menu-open nav .item,
     .stage.menu-open footer span {
       opacity: 1;
+      /* the cascade of .fade, also where the desktop band hides them
+         (is-hidden: Small band, a narrow band's tagline) */
+      transition:
+        opacity var(--fade-time) ease calc(var(--move-time) + var(--i, 0) * var(--cascade-step)),
+        --lit var(--hover);
     }
     .stage:not(.menu-open) nav a {
       pointer-events: none;
     }
     .stage.menu-open nav a {
       pointer-events: auto;
-    }
-    .stage.menu-open .back {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--fade-out-time) ease 0s;
     }
   }
 </style>

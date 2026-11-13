@@ -184,7 +184,7 @@
     out:leave|global
   >
     <!-- Mobile only: on desktop the people are on the band -->
-    <p class="label people-mobile">{data.authors.join(', ')}</p>
+    <p class="people-mobile">{data.authors.join(', ')}</p>
     {#if !data.issue.publication.forthcoming}
       <ArticleHeader title={data.contribution.title} onview={(visible) => (titleOnView = visible)} />
       {#if data.contribution.abstract}
@@ -286,8 +286,8 @@
     }
     .people-mobile {
       display: block;
-      margin-bottom: calc(-6 * var(--u)); /* 2 units to the title, as a label */
-      color: var(--ink-quiet);
+      margin-bottom: calc(-7 * var(--u)); /* one unit to the title */
+      font: var(--type-text); /* as on the band */
     }
     article {
       padding-left: 0;

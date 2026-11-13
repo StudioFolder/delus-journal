@@ -53,6 +53,15 @@
 
   let at = $state(0); // the issue on view
 
+  // Mobile: the cover on view in the swiped row (the one at its start)
+  // is the issue on view, so its row in the list is lit, as on desktop
+  function onswipe(event: Event) {
+    const row = event.currentTarget as HTMLElement;
+    const cover = row.firstElementChild as HTMLElement;
+    const step = cover.offsetWidth + parseFloat(getComputedStyle(row).columnGap);
+    at = Math.min(newestFirst.length - 1, Math.round(row.scrollLeft / step));
+  }
+
   // The abstract follows a moment later: it fades out, changes, fades in
   let shown = $state(0); // the issue whose abstract is written
   let hidden = $state(false);
@@ -153,9 +162,13 @@
     </ul>
 
     <!-- Mobile only -->
-    <div class="covers-mobile fade" out:leave|global>
+    <div class="covers-mobile fade" onscroll={onswipe} out:leave|global>
       {#each newestFirst as issue (issue.slug)}
-        <div class="cover"></div>
+        <a
+          class="cover"
+          href="/issues/{issue.slug}/"
+          aria-label="{issueLabel(issue.number)}, {issue.title}"
+        ></a>
       {/each}
     </div>
   </div>
