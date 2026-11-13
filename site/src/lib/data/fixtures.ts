@@ -414,6 +414,89 @@ export const about = {
   ] as Credit[]
 };
 
+// Imprint and Privacy: reached from the footer (the tagline gives way to
+// their links under the pointer). Drafts: what is in [brackets] is still
+// to be confirmed or filled in. `body` is shaped as Sanity's rich text: a
+// paragraph is a string or a list of inline pieces; `{heading}` a heading
+// (style Heading in the CMS), which opens a section.
+export type LegalPage = {
+  slug: string;
+  title: string;
+  body: (string | Inline[] | {heading: string})[];
+};
+
+const contact: Inline = {link: 'delus@arch.ethz.ch', href: 'mailto:delus@arch.ethz.ch'};
+const lus: Inline = {link: 'Institute of Landscape and Urban Studies (LUS)', href: 'https://lus.arch.ethz.ch/'};
+// The Department of Architecture's address (lus.arch.ethz.ch gives none)
+const address = ', Department of Architecture, ETH Zürich, Stefano-Franscini-Platz 5, 8093 Zürich, Switzerland.';
+
+export const legal: LegalPage[] = [
+  {
+    slug: 'imprint',
+    title: 'Imprint',
+    body: [
+      {heading: 'Published by'},
+      ['DELUS, Journal for Landscape and Urban Studies. ', lus, address],
+      {heading: 'Editors-in-Chief'},
+      'Sara Frikech and Johanna Just, responsible for the content of this site.',
+      {heading: 'Contact'},
+      [contact],
+      {heading: 'Print edition'},
+      [
+        'The printed issues are published by ',
+        {link: 'Hatje Cantz', href: 'https://www.hatjecantz.com/'},
+        '.'
+      ],
+      {heading: 'Design and development'},
+      [{link: 'Studio Folder', href: 'https://studiofolder.it/'}, ', Milan.'],
+      {heading: 'Rights'},
+      [
+        'All the published issues of DELUS are open access, under a ',
+        {link: 'Creative Commons BY-NC-ND 4.0', href: 'https://creativecommons.org/licenses/by-nc-nd/4.0/'},
+        ' licence: their contents can be shared freely, without changes, for non-commercial purposes and naming the authors and the journal. Each issue has its DOI and can be downloaded free of charge from this website, ',
+        {link: 'Hatje Cantz', href: 'https://www.hatjecantz.com/collections/delus'},
+        ' and the ',
+        {link: 'OAPEN Library', href: 'https://library.oapen.org/'},
+        '.'
+      ],
+      'The licence does not cover images by third parties: their rights remain with the authors named in the credits.',
+      {heading: 'Links'},
+      'DELUS is not responsible for the content of the other websites this site links to.'
+    ]
+  },
+  {
+    slug: 'privacy',
+    title: 'Privacy',
+    body: [
+      'This site collects as little as possible. It sets no cookies and does not follow visitors from one site to another. This notice says what is collected, by whom and why, under the Swiss Federal Act on Data Protection and, for visitors in the European Union, the General Data Protection Regulation.',
+      {heading: 'Responsible'},
+      [
+        'DELUS, ',
+        lus,
+        address + ' ',
+        contact,
+        '.'
+      ],
+      {heading: 'Hosting'},
+      'The site is hosted by Vercel Inc., in the United States. When a page is visited, its servers record technical data such as the IP address, the browser and the time of the visit, in order to deliver the site and keep it secure. [How long they are kept; the basis of the transfer to the United States, e.g. the Data Privacy Framework.]',
+      {heading: 'Visit statistics'},
+      'Visits are counted with Umami, hosted in the European Union (Germany). Umami sets no cookies and keeps no IP addresses: it records only anonymous data, such as the pages viewed, the site a visitor came from, the browser, the type of device and the country, which cannot be traced back to anyone.',
+      {heading: 'Newsletter'},
+      'Subscribers’ email addresses are kept by [the newsletter service, its country], only to send the newsletter. Every newsletter ends with a link to unsubscribe at once.',
+      {heading: 'Other sites'},
+      'Links to other sites, such as Instagram or the publisher’s, lead to pages with their own privacy policies.',
+      {heading: 'Your rights'},
+      [
+        'Anyone can ask what data about them is kept, have it corrected or deleted, or object to its use, by writing to ',
+        contact,
+        '. A complaint can also be made to the Swiss Federal Data Protection and Information Commissioner or, in the European Union, to the data protection authority of one’s country.'
+      ],
+      {heading: 'Last updated'},
+      '[Month year].'
+    ]
+  }
+];
+
 // Placeholder texts. Replaced by Sanity later.
 export const home = {
   statement:

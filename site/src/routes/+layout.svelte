@@ -27,7 +27,7 @@
   import ToneDot from '#lib/tone/ToneDot.svelte';
   import {snapshot} from '#lib/motion/carry.ts';
   import {leave} from '#lib/motion/leave.ts';
-  import {site} from '#lib/data/fixtures.ts';
+  import {site, legal} from '#lib/data/fixtures.ts';
 
   let {children} = $props();
 
@@ -99,7 +99,7 @@
   class:has-section={section}
   class:is-live={live}
   data-tone={tone.current}
-  style:--items={nav.length}
+  style:--items={nav.length + legal.length}
 >
   <Panel area="band" inset class="band-bg">
     <!-- Mobile only -->
@@ -131,12 +131,35 @@
           <a href={item.href}>{item.label}</a>
         </span>
       {/each}
+      <!-- Phone only: Imprint and Privacy, after a break (on desktop they
+           are in the footer) -->
+      {#each legal as text, j (text.slug)}
+        <span
+          class="item legal hover fade"
+          class:active={isActive(`/${text.slug}/`)}
+          class:is-hidden={small}
+          style:--i={nav.length + j}
+        >
+          <a href="/{text.slug}/">{text.title}</a>
+        </span>
+      {/each}
     </nav>
 
     <footer>
       <a href="/">DELUS</a>
-      <!-- Text that doesn't fit the band fades out instead of being cut -->
-      <span class="fade" class:is-hidden={bandCols < 10}>{site.tagline}</span>
+      <!-- Text that doesn't fit the band fades out instead of being cut.
+           The tagline and the links lie in the same place: one fades out,
+           then the other fades in -->
+      <span class="line fade" class:is-hidden={bandCols < 10}>
+        <span class="tagline">{site.tagline}</span>
+        <span class="links">
+          {#each legal as text (text.slug)}
+            <span class="item hover" class:active={isActive(`/${text.slug}/`)}>
+              <a href="/{text.slug}/">{text.title}</a>
+            </span>
+          {/each}
+        </span>
+      </span>
     </footer>
   </Panel>
 
@@ -243,24 +266,74 @@
   nav .is-hidden a {
     pointer-events: none;
   }
+  nav .legal {
+    display: none;
+  }
 
   .back {
     top: calc(5 * var(--u));
   }
 
-  /* Footer: DELUS on column 3, tagline from column 5, both fixed */
+  /* Footer: DELUS on column 3, tagline from column 5, both fixed. The
+     whole line catches the pointer (nothing lies under it), so moving
+     from DELUS to the links keeps them there */
   footer {
     bottom: calc(5 * var(--u));
     right: var(--col);
     display: grid;
     grid-template-columns: calc(2 * var(--col)) auto;
-    pointer-events: none; /* as for the menu: only the link catches clicks */
   }
-  footer a {
-    pointer-events: auto;
+  /* The tagline and the links to Imprint and Privacy, in the same place:
+     under the pointer the tagline fades out, then the links fade in
+     (4 units apart, as the menu's items; quiet → full ink) */
+  .line {
+    display: grid;
+    justify-items: start;
   }
-  footer span {
+  .line > * {
+    grid-area: 1 / 1;
+  }
+  .tagline {
     color: var(--ink-quiet);
+    transition: opacity var(--fade-time) ease var(--fade-out-time);
+  }
+  .links {
+    display: flex;
+    gap: calc(4 * var(--u));
+    opacity: 0;
+    transition: opacity var(--fade-out-time) ease 0s;
+  }
+  .links a {
+    pointer-events: none;
+  }
+  /* Shown: under the pointer, or with the keyboard on the footer. Not
+     where the tagline itself is hidden (a narrow band). On Phone they are
+     in the menu instead */
+  @media (hover: hover) {
+    footer:hover .line:not(.is-hidden) .tagline {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fade-out-time) ease 0s;
+    }
+    footer:hover .line:not(.is-hidden) .links {
+      opacity: 1;
+      transition: opacity var(--fade-time) ease var(--fade-out-time);
+    }
+    footer:hover .line:not(.is-hidden) .links a {
+      pointer-events: auto;
+    }
+  }
+  footer:has(:focus-visible) .line:not(.is-hidden) .tagline {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--fade-out-time) ease 0s;
+  }
+  footer:has(:focus-visible) .line:not(.is-hidden) .links {
+    opacity: 1;
+    transition: opacity var(--fade-time) ease var(--fade-out-time);
+  }
+  footer:has(:focus-visible) .line:not(.is-hidden) .links a {
+    pointer-events: auto;
   }
 
   .menu-button,
@@ -467,7 +540,7 @@
     }
     /* Tagline and tone dot: on one line at the bottom of the open menu,
        --pad above its edge; they come after the menu's items */
-    footer span {
+    footer .line {
       position: fixed;
       left: var(--pad);
       bottom: calc(50% + var(--pad));
@@ -491,6 +564,13 @@
       flex-direction: column;
       gap: var(--u);
     }
+    /* Imprint and Privacy after the sections, a line apart */
+    nav .legal {
+      display: block;
+    }
+    nav .item:not(.legal) + .legal {
+      margin-top: calc(3 * var(--u));
+    }
 
     /* No "Back" on phones (the browser's own back does it) */
     .back {
@@ -500,13 +580,13 @@
     /* Closed: menu and tagline hidden. Open: both shown (cascading in after
        the band has opened), whatever the desktop rules say */
     .stage:not(.menu-open) nav .item,
-    .stage:not(.menu-open) footer span {
+    .stage:not(.menu-open) footer .line {
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--fade-out-time) ease 0s;
     }
     .stage.menu-open nav .item,
-    .stage.menu-open footer span {
+    .stage.menu-open footer .line {
       opacity: 1;
       /* the cascade of .fade, also where the desktop band hides them
          (is-hidden: Small band, a narrow band's tagline) */

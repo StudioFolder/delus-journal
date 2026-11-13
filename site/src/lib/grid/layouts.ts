@@ -55,6 +55,9 @@ export const layouts: Record<string, Layout> = {
   '/issues/[slug]/[contribution]': {band: s, back: (p) => `/issues/${p.slug}/`},
   '/contributors/[slug]': {band: s, back: '/contributors/'},
   '/events/[slug]': {band: m},
+  // Imprint and Privacy (from the footer): laid out as News
+  '/(legal)/imprint': {band: m},
+  '/(legal)/privacy': {band: m},
   '/donate': {band: m},
   '/shop': {band: m}
 };
