@@ -10,8 +10,10 @@
   nothing can hover): under Download, the file and its size ("PDF file,
   3.1 MB"); under Cite, the citation (ending with its DOI), the journal
   in italics (Styrene has no italic file yet: slanted by the browser). In
-  the words' type (--type-ui), quiet, one unit under their word. Opening, the room is made first (the words above rise), then the
-  details fade in; closing, the reverse — never both at once.
+  the words' type (--type-ui), quiet, one unit under their word.
+  Opening, once the notes above have faded out, the room is made (the
+  words rise), then the details fade in; closing, the reverse — never two
+  at once. The page brings the notes back after (.band-notes.waits).
 -->
 <script lang="ts">
   import {opens} from '#lib/type/links.ts';
@@ -91,13 +93,15 @@
     color: var(--ink-quiet);
     overflow-wrap: anywhere; /* a long address breaks rather than leaving the band */
   }
+  /* Opening waits for the notes above to fade out (the band's notes go
+     as the pointer reaches the band), so nothing moves while they fade */
   .details .more {
     grid-template-rows: 1fr;
-    transition-delay: 0s;
+    transition-delay: var(--fade-out-time);
   }
   .details .more > div {
     opacity: 1;
-    transition: opacity var(--fade-time) ease var(--fade-time);
+    transition: opacity var(--fade-time) ease calc(var(--fade-out-time) + var(--fade-time));
   }
   .action:last-child .text {
     padding-bottom: 0;

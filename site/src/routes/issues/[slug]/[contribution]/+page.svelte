@@ -112,6 +112,7 @@
   // Over the band: the details of Download and Cite show (where nothing
   // can hover, always)
   let overBand = $state(false);
+  let afterBand = $state(false);
   onMount(() => {
     hovers = matchMedia('(hover: hover)').matches;
     overText = !hovers;
@@ -140,6 +141,10 @@
   function point(event: PointerEvent) {
     if (!hovers || event.pointerType !== 'mouse') return;
     overText = event.clientX >= text.parentElement!.getBoundingClientRect().left;
+    // Coming back from the band, the notes wait for Download and Cite to
+    // close and settle (see ArticleActions)
+    if (overText && overBand) afterBand = true;
+    if (!overText) afterBand = false;
     overBand = !overText;
   }
 </script>
@@ -168,6 +173,7 @@
           class="band-notes fade"
           class:now={swapped || hovers}
           class:is-hidden={textHidden || !overText}
+          class:waits={afterBand}
           bind:this={bandNotes}
         >
           <ArticleNotes notes={data.contribution.notes} only={onView} {room} />
@@ -227,6 +233,11 @@
 <PointerWord />
 
 <style>
+  /* Back from the band: the notes appear once Download and Cite have
+     closed (their text fading out, then their room) */
+  .band-notes.waits:not(.is-hidden) {
+    transition-delay: calc(var(--fade-out-time) + var(--fade-time));
+  }
   .people {
     padding: 0;
     list-style: none;
