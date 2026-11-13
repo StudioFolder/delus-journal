@@ -6,12 +6,12 @@
   section: in small capitals, quiet, over its first paragraph (as the
   date over a news title).
   LAST UPDATED (Privacy): the day the page was last published in the CMS,
-  as a last section, written by the site (12.11.2026).
+  as a last section, written by the site (November 13, 2026).
 -->
 <script lang="ts">
   import type {LegalPage} from '#lib/data/fixtures.ts';
   import Inlines from '#lib/article/Inlines.svelte';
-  import {fullDate} from '#lib/data/format.ts';
+  import {longDate} from '#lib/data/format.ts';
 
   let {text}: {text: LegalPage} = $props();
 
@@ -39,7 +39,7 @@
   {#if text.updated}
     <section>
       <h3 class="label">Last updated</h3>
-      <p class="display"><time datetime={text.updated}>{fullDate(text.updated)}</time></p>
+      <p class="display"><time datetime={text.updated}>{longDate(text.updated)}</time></p>
     </section>
   {/if}
 </article>

@@ -405,7 +405,12 @@ export const journal = `DELUS: ${site.tagline}`;
 
 // About: the text from the Figma About page.
 export const about = {
-  text: 'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the Institute for Landscape and Urban Studies (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.',
+  // (a paragraph of inline pieces: the institute's name links to its site)
+  text: [
+    'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the ',
+    {link: 'Institute for Landscape and Urban Studies', href: 'https://lus.arch.ethz.ch/'},
+    ' (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.'
+  ] as Inline[],
   // The colophon: Sanity's `credits` (label + value). Here each value is
   // a list of lines, some of them links.
   credits: [

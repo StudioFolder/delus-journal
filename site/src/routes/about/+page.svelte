@@ -16,7 +16,7 @@
   import {TEXT_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {about} from '#lib/data/fixtures.ts';
-  import Acronyms from '#lib/type/Acronyms.svelte';
+  import Inlines from '#lib/article/Inlines.svelte';
   import Credits from '#lib/type/Credits.svelte';
   import Newsletter from '#lib/newsletter/Newsletter.svelte';
 </script>
@@ -25,7 +25,7 @@
   <div class="about">
     <!-- Mobile only: on desktop the text is on the right -->
     <p class="display mobile fade" style:--i={0} out:leave|global>
-      <Acronyms text={about.text} />
+      <Inlines parts={about.text} />
     </p>
     <Credits rows={about.credits} cascade start={1} />
     <!-- Phone only: the newsletter after the colophon -->
@@ -36,7 +36,7 @@
 <Panel area="rest" class="on-ground from-top">
   <div class="text" style:--text-cols={TEXT_COLUMNS}>
     <p class="display fade" style:--i={0} out:leave|global>
-      <Acronyms text={about.text} />
+      <Inlines parts={about.text} />
     </p>
   </div>
 </Panel>

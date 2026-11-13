@@ -55,6 +55,15 @@ export const issueLabel = (n: number) => `Issue ${issueNumber(n)}`;
 /** A full date: '2026-11-12' → "12.11.2026" */
 export const fullDate = (date: string) => date.split('-').reverse().join('.');
 
+/** A date in words: '2026-11-13' → "November 13, 2026" (Privacy's "Last updated") */
+export const longDate = (date: string) =>
+  new Date(`${date.slice(0, 10)}T12:00:00Z`).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC'
+  });
+
 /** Month and year, as in the news list: '2026-11-12' → "11.2026" */
 export const monthYear = (date: string) => fullDate(date.slice(0, 7));
 
