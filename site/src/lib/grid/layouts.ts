@@ -42,11 +42,12 @@ export const layouts: Record<string, Layout> = {
   // Home: Large; Medium while pointing at the image
   '/': {band: l},
 
-  // The menu's four sections. News lives at /events/ for now.
+  // The menu's five sections. News lives at /events/ for now.
   '/about': {band: m},
   '/issues': {band: m},
   '/contributors': {band: m},
   '/events': {band: m},
+  '/search': {band: m},
 
   '/issues/[slug]': {band: m},
   // An issue's editorial ("A Note from the Editors"): as an article

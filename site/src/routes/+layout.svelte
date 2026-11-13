@@ -33,11 +33,14 @@
   let {children} = $props();
 
   // The menu. Home has no item: "DELUS" in the footer leads there.
+  // Search is drawn, not written, on the band (`glass`: a lens at the
+  // right end of the menu's line); in the Phone menu it is a word.
   const nav = [
     {href: '/about/', label: 'About'},
     {href: '/issues/', label: 'Issues'},
     {href: '/contributors/', label: 'Contributors'},
-    {href: '/events/', label: 'News'}
+    {href: '/events/', label: 'News'},
+    {href: '/search/', label: 'Search', glass: true}
   ];
   const isActive = (href: string) => page.url.pathname.startsWith(href);
 
@@ -156,6 +159,7 @@
           class="item hover fade"
           class:active={isActive(item.href)}
           class:is-hidden={small}
+          class:glass={item.glass}
           style:--i={i}
         >
           <a href={item.href}>{item.label}</a>
@@ -298,6 +302,44 @@
   }
   nav .legal {
     display: none;
+  }
+  /* Search: on the band, a lens in place of the word (drawn, stroke
+     1.25, as the other icons), on the menu's line but against the
+     band's right edge, one column in, as the content — so it follows the
+     band when it resizes. It is drawn on the menu's line of text (1.5
+     units wide, the line's 2 units high): its circle stands on the
+     baseline and is as tall as the capitals, its short handle goes
+     below, as a descender. In the item's colour: quiet, full ink under
+     the pointer and on the search page. The word stays in the page, for
+     screen readers. It catches the pointer one unit around itself.
+     Not on Phone, where the menu is a list of words */
+  @media (min-width: 768px) {
+    nav {
+      right: var(--col);
+    }
+    nav .glass {
+      margin-left: auto;
+    }
+    nav .glass a {
+      position: relative;
+      display: block;
+      width: calc(1.5 * var(--u));
+      height: calc(2 * var(--u));
+      font-size: 0;
+    }
+    nav .glass a::before {
+      content: '';
+      position: absolute;
+      inset: 0 calc(-0.5 * var(--u)) 0 0; /* the handle's end passes the edge by a hair */
+      background: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.25'%3E%3Ccircle cx='6.125' cy='9' r='4.375'/%3E%3Cpath d='M9.22 12.09 12.3 15.17'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+    }
+    nav .glass a::after {
+      content: '';
+      position: absolute;
+      inset: calc(-1 * var(--u));
+    }
   }
 
   .back {

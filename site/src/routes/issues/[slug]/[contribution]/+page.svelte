@@ -85,6 +85,7 @@
   import ArticleActions from '#lib/article/ArticleActions.svelte';
   import ArticleLightbox from '#lib/article/ArticleLightbox.svelte';
   import PointerWord from '#lib/pointer/PointerWord.svelte';
+  import Found from '#lib/search/Found.svelte';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
@@ -228,6 +229,9 @@
 </Panel>
 
 <ArticleLightbox bind:this={lightbox} {figures} {inText} bind:hidden={textHidden} />
+
+<!-- Arriving from the search: the words found, marked in the text -->
+<Found />
 
 <!-- The word that stands for the pointer on the figures (Open, Close, Previous, Next) -->
 <PointerWord />
