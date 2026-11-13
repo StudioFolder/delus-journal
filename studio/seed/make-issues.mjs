@@ -1,6 +1,7 @@
 // Writes seed/issues.ndjson from the site's data (site/src/lib/data):
 // the three issues with their tables of contents, the abstracts and the
 // full texts of the essays, with their notes — in the shape of the CMS.
+// And seed/pages.ndjson: the Imprint and Privacy pages.
 //
 //   cd studio && node seed/make-issues.mjs
 //
@@ -8,7 +9,7 @@
 // (see README.md). Needs Node 22.18 or later (it reads the .ts files).
 import {writeFileSync} from 'node:fs';
 
-const {issues} = await import(new URL('../../site/src/lib/data/fixtures.ts', import.meta.url));
+const {issues, legal} = await import(new URL('../../site/src/lib/data/fixtures.ts', import.meta.url));
 
 // An address of the site that is an issue, its editors' note or one of
 // its contributions → the CMS's link to it (the "Article of the journal"
@@ -111,6 +112,12 @@ const docs = issues.map((issue) => {
     availability: p.forthcoming ? 'forthcoming' : 'available'
   };
 });
+
+// Imprint and Privacy (single pages: their id is their type)
+// (Privacy's "Last updated" is not in its text: the site takes the day it was last published)
+const pages = legal.map((page) => ({_id: page.slug, _type: page.slug, title: page.title, text: rich(page.body, [])}));
+writeFileSync(new URL('pages.ndjson', import.meta.url), pages.map((d) => JSON.stringify(d)).join('\n') + '\n');
+for (const d of pages) console.log(`${d._id}: ${d.text.length} blocks`);
 
 const file = new URL('issues.ndjson', import.meta.url);
 writeFileSync(file, docs.map((d) => JSON.stringify(d)).join('\n') + '\n');

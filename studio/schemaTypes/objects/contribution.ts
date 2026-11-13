@@ -59,6 +59,14 @@ export const contribution = defineType({
     }),
     defineField({name: 'pages', title: 'Pages', type: 'string', description: 'e.g. 15–17'}),
     defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
+    defineField({
+      name: 'citation',
+      title: 'Citation (override)',
+      type: 'text',
+      rows: 3,
+      description:
+        'Leave empty to generate it (Chicago style: people, title, journal, issue, season, pages, DOI). Plain text: the journal is set in italics on the site.',
+    }),
     defineField({name: 'abstract', title: 'Abstract', type: 'simpleText'}),
     defineField({
       name: 'text',
@@ -71,7 +79,7 @@ export const contribution = defineType({
       title: 'PDF',
       type: 'file',
       options: {accept: 'application/pdf'},
-      description: 'The article as a PDF, for "Download" on its page.',
+      description: 'The article as a PDF, for "Download" on its page. Its size is shown with it, from the file.',
     }),
     defineField({
       name: 'images',

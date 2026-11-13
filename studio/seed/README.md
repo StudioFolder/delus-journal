@@ -12,6 +12,18 @@ Content prepared as files, to load into the CMS with one command each.
 `--replace` overwrites these same entries if they already exist (they have
 fixed ids, `person-…`); it does not touch anything else.
 
+## Imprint and Privacy
+
+`pages.ndjson` — the two single pages, written by `make-issues.mjs` (below)
+from the site's data, with the issues:
+
+    cd studio
+    node seed/make-issues.mjs
+    npx sanity dataset import seed/pages.ndjson production --replace
+
+`--replace` overwrites the two pages (edits made in the Studio since would be
+lost); it does not touch anything else.
+
 ## Issues
 
 `issues.ndjson` — the three issues (`issue-00-delus`, `issue-01-chasing-water`,

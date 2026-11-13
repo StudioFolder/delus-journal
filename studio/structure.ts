@@ -15,5 +15,8 @@ export const structure: StructureResolver = (S) =>
       singleton(S, 'donate', 'Donate'),
       singleton(S, 'shop', 'Shop'),
       S.divider(),
+      singleton(S, 'imprint', 'Imprint'),
+      singleton(S, 'privacy', 'Privacy'),
+      S.divider(),
       singleton(S, 'siteSettings', 'Site settings'),
     ])

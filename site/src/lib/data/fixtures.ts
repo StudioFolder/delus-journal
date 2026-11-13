@@ -422,10 +422,13 @@ export const about = {
 // to be confirmed or filled in. `body` is shaped as Sanity's rich text: a
 // paragraph is a string or a list of inline pieces; `{heading}` a heading
 // (style Heading in the CMS), which opens a section.
+// `updated`: the day the page was last published in the CMS (Sanity's
+// `_updatedAt`), shown at its end as "Last updated" — Privacy only.
 export type LegalPage = {
   slug: string;
   title: string;
   body: (string | Inline[] | {heading: string})[];
+  updated?: string;
 };
 
 const contact: Inline = {link: 'delus@arch.ethz.ch', href: 'mailto:delus@arch.ethz.ch'};
@@ -493,10 +496,9 @@ export const legal: LegalPage[] = [
         'Anyone can ask what data about them is kept, have it corrected or deleted, or object to its use, by writing to ',
         contact,
         '. A complaint can also be made to the Swiss Federal Data Protection and Information Commissioner or, in the European Union, to the data protection authority of one’s country.'
-      ],
-      {heading: 'Last updated'},
-      '[Month year].'
-    ]
+      ]
+    ],
+    updated: '2026-11-13' // a placeholder, until the CMS gives it
   }
 ];
 

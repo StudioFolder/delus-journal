@@ -68,6 +68,14 @@ export const issue = defineType({
         defineField({name: 'authors', title: 'Authors', type: 'string'}),
         defineField({name: 'text', title: 'Text', type: 'richText'}),
         defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
+        defineField({
+          name: 'citation',
+          title: 'Citation (override)',
+          type: 'text',
+          rows: 3,
+          description:
+            'Leave empty to generate it (Chicago style: people, title, journal, issue, season, pages, DOI). Plain text: the journal is set in italics on the site.',
+        }),
       ],
     }),
 

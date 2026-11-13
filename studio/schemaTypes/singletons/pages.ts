@@ -47,6 +47,42 @@ export const shop = defineType({
   preview: {prepare: () => ({title: 'Shop'})},
 })
 
+// Imprint and Privacy: reached from the footer (desktop) and the menu
+// (phone), laid out as News. The text's headings (style Heading) open
+// its sections.
+export const imprint = defineType({
+  name: 'imprint',
+  title: 'Imprint',
+  type: 'document',
+  fields: [
+    defineField({name: 'title', title: 'Title', type: 'string', initialValue: 'Imprint'}),
+    defineField({
+      name: 'text',
+      title: 'Text',
+      type: 'richText',
+      description: 'Each section opens with a Heading (e.g. Published by, Contact, Rights).',
+    }),
+  ],
+  preview: {prepare: () => ({title: 'Imprint'})},
+})
+
+export const privacy = defineType({
+  name: 'privacy',
+  title: 'Privacy',
+  type: 'document',
+  fields: [
+    defineField({name: 'title', title: 'Title', type: 'string', initialValue: 'Privacy'}),
+    defineField({
+      name: 'text',
+      title: 'Text',
+      type: 'richText',
+      description:
+        'Each section opens with a Heading (e.g. Hosting, Visit statistics, Newsletter). "Last updated" is added by the site, with the day this page was last published.',
+    }),
+  ],
+  preview: {prepare: () => ({title: 'Privacy'})},
+})
+
 export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Site settings',

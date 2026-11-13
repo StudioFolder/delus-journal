@@ -4,9 +4,9 @@ import {contribution} from './objects/contribution'
 import {issue} from './documents/issue'
 import {person} from './documents/person'
 import {post} from './documents/post'
-import {about, donate, shop, siteSettings} from './singletons/pages'
+import {about, donate, shop, imprint, privacy, siteSettings} from './singletons/pages'
 
-export const singletonTypes = new Set(['about', 'donate', 'shop', 'siteSettings'])
+export const singletonTypes = new Set(['about', 'donate', 'shop', 'imprint', 'privacy', 'siteSettings'])
 
 export const schemaTypes = [
   figure,
@@ -20,5 +20,7 @@ export const schemaTypes = [
   about,
   donate,
   shop,
+  imprint,
+  privacy,
   siteSettings,
 ]
