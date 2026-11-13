@@ -11,8 +11,8 @@
  * animates the band from one setting to the other.
  *
  * A URL can also have a `focus` setting: what changes while the visitor
- * points at the page's image (see focus.ts). On the home page the band
- * is Large, and Medium while the pointer is on the image.
+ * points at the page's image (see focus.ts). No page uses it now (the
+ * home page's band stays Large: Marco, 13 Nov).
  *
  * More panels (content, media…) will be added here the same way.
  */
@@ -40,7 +40,7 @@ const {s, m, l, xl} = sizes;
 
 export const layouts: Record<string, Layout> = {
   // Home: Large; Medium while pointing at the image
-  '/': {band: l, focus: {band: m}},
+  '/': {band: l},
 
   // The menu's four sections. News lives at /events/ for now.
   '/about': {band: m},

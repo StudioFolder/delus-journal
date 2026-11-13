@@ -1,6 +1,6 @@
 <!--
-  Home. The band for this URL is set in #lib/grid/layouts.ts: Large, and
-  Medium while the pointer is on the image.
+  Home. The band for this URL is set in #lib/grid/layouts.ts: Large (it
+  no longer changes while the pointer is on the image — Marco, 13 Nov).
 
   - The statement sits at the top of the band, under the menu, one column
     in from each side. Its width follows the band as it resizes; the type
@@ -39,9 +39,7 @@
   import {onDestroy} from 'svelte';
   import {afterNavigate} from '$app/navigation';
   import Panel from '#lib/grid/Panel.svelte';
-  import {focus} from '#lib/grid/focus.ts';
-  import {current} from '#lib/grid/layout.svelte.ts';
-  import {COVER_COLUMNS, layoutFor} from '#lib/grid/layouts.ts';
+  import {COVER_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {hasPlayed, markPlayed} from '#lib/motion/once.ts';
   import {time} from '#lib/motion/time.ts';
@@ -108,9 +106,10 @@
   let swapping = $state(false); // one highlight is replacing another
   let hidden = $state(false); // text and image faded out, between two highlights
 
+  // Round and round: after the last comes the first, before the first the last
   function go(step: 1 | -1) {
-    const next = at + step;
-    if (phase !== 'done' || swapping || next < 0 || next >= highlights.length) return;
+    const next = (at + step + highlights.length) % highlights.length;
+    if (phase !== 'done' || swapping || highlights.length < 2) return;
     if (innerWidth < 768) return; // mobile shows them all, one after another: no steps
     swapping = true;
     hidden = true;
@@ -137,11 +136,6 @@
   }
   onDestroy(stepper.stop);
 
-  // When the pointer is on the image the band shrinks and the image moves
-  // left by this many columns; it must not slip from under the pointer
-  const layout = layoutFor('/');
-  const shift = layout.focus ? (layout.band[1] - layout.focus.band[1]) / 2 : 0;
-
   const playing = $derived(phase === 'words' || phase === 'rising');
   const below = $derived(phase === 'waiting' || phase === 'words'); // before the rise
 </script>
@@ -167,9 +161,6 @@
     class="image cover fade"
     class:now={swapping}
     class:is-hidden={!imageShown || hidden}
-    class:is-focused={current.focused}
-    style:--shift={shift}
-    use:focus
     out:leave|global
   ></div>
 </Panel>
@@ -259,19 +250,6 @@
     }
   }
 
-  /* While the band is shrunk the image has moved left: its pointer area
-     still reaches to where its right edge was, so the pointer stays on it */
-  :global(.on-ground) > .image {
-    position: relative;
-  }
-  :global(.on-ground) > .image.is-focused::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 100%;
-    width: calc(var(--shift) * var(--col));
-  }
 
   /* Mobile: everything in the one scrolling column */
   @media (max-width: 767px) {
