@@ -53,7 +53,8 @@ export type Contribution = {
   kind?: 'photoEssay';
   page?: number;
   pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
-  doi?: string; // as registered by the publisher, without https://doi.org/ (not shown on the site yet)
+  pdfSize?: number; // its size in bytes (Sanity: the file's size)
+  doi?: string; // as registered by the publisher, without https://doi.org/ (shown under Cite)
   abstract?: string;
   body?: Block[];
   notes?: Inline[][];
@@ -157,6 +158,7 @@ const contents1: Entry[] = [
     people: ['mathilde-redoute'],
     page: 14,
     doi: '10.61608/9783775758758-001',
+    pdfSize: 3_100_000, // a placeholder: no PDF yet
     ...redoute // the whole text, from the printed issue
   },
   {
@@ -180,6 +182,7 @@ const contents1: Entry[] = [
     people: ['stefan-breit', 'insa-jelena-streit'],
     page: 38,
     doi: '10.61608/9783775758758-004',
+    pdfSize: 4_600_000, // a placeholder: no PDF yet
     ...breit // the whole text, from the printed issue
   },
   {

@@ -109,6 +109,9 @@
   let text: HTMLElement; // the article: its panel is that space
   let hovers = $state(false); // there is a pointer that can hover
   let overText = $state(false);
+  // Over the band: the details of Download and Cite show (where nothing
+  // can hover, always)
+  let overBand = $state(false);
   onMount(() => {
     hovers = matchMedia('(hover: hover)').matches;
     overText = !hovers;
@@ -137,11 +140,12 @@
   function point(event: PointerEvent) {
     if (!hovers || event.pointerType !== 'mouse') return;
     overText = event.clientX >= text.parentElement!.getBoundingClientRect().left;
+    overBand = !overText;
   }
 </script>
 
 <svelte:window onpointermove={point} />
-<svelte:document onmouseleave={() => hovers && (overText = false)} />
+<svelte:document onmouseleave={() => hovers && (overText = overBand = false)} />
 
 <Panel area="band" inset class="on-band from-top">
   <div class="head fade" bind:this={head} out:leave|global>
@@ -169,7 +173,12 @@
           <ArticleNotes notes={data.contribution.notes} only={onView} {room} />
         </div>
       {/if}
-      <ArticleActions pdf={data.contribution.pdf} citation={data.citation} />
+      <ArticleActions
+        pdf={data.contribution.pdf}
+        pdfSize={data.contribution.pdfSize}
+        citation={data.citation}
+        details={overBand || !hovers}
+      />
     </div>
   </Panel>
 {/if}
@@ -201,7 +210,12 @@
       {/if}
       <!-- Mobile only: on desktop they are on the band -->
       <div class="actions-mobile">
-        <ArticleActions pdf={data.contribution.pdf} citation={data.citation} />
+        <ArticleActions
+          pdf={data.contribution.pdf}
+          pdfSize={data.contribution.pdfSize}
+          citation={data.citation}
+          details
+        />
       </div>
     {/if}
   </article>

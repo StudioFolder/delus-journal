@@ -1,7 +1,7 @@
 /**
  * How things are written out, in one place.
  */
-import type {Contribution, Issue} from './fixtures.ts';
+import type {Contribution, Inline, Issue} from './fixtures.ts';
 
 /** A row of credits or details: a label, and one or more lines (some links) */
 export type Credit = {label: string; value: {text: string; href?: string; em?: boolean}[]};
@@ -77,13 +77,14 @@ export function issueDetails(issue: Issue): Credit[] {
 }
 
 /**
- * How to cite an article (the text "Cite" copies), after the Chicago
- * style of the printed notes: the first author surname first, the title
- * in quotes, the journal with the issue's number, title and season, the
- * pages.
+ * How to cite an article (shown under "Cite" while the pointer is on the
+ * band, and copied by it), in the Chicago style (bibliography): the first
+ * author surname first, the title in quotes, the journal in italics with
+ * the issue's number and season, the pages, the DOI as an address.
  *   Breit, Stefan, and Insa Jelena Streit. “Not a Drop Is Lost.” DELUS:
- *   Journal for Landscape and Urban Studies 01, Chasing Water (Autumn
- *   2024): 38–49.
+ *   Journal for Landscape and Urban Studies, no. 1 (Autumn 2024): 38–49.
+ *   https://doi.org/10.61608/9783775758758-004.
+ * As inline pieces (the journal: `em`); `plain()` gives the text to copy.
  * `authors`: the people in their order, with their name and their name
  * for sorting (surname first). The pages run to the page before the next
  * contribution's first one (the last contribution: its first page only)
@@ -95,7 +96,7 @@ export function citationOf(
   contribution: Contribution,
   authors: {name: string; sortName: string}[],
   journal: string
-): string {
+): Inline[] {
   const by = nameList(authors.map((a, i) => (i ? a.name : a.sortName)));
   const title = /[?!]$/.test(contribution.title) ? contribution.title : `${contribution.title}.`;
   const place = issue.contributions.indexOf(contribution); // -1: the editorial, before them all
@@ -103,9 +104,19 @@ export function citationOf(
   const pages = contribution.page
     ? `: ${contribution.page}${next && next - 1 > contribution.page ? `–${next - 1}` : ''}`
     : '';
-  const named = issue.title === 'DELUS' ? '' : `, ${issue.title}`;
-  return `${by}. “${title}” ${journal} ${issueNumber(issue.number)}${named} (${issue.date})${pages}.`;
+  const doi = contribution.doi ? ` ${doiUrl(contribution.doi)}.` : '';
+  return [`${by}. “${title}” `, {em: journal}, `, no. ${issue.number} (${issue.date})${pages}.${doi}`];
 }
+
+/** Inline pieces as plain text (what is copied to the clipboard) */
+export const plain = (parts: Inline[]) =>
+  parts.map((x) => (typeof x === 'string' ? x : 'em' in x ? x.em : 'link' in x ? x.link : '')).join('');
+
+/** A DOI as an address: '10.61608/…' → "https://doi.org/10.61608/…" */
+export const doiUrl = (doi: string) => `https://doi.org/${doi}`;
+
+/** A file's size, as "3.1 MB" (Sanity gives it in bytes) */
+export const megabytes = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
 
 /**
  * How to cite a whole issue (the text "Cite" copies on the issue's

@@ -20,6 +20,7 @@ export const load: PageLoad = ({params}) => {
     slug: 'editorial',
     people: [],
     page: issue.editorial?.page,
+    doi: issue.editorial?.doi,
     body: issue.editorial?.body,
     notes: issue.editorial?.notes
   };

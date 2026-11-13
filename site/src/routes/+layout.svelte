@@ -27,7 +27,8 @@
   import ToneDot from '#lib/tone/ToneDot.svelte';
   import {snapshot} from '#lib/motion/carry.ts';
   import {leave} from '#lib/motion/leave.ts';
-  import {site, legal} from '#lib/data/fixtures.ts';
+  import {site, legal, issues} from '#lib/data/fixtures.ts';
+  import {issueLabel} from '#lib/data/format.ts';
 
   let {children} = $props();
 
@@ -46,6 +47,30 @@
   // In the Small band the menu is replaced by "Back" (where it leads: layouts.ts)
   const small = $derived(isSmall(current.layout));
   const back = $derived(backFor(current.layout, page.params as Record<string, string>));
+
+  // Under an issue (an article, the editors' note) "Back" reads as the
+  // issue it leads to ("Issue 01"), and as "Back" only while the pointer
+  // is over the band. Elsewhere (a contributor's page) always "Back".
+  const issue = $derived(
+    page.route.id?.startsWith('/issues/[slug]/')
+      ? issues.find((x) => x.slug === page.params.slug)
+      : undefined
+  );
+  let overBand = $state(false);
+  onMount(() => {
+    const onmove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      const band = document.querySelector('.band-bg');
+      overBand = !!band && e.clientX < band.getBoundingClientRect().right;
+    };
+    const onleave = () => (overBand = false);
+    addEventListener('pointermove', onmove, {passive: true});
+    document.documentElement.addEventListener('mouseleave', onleave);
+    return () => {
+      removeEventListener('pointermove', onmove);
+      document.documentElement.removeEventListener('mouseleave', onleave);
+    };
+  });
 
   // Phone: the section's name at the top of the page (not on pages with "Back")
   const section = $derived(small ? undefined : nav.find((item) => isActive(item.href))?.label);
@@ -110,7 +135,12 @@
       onclick={() => (menuOpen = !menuOpen)}
     ></button>
 
-    <a class="back fade" class:is-hidden={!small} href={back}>Back</a>
+    <!-- The two words lie in the same place: one fades out, then the
+         other fades in -->
+    <a class="back fade" class:is-hidden={!small} href={back}>
+      <span class="word-back" class:shown={!issue || overBand}>Back</span>
+      {#if issue}<span class:shown={!overBand}>{issueLabel(issue.number)}</span>{/if}
+    </a>
 
     <!-- Phone only: the section's name, on the band, which extends down
          under the header to hold it -->
@@ -272,6 +302,32 @@
 
   .back {
     top: calc(5 * var(--u));
+    display: grid;
+  }
+  .back span {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity var(--fade-out-time) ease 0s;
+  }
+  .back span.shown {
+    opacity: 1;
+    transition: opacity var(--fade-time) ease var(--fade-out-time);
+  }
+  /* A small left arrow (←, 1 unit square, as the ↗ of links) before
+     "Back", in the margin: the word stays on column 3 */
+  .word-back {
+    position: relative;
+  }
+  .word-back::before {
+    content: '';
+    position: absolute;
+    right: calc(100% + var(--u));
+    top: calc(50% - var(--u) / 2 + 0.1em); /* on the middle of the capitals */
+    width: var(--u);
+    height: var(--u);
+    background: var(--ink);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' fill='none' stroke='black' stroke-width='1.25'%3E%3Cpath d='M7.5 4H0.5M3.5 1 0.5 4l3 3'/%3E%3C/svg%3E")
+      center / contain no-repeat;
   }
 
   /* Footer: DELUS on column 3, tagline from column 5, both fixed. The
