@@ -14,11 +14,13 @@
  * found marked (`hit`). One whose words are not all in its title and
  * people also comes with a passage of its text around the first word
  * found there, cut at whole words, marked in the same way.
+ * `count`: how many times the words are found in it — title, people
+ * and text together.
  */
 import type {Entry} from './index.ts';
 
 export type Piece = {text: string; hit?: boolean};
-export type Result = Entry & {titled: Piece[]; named: Piece[]; passage?: Piece[]};
+export type Result = Entry & {titled: Piece[]; named: Piece[]; passage?: Piece[]; count: number};
 
 // How much of the text is shown before and after the word found
 const BEFORE = 50;
@@ -88,7 +90,10 @@ export function find(entries: Entry[], query: string): Result[] {
     }
     const passage = named ? undefined : passageOf(x.entry.text, x.text, words);
     const titled = marked(x.entry.title, words);
-    found.push({result: {...x.entry, titled, named: marked(x.entry.by, words), passage}, score, place});
+    const by = marked(x.entry.by, words);
+    const count =
+      [...titled, ...by].filter((piece) => piece.hit).length + placesOf(x.entry.text, words).length;
+    found.push({result: {...x.entry, titled, named: by, passage, count}, score, place});
   });
 
   return found.sort((a, b) => b.score - a.score || a.place - b.place).map((x) => x.result);

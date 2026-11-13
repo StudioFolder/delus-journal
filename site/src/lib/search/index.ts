@@ -23,7 +23,6 @@ import {
 
 export type Entry = {
   href: string;
-  kind: 'article' | 'issue' | 'news'; // an article: also an editors' note
   where: string; // "Issue 01", or a news item's category
   title: string;
   by: string; // the people, comma separated ('' when there are none)
@@ -58,7 +57,6 @@ export function entries(): Entry[] {
     const where = issueLabel(issue.number);
     list.push({
       href: `/issues/${issue.slug}/`,
-      kind: 'issue',
       where,
       title: issue.title,
       by: '',
@@ -66,7 +64,6 @@ export function entries(): Entry[] {
     });
     list.push({
       href: editorialHref(issue),
-      kind: 'article',
       where,
       title: editorialTitle,
       by: editorsOf(issue).join(', '),
@@ -75,7 +72,6 @@ export function entries(): Entry[] {
     for (const c of issue.contributions)
       list.push({
         href: articleHref(issue, c),
-        kind: 'article',
         where,
         title: c.title,
         by: peopleOf(c)
@@ -87,7 +83,6 @@ export function entries(): Entry[] {
   for (const post of posts)
     list.push({
       href: `/events/${post.slug}/`,
-      kind: 'news',
       where: post.kind,
       title: post.title,
       by: '',

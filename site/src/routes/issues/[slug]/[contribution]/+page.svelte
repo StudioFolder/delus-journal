@@ -233,7 +233,7 @@
 <ArticleLightbox bind:this={lightbox} {figures} {inText} bind:hidden={textHidden} />
 
 <!-- Arriving from the search: the words found, marked in the text -->
-<Found />
+<Found notes={data.contribution.notes} figures={inText} />
 
 <!-- The word that stands for the pointer on the figures (Open, Close, Previous, Next) -->
 <PointerWord />

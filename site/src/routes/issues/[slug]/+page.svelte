@@ -82,6 +82,7 @@
   import Inlines from '#lib/article/Inlines.svelte';
   import Credits from '#lib/type/Credits.svelte';
   import Cite from '#lib/article/Cite.svelte';
+  import Found from '#lib/search/Found.svelte';
   import {issueDetails, issueLabel} from '#lib/data/format.ts';
 
   let {data} = $props();
@@ -252,6 +253,10 @@
 </Panel>
 
 <ViewSwitch bind:grid what="images" onswitch={() => (changed = true)} />
+
+<!-- Arriving from the search: the words found, marked in the abstract
+     (this page's column: the one with the number line) -->
+<Found scroller=".column:has(> .head)" blocks=".labelled > .display" band />
 
 <Panel area="band" inset class="on-band from-top">
   <!-- The whole column lands from the list's abstract (its number line and
