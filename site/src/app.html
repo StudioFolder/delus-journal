@@ -7,6 +7,25 @@
          for the first italic word on the screen (a note opening, a caption)
          and that text is drawn in another font, then reflows -->
     <link rel="preload" href="/fonts/205TF-Louize-Italic.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- The tone the site opens in is the computer's own (light or dark;
+         dark when it says nothing), and high contrast if it asks for more
+         contrast — set here, before anything is drawn (see lib/tone). The
+         pages are written in the dark tone: the stage is given the
+         computer's as soon as it is read, before it is first drawn -->
+    <script>
+      (function (d) {
+        if (matchMedia('(prefers-color-scheme: light)').matches) d.tone = 'light';
+        if (matchMedia('(prefers-contrast: more)').matches) d.contrast = 'high';
+        if (d.tone === 'dark' && !d.contrast) return;
+        new MutationObserver(function (_, watch) {
+          var stage = document.querySelector('.stage');
+          if (!stage) return;
+          stage.dataset.tone = d.tone;
+          if (d.contrast) stage.dataset.contrast = d.contrast;
+          watch.disconnect();
+        }).observe(document.documentElement, {childList: true, subtree: true});
+      })(document.documentElement.dataset);
+    </script>
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">

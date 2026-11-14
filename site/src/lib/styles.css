@@ -250,7 +250,7 @@
 }
 [data-tone='light'] {
   --bg: #fffef6;
-  --band: #e8e8e8;
+  --band: #e8e7e4; /* a step darker than the ground, with half its warmth */
   --ink: #111111;
   --ink-quiet: #8c8c8c;
   --shade: rgb(0 0 0 / 0.025);
@@ -265,6 +265,46 @@
     --ink var(--tone),
     --ink-quiet var(--tone),
     --shade var(--tone);
+}
+
+/*
+  CONTRAST — the high-contrast version of each tone (desktop only)
+
+  The stage carries `data-contrast="high"` beside its tone (lib/tone;
+  the dot that appears above the tone's switches it). Nothing but values
+  changes: the same five colours, further apart — the ground pure black
+  or white, the ink its opposite, the quiet text much nearer to the ink
+  (nearly 8:1 on the band, 12:1 on the ground), the band a clearer
+  step from the ground and without its shadow. They blend as a change of
+  tone does.
+  With the quiet text nearer to the ink, "you are here" in the menu and
+  the footer needs a second sign: a thin line under the item, which
+  comes with the ink (--lit).
+*/
+@media (min-width: 768px) {
+  [data-contrast='high'] {
+    --lit-tint: 16%; /* an image under the pointer */
+  }
+  [data-contrast='high'][data-tone='dark'] {
+    --bg: #000000;
+    --band: #333333;
+    --ink: #ffffff;
+    --ink-quiet: #cccccc;
+    --shade: rgb(0 0 0 / 0);
+  }
+  [data-contrast='high'][data-tone='light'] {
+    --bg: #ffffff;
+    --band: #cccccc;
+    --ink: #000000;
+    --ink-quiet: #333333;
+    --shade: rgb(0 0 0 / 0);
+  }
+  [data-contrast='high'] .item.hover:not(.glass) {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), transparent);
+    text-underline-offset: 0.2em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

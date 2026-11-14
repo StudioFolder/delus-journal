@@ -25,8 +25,9 @@
   import GridOverlay from '#lib/grid/GridOverlay.svelte';
   import {current} from '#lib/grid/layout.svelte.ts';
   import {isSmall, backFor, layoutFor} from '#lib/grid/layouts.ts';
-  import {tone} from '#lib/tone/tone.svelte.ts';
+  import {tone, contrast} from '#lib/tone/tone.svelte.ts';
   import ToneDot from '#lib/tone/ToneDot.svelte';
+  import ContrastDot from '#lib/tone/ContrastDot.svelte';
   import {snapshot} from '#lib/motion/carry.ts';
   import {leave} from '#lib/motion/leave.ts';
   import {hold} from '#lib/motion/hold.ts';
@@ -89,6 +90,8 @@
   // is what shows past the page's ends, and around the browser's bars
   $effect(() => {
     document.documentElement.dataset.tone = tone.current;
+    if (contrast.high) document.documentElement.dataset.contrast = 'high';
+    else delete document.documentElement.dataset.contrast;
   });
 
   // False during the very first load, when nothing moves (see FADE in styles.css)
@@ -168,6 +171,7 @@
   class:flows
   class:is-live={live}
   data-tone={tone.current}
+  data-contrast={contrast.high ? 'high' : undefined}
   style:--items={nav.length + legal.length}
   style:--held="{held}px"
 >
@@ -249,6 +253,7 @@
   </div>
 
   <ToneDot />
+  <ContrastDot />
 </div>
 
 <GridOverlay />

@@ -396,4 +396,14 @@
   :global([data-tone='dark']) .found span.now {
     --found: 0.5;
   }
+  /* High contrast (CONTRAST in styles.css), light: on pure white the
+     boxes take more ink */
+  @media (min-width: 768px) {
+    :global([data-contrast='high'][data-tone='light']) .found:not(.band) span {
+      --found: 0.2;
+    }
+    :global([data-contrast='high'][data-tone='light']) .found:not(.band) span.now {
+      --found: 0.4;
+    }
+  }
 </style>
