@@ -8,7 +8,8 @@
  *
  * Order: a word found in the title counts most, then in the people,
  * then in the text; equal entries keep the order of the list (the
- * newest issue first).
+ * newest issue first). The label over a result ("Issue 01", "Event")
+ * is not looked through: it says where the result is, it is not found.
  *
  * A result comes with its title and its people in pieces, the words
  * found marked (`hit`). One whose words are not all in its title and
@@ -51,7 +52,7 @@ export const wordsOf = (query: string) => plainOf(query).match(/[\p{L}\p{N}]+/gu
 // ("wat" finds, and marks, "waterlogged")
 const starting = (word: string) => new RegExp(`(?<![\\p{L}\\p{N}])${word}[\\p{L}\\p{N}]*`, 'gu');
 
-type Ready = {entry: Entry; title: string; by: string; where: string; text: ReturnType<typeof fold>};
+type Ready = {entry: Entry; title: string; by: string; text: ReturnType<typeof fold>};
 const ready = new WeakMap<Entry[], Ready[]>();
 
 // The entries, folded once
@@ -62,7 +63,6 @@ function prepare(entries: Entry[]) {
       entry,
       title: plainOf(entry.title),
       by: plainOf(entry.by),
-      where: plainOf(entry.where),
       text: fold(entry.text)
     }));
     ready.set(entries, list);
@@ -77,16 +77,15 @@ export function find(entries: Entry[], query: string): Result[] {
 
   prepare(entries).forEach((x, place) => {
     let score = 0;
-    let named = true; // every word is in the title, the people or the label
+    let named = true; // every word is in the title or the people
     for (const word of words) {
       const re = starting(word);
       const inTitle = re.test(x.title);
       const inBy = ((re.lastIndex = 0), re.test(x.by));
-      const inWhere = ((re.lastIndex = 0), re.test(x.where));
       const inText = ((re.lastIndex = 0), re.test(x.text.out));
-      if (!(inTitle || inBy || inWhere || inText)) return;
-      score += (inTitle ? 8 : 0) + (inBy ? 6 : 0) + (inWhere ? 2 : 0) + (inText ? 1 : 0);
-      if (!(inTitle || inBy || inWhere)) named = false;
+      if (!(inTitle || inBy || inText)) return;
+      score += (inTitle ? 8 : 0) + (inBy ? 6 : 0) + (inText ? 1 : 0);
+      if (!(inTitle || inBy)) named = false;
     }
     const passage = named ? undefined : passageOf(x.entry.text, x.text, words);
     const titled = marked(x.entry.title, words);

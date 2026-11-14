@@ -26,6 +26,7 @@
 <script lang="ts">
   import {onMount, tick, untrack} from 'svelte';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
   import Inlines from './Inlines.svelte';
   import type {Inline} from '#lib/data/fixtures.ts';
 
@@ -79,7 +80,6 @@
   let alive = true;
   const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));
   const frame = () => new Promise((done) => requestAnimationFrame(() => done(null)));
-  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const tops = () =>
     new Map(
       [...(list?.children ?? [])].map((note) => [

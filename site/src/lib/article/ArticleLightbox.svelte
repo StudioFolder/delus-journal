@@ -51,6 +51,7 @@
   import ViewSwitch from '#lib/grid/ViewSwitch.svelte';
   import {time} from '#lib/motion/time.ts';
   import {hold} from '#lib/motion/hold.ts';
+  import {still} from '#lib/motion/still.ts';
   import {word} from '#lib/pointer/word.svelte.ts';
   import Inlines from './Inlines.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
@@ -74,7 +75,6 @@
   let byKeyboard = false; // opened from the keyboard: the focus goes back to the miniature
 
   const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));
-  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // The move and scale that lay the large image on the miniature
   function onMiniature() {
@@ -243,7 +243,7 @@
     {/if}
     <!-- All the figures together -->
     {#if figures.length > 1}
-      <div class="grid" inert={phase !== 'grid'} style:--rows-4={rows.four} style:--rows-3={rows.three}>
+      <div class="grid image-grid on-screen" inert={phase !== 'grid'} style:--rows-4={rows.four} style:--rows-3={rows.three}>
         {#each figures as each, i (i)}
           <div class="cell fade next" class:is-hidden={phase !== 'grid'} style:--i={i}>
             <button
@@ -355,41 +355,10 @@
      in the middle of it. Between the figures a click goes to the button
      around (Close) */
   .grid {
-    --gap: calc(8 * var(--u));
-    --rows: var(--rows-4);
-    position: absolute;
-    inset: 0;
-    padding: calc(12 * var(--u)) var(--col);
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
-    gap: var(--gap) calc(2 * var(--col));
-    align-content: start;
-    pointer-events: none;
-  }
-  /* Medium and Narrow: three per row */
-  @media (min-width: 768px) and (max-width: 1439px) {
-    .grid {
-      --rows: var(--rows-3);
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  /* The figures appear one after another (CASCADE), once the large one
-     has faded out; they disappear together */
-  .cell.fade.next {
-    transition-delay: calc(var(--fade-out-time) + var(--i) * var(--cascade-step));
-  }
-  .cell.fade.is-hidden {
-    transition-delay: 0s;
-  }
-  .cell {
-    container-type: size;
-    display: grid;
-    place-items: center;
+    pointer-events: none; /* (the grid itself: GRIDS OF IMAGES in styles.css) */
   }
   .thumb {
     display: block;
-    width: min(100cqw, 100cqh * var(--ratio));
     aspect-ratio: var(--ratio);
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
   }

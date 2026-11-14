@@ -5,7 +5,7 @@
   sc={false}).
   A link set on some words of the text (an author's name in the editors'
   note, leading to the article): thinly underlined (.underlined,
-  styles.css); to another site, in a new tab.
+  styles.css: on a span around the link); to another site, in a new tab.
   A note reference: its number in Styrene B, in the font's own superior
   figures (drawn small and raised: nothing is scaled or shifted), in the
   quote's size; it adds nothing to the height of its line. The notes
@@ -21,7 +21,7 @@
 </script>
 
 {#snippet text(t: string)}{#if sc}<Acronyms text={t} />{:else}{t}{/if}{/snippet}
-{#each list as part, i (i)}{#if typeof part === 'string'}{@render text(part)}{:else if 'em' in part}<em>{@render text(part.em)}</em>{:else if 'link' in part}<a class="underlined" href={part.href} {...opens(part.href)}>{@render text(part.link)}</a>{:else}<sup class="ref" data-note={part.note}>{part.note}</sup>{/if}{/each}
+{#each list as part, i (i)}{#if typeof part === 'string'}{@render text(part)}{:else if 'em' in part}<em>{@render text(part.em)}</em>{:else if 'link' in part}<span class="underlined"><a href={part.href} {...opens(part.href)}>{@render text(part.link)}</a></span>{:else}<sup class="ref" data-note={part.note}>{part.note}</sup>{/if}{/each}
 
 <style>
   .ref {

@@ -1,5 +1,7 @@
 <!--
   The 36 columns, drawn over the page. Press G to show / hide.
+  Only while the site is run locally (the root layout leaves it out of
+  the built site).
   A tool for building the site, not part of its design: its colour and
   its small figures are its own, outside the tokens of styles.css.
 -->

@@ -18,7 +18,9 @@
   import Panel from '#lib/grid/Panel.svelte';
   import {TEXT_COLUMNS} from '#lib/grid/layouts.ts';
   import {leave} from '#lib/motion/leave.ts';
+  import {still} from '#lib/motion/still.ts';
   import {legal} from '#lib/data/fixtures.ts';
+  import {pageTitle} from '#lib/head/head.ts';
   import LegalText from './LegalText.svelte';
 
   let {children} = $props();
@@ -43,8 +45,7 @@
     if (!texts || !item) return;
     const top = item.offsetTop;
     item.scrollTop = 0;
-    const smooth =
-      texts === placed && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const smooth = texts === placed && !still();
     placed = texts;
     if (!smooth) return void (texts.scrollTop = top);
     steering = true;
@@ -85,7 +86,9 @@
   function arrived() {
     steering = false;
     const path = `/${onView}/`;
-    if (onView && location.pathname !== path) replaceState(path, page.state);
+    if (!onView || location.pathname === path) return;
+    replaceState(path, page.state);
+    document.title = pageTitle(legal.find((x) => x.slug === onView)?.title); // as the address
   }
 </script>
 

@@ -47,6 +47,7 @@
   import Acronyms from '#lib/type/Acronyms.svelte';
   import {leave} from '#lib/motion/leave.ts';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
   import {find, wordsOf, type Piece, type Result} from '#lib/search/find.ts';
   import {take} from '#lib/search/keyboard.ts';
 
@@ -90,12 +91,11 @@
 
   function change() {
     step = undefined;
-    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const before = rows.map((row) => row.result.href);
     const stays = results.filter((x) => before.includes(x.href));
     // 2. the ones that stay slide, if their place changes
     const moves = stays.some((x) => before.indexOf(x.href) !== results.indexOf(x));
-    slide = still ? 0 : time('--fade-time');
+    slide = still() ? 0 : time('--fade-time');
     // 3. the new ones fade in, one after another
     wait = arriving ? time('--move-time') : moves ? slide : 0;
     let i = 0;

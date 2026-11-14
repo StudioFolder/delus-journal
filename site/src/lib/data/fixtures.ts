@@ -396,8 +396,11 @@ export const posts: Post[] = [
 
 // The site's tagline (Site settings → Footer text in the CMS): in the
 // footer, and the measure of the newsletter's line.
+// `url`: the site's own address, without a slash at its end (the
+// addresses in the page's head, the sitemap).
 export const site = {
-  tagline: 'Journal for Landscape and Urban Studies'
+  tagline: 'Journal for Landscape and Urban Studies',
+  url: 'https://delusjournal.com'
 };
 
 // The journal's full name, as citations write it

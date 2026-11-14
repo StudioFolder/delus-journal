@@ -12,9 +12,7 @@
  *
  * A URL can also have a `focus` setting: a second state of the page,
  * with another band. An article's band opens to Medium while the article
- * is searched (#lib/search/Find.svelte). (It was made for a page's image:
- * what changes while the visitor points at it, see focus.ts — no page
- * uses that now: the home page's band stays Large, Marco, 13 Nov.)
+ * is searched (#lib/search/Find.svelte).
  * The menu or "Back", and Back's address, go by the page's own band.
  *
  * More panels (content, media…) will be added here the same way.
@@ -25,7 +23,7 @@ export const COLUMNS = 36;
 export type Span = [from: number, to: number];
 export type Layout = {
   band: Span;
-  /** The page's second state (an article being searched; pointing at a page's image) */
+  /** The page's second state (an article being searched) */
   focus?: {band: Span};
   /** Small band only: where "Back" leads (default: home) */
   back?: string | ((params: Record<string, string>) => string);
@@ -37,14 +35,13 @@ export type Layout = {
 export const sizes = {
   s: [2, 7], //   6 columns
   m: [2, 13], // 12 columns
-  l: [2, 19], // 18 columns
-  xl: [2, 25] // 24 columns
+  l: [2, 19] // 18 columns
 } satisfies Record<string, Span>;
 
-const {s, m, l, xl} = sizes;
+const {s, m, l} = sizes;
 
 export const layouts: Record<string, Layout> = {
-  // Home: Large; Medium while pointing at the image
+  // Home: Large
   '/': {band: l},
 
   // The menu's five sections. News lives at /events/ for now.
@@ -70,7 +67,7 @@ export const layouts: Record<string, Layout> = {
 
 export const fallback: Layout = {band: m};
 
-/** The name of a band size ('s', 'm', 'l', 'xl'), if the span is one of them */
+/** The name of a band size ('s', 'm', 'l'), if the span is one of them */
 export function sizeOf([from, to]: Span): string | undefined {
   return Object.entries(sizes).find(([, [f, t]]) => f === from && t === to)?.[0];
 }

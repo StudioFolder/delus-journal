@@ -35,11 +35,8 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <span class="note" onclick={(e) => !(e.target as Element).closest('a') && onclose()}
-  ><span class="n">{n}</span>{#each words as word, w (w)}{#if word.i < 0}{' '}{:else if word.href}<a
-        class="word underlined"
-        style:--i={word.i}
-        href={word.href}
-        {...opens(word.href)}>{word.text}</a
+  ><span class="n">{n}</span>{#each words as word, w (w)}{#if word.i < 0}{' '}{:else if word.href}<span class="word underlined" style:--i={word.i}
+        ><a href={word.href} {...opens(word.href)}>{word.text}</a></span
       >{:else}<span class="word" class:em={word.em} style:--i={word.i}
         >{#if acronym.test(word.text)}<Acronyms text={word.text} />{:else}{word.text}{/if}</span
       >{/if}{/each}</span

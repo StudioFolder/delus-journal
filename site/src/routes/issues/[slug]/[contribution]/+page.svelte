@@ -92,6 +92,7 @@
   import ArticleActions from '#lib/article/ArticleActions.svelte';
   import ArticleLightbox from '#lib/article/ArticleLightbox.svelte';
   import PointerWord from '#lib/pointer/PointerWord.svelte';
+  import {side} from '#lib/pointer/side.svelte.ts';
   import Found from '#lib/search/Found.svelte';
   import Find from '#lib/search/Find.svelte';
   import ArticlePill from '#lib/article/ArticlePill.svelte'; // a trial (Phone)
@@ -130,16 +131,24 @@
 
   // The notes show only while the pointer is over the space of the text
   // (see NOTES above)
-  let text: HTMLElement; // the article: its panel is that space
+  // — the space right of the band: which side the pointer is on is found
+  // once for the whole site (#lib/pointer/side.svelte.ts)
   let hovers = $state(false); // there is a pointer that can hover
-  let overText = $state(false);
+  onMount(() => void (hovers = matchMedia('(hover: hover)').matches));
+  const overText = $derived(hovers ? side.now === 'page' : true);
   // Over the band: the details of Download and Cite show (where nothing
   // can hover, always)
-  let overBand = $state(false);
+  const overBand = $derived(hovers && side.now === 'band');
+  // Coming back from the band, the notes wait for Download and Cite to
+  // close and settle (see ArticleActions); from out of the window they
+  // come at once
   let afterBand = $state(false);
-  onMount(() => {
-    hovers = matchMedia('(hover: hover)').matches;
-    overText = !hovers;
+  let before: typeof side.now;
+  $effect(() => {
+    const now = side.now;
+    if (now === 'page' && before === 'band') afterBand = true;
+    if (now !== 'page') afterBand = false;
+    before = now;
   });
 
   // The height there is for the notes: from 4 units under the people and
@@ -162,19 +171,7 @@
     watch.observe(document.documentElement);
     return () => watch.disconnect();
   });
-  function point(event: PointerEvent) {
-    if (!hovers || event.pointerType !== 'mouse') return;
-    overText = event.clientX >= text.parentElement!.getBoundingClientRect().left;
-    // Coming back from the band, the notes wait for Download and Cite to
-    // close and settle (see ArticleActions)
-    if (overText && overBand) afterBand = true;
-    if (!overText) afterBand = false;
-    overBand = !overText;
-  }
 </script>
-
-<svelte:window onpointermove={point} />
-<svelte:document onmouseleave={() => hovers && (overText = overBand = false)} />
 
 <Panel area="band" inset class="on-band from-top">
   <div class="head fade" bind:this={head} out:leave|global>
@@ -215,7 +212,6 @@
 
 <Panel area="rest" class="on-ground from-top flows">
   <article
-    bind:this={text}
     class="fade"
     class:now={swapped}
     class:is-hidden={textHidden || away}

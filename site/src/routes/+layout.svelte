@@ -33,10 +33,28 @@
   import {hold} from '#lib/motion/hold.ts';
   import {time} from '#lib/motion/time.ts';
   import {ready} from '#lib/search/keyboard.ts';
-  import {site, legal, issues} from '#lib/data/fixtures.ts';
+  import {side, watch} from '#lib/pointer/side.svelte.ts';
+  import {site, home, legal, issues} from '#lib/data/fixtures.ts';
+  import {brief, pageTitle, sections} from '#lib/head/head.ts';
   import {issueLabel} from '#lib/data/format.ts';
 
   let {children} = $props();
+
+  // The page's head (#lib/head/head.ts): its title and description — its
+  // own (from its `load`), its section's, or the site's — and the same
+  // for a link shared (og:…). An address that doesn't exist says so.
+  const head = $derived({
+    title: pageTitle(
+      page.error
+        ? page.status === 404
+          ? 'Page not found'
+          : 'Error'
+        : (page.data.title ?? sections[page.route.id ?? ''])
+    ),
+    description: (!page.error && page.data.description) || brief(home.statement),
+    url: `${site.url}${page.url.pathname}`,
+    type: page.data.contribution ? 'article' : 'website'
+  });
 
   // The menu. Home has no item: "DELUS" in the footer leads there.
   // Search is drawn, not written, on the band (`glass`: a lens at the
@@ -67,21 +85,8 @@
       ? issues.find((x) => x.slug === page.params.slug)
       : undefined
   );
-  let overBand = $state(false);
-  onMount(() => {
-    const onmove = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return;
-      const band = document.querySelector('.band-bg');
-      overBand = !!band && e.clientX < band.getBoundingClientRect().right;
-    };
-    const onleave = () => (overBand = false);
-    addEventListener('pointermove', onmove, {passive: true});
-    document.documentElement.addEventListener('mouseleave', onleave);
-    return () => {
-      removeEventListener('pointermove', onmove);
-      document.documentElement.removeEventListener('mouseleave', onleave);
-    };
-  });
+  const overBand = $derived(side.now === 'band'); // (#lib/pointer/side.svelte.ts)
+  onMount(watch);
 
   // Phone: the section's name at the top of the page (not on pages with "Back")
   const section = $derived(small ? undefined : nav.find((item) => isActive(item.href))?.label);
@@ -162,6 +167,21 @@
 </script>
 
 <svelte:window {onkeydown} />
+
+<svelte:head>
+  <title>{head.title}</title>
+  <meta name="description" content={head.description} />
+  {#if !page.error}<link rel="canonical" href={head.url} />{/if}
+  <meta property="og:site_name" content="DELUS" />
+  <meta property="og:title" content={head.title} />
+  <meta property="og:description" content={head.description} />
+  <meta property="og:url" content={head.url} />
+  <meta property="og:type" content={head.type} />
+  <meta property="og:image" content="{site.url}/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+</svelte:head>
 
 <div
   class="stage"
@@ -256,7 +276,8 @@
   <ContrastDot />
 </div>
 
-<GridOverlay />
+<!-- A tool for building the site: only while it is run locally (npm run dev) -->
+{#if import.meta.env.DEV}<GridOverlay />{/if}
 
 <style>
   .stage {

@@ -11,8 +11,8 @@
   - Phone: the band becomes a header across the top; one column.
   - Narrow, Medium, Wide: the band and the 36 columns. Wide is the
     reference (a column is 40px at 1440px).
-  - Not to be confused with the sizes of the band (Small, Medium, Large,
-    X-Large: grid/layouts.ts), which are set per page, not per screen.
+  - Not to be confused with the sizes of the band (Small, Medium,
+    Large: grid/layouts.ts), which are set per page, not per screen.
   - Still to decide: very wide screens — the columns grow with the
     window and the type doesn't, so lines of text get too long (a fifth
     step: a limit to the grid's width, or larger type).
@@ -449,6 +449,66 @@ dd {
   background: var(--band);
 }
 
+/*
+  GRIDS OF IMAGES — one rule for every grid of images (an issue's
+  images, the figures in an article's gallery, a photo essay's images):
+  four per row on Wide screens, three on Medium and Narrow; two columns
+  between cells across, 8 units down; each image, whatever its format
+  (--ratio on it: width / height), as large as fits in its cell, in the
+  middle of it.
+
+    <div class="image-grid">
+      <div class="cell"><a style="--ratio: 1.5">…</a></div>
+
+  `on-screen`: the grid takes the whole of what it lies in (the space
+  right of the band), one column clear at the sides, and its rows share
+  the height between the top and the bottom of the band's content —
+  --rows-4 / --rows-3: how many of them, with four and with three per
+  row (further ones scroll, if the grid's own style lets it). Its cells
+  (`cell fade next`, with --i) appear one after another once what was
+  there has faded out, and disappear together.
+  Without it the grid is as wide as it is given and its cells take the
+  height their own style gives them (a photo essay: square).
+  Not on Phone, where there are no grids.
+*/
+@media (min-width: 768px) {
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: calc(8 * var(--u)) calc(2 * var(--col));
+  }
+  .image-grid > .cell {
+    container-type: size;
+    display: grid;
+    place-items: center;
+  }
+  .stage .image-grid > .cell > * {
+    width: min(100cqw, 100cqh * var(--ratio));
+  }
+  .image-grid.on-screen {
+    --rows: var(--rows-4);
+    position: absolute;
+    inset: 0;
+    padding: calc(12 * var(--u)) var(--col);
+    grid-auto-rows: calc((100% - (var(--rows) - 1) * 8 * var(--u)) / var(--rows));
+    align-content: start;
+  }
+  .image-grid.on-screen > .cell.fade.next {
+    transition-delay: calc(var(--fade-out-time) + var(--i) * var(--cascade-step));
+  }
+  .image-grid.on-screen > .cell.fade.is-hidden {
+    transition-delay: 0s;
+  }
+}
+@media (min-width: 768px) and (max-width: 1439px) {
+  .image-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .image-grid.on-screen {
+    --rows: var(--rows-3);
+  }
+}
+
 /* Large text: statements, abstracts */
 .display {
   font: var(--type-display);
@@ -456,8 +516,8 @@ dd {
 }
 /* On a Medium band it is one size smaller (Marco's rule). The band size
    is the one of the page's own URL (data-band, set by Panel when the
-   page is created): text doesn't change size while the home band is
-   focused, nor while a page fades out. Desktop only: on mobile the band
+   page is created): text doesn't change size while a band is opened
+   wider (an article being searched), nor while a page fades out. Desktop only: on mobile the band
    is the whole screen. */
 @media (min-width: 768px) {
   [data-band='m'] .display {
@@ -542,7 +602,11 @@ dd {
 }
 /* A link on some words of a running text (an essay, the editors' note):
    no arrow, a thin line under the words — quiet, full ink under the
-   pointer. On the link itself. */
+   pointer. On the element around the link, never on the link (see
+   LINKS, above): <span class="underlined"><a href="…">…</a></span> —
+   the line is the span's, drawn under the link's words. On the link
+   itself, a browser that has already visited it doesn't fade the line
+   under the pointer and makes it flicker while the tone changes. */
 .underlined {
   text-decoration-line: underline;
   text-decoration-thickness: 1px;

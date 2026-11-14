@@ -111,9 +111,6 @@
     width: min(100%, (100vh - 24 * var(--u)) * var(--ratio));
   }
   @media (min-width: 768px) {
-    .photo {
-      width: min(100cqw, 100cqh * var(--ratio));
-    }
     .photo figcaption {
       display: none;
     }

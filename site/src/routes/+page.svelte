@@ -43,6 +43,7 @@
   import {leave} from '#lib/motion/leave.ts';
   import {hasPlayed, markPlayed} from '#lib/motion/once.ts';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
   import {STEP, steps} from '#lib/motion/wheel.ts';
   import {home} from '#lib/data/fixtures.ts';
   import Acronyms from '#lib/type/Acronyms.svelte';
@@ -71,7 +72,7 @@
   afterNavigate(async (navigation) => {
     if (phase !== 'waiting') return;
     markPlayed('home-intro');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (still()) {
       imageShown = true;
       return void (phase = 'done');
     }

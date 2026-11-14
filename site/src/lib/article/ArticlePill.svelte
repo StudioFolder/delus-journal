@@ -42,6 +42,7 @@
   import {tick, untrack} from 'svelte';
   import {leave} from '#lib/motion/leave.ts';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
   import {opens} from '#lib/type/links.ts';
   import {ready, take} from '#lib/search/keyboard.ts';
   import Cite from './Cite.svelte';
@@ -101,16 +102,16 @@
   $effect(() => {
     const target = mode;
     if (target === untrack(() => shown)) return void (faded = false);
-    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stays = still();
     faded = true;
     let grown: ReturnType<typeof setTimeout>;
     const out = setTimeout(
       () => {
         shown = target;
         if (target === 'search') tick().then(() => take(field));
-        grown = setTimeout(() => (faded = false), still ? 0 : time('--move-time'));
+        grown = setTimeout(() => (faded = false), stays ? 0 : time('--move-time'));
       },
-      still ? 0 : time('--fade-out-time')
+      stays ? 0 : time('--fade-out-time')
     );
     return () => (clearTimeout(out), clearTimeout(grown));
   });

@@ -30,6 +30,7 @@
   import Panel from '#lib/grid/Panel.svelte';
   import {current} from '#lib/grid/layout.svelte.ts';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
 
   type Props = {
     open?: boolean;
@@ -79,8 +80,7 @@
 
     // Where the text gets narrower (see above): out, the band, back
     const reflows =
-      matchMedia('(max-width: 1439px)').matches &&
-      !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      matchMedia('(max-width: 1439px)').matches && !still();
     if (reflows) {
       const back = passage();
       away = true;

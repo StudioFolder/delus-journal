@@ -170,7 +170,7 @@
   let miniature = $state<HTMLElement>();
   let covered = $state<number[]>([]); // the blocks whose figure it lies on
   async function point(e: Event) {
-    const link = (e.target as Element).closest?.('a.underlined');
+    const link = (e.target as Element).closest?.('.underlined')?.querySelector('a');
     const image = link && imageAt(link.getAttribute('href') ?? '');
     if (!link || !image) return;
     // The line where the link starts, one unit under its top (as a figure)
@@ -194,7 +194,7 @@
     });
   }
   const leave = (e: Event) => {
-    if (!(e.target as Element).closest?.('a.underlined')) return;
+    if (!(e.target as Element).closest?.('.underlined')) return;
     previewed = false;
     covered = [];
   };
@@ -246,7 +246,7 @@
     if (at) {
       const rest = at.node.splitText(at.i);
       // never inside a link: after it
-      const link = rest.parentElement?.closest('a');
+      const link = rest.parentElement?.closest('.underlined, a');
       if (link && block.contains(link)) link.after(box);
       else rest.before(box);
     } else block.append(box);
@@ -317,7 +317,7 @@
     {/if}
   {/each}
   {#if photos}
-    <div class="photos">
+    <div class="photos image-grid">
       {#each figureBlocks as i, n (i)}
         {@const figure = (blocks[i] as {figure: Figure}).figure}
         <div class="cell"><ArticleFigure {figure} photo id={n} onopen={(el) => onfigure?.(figure, el)} /></div>
@@ -372,26 +372,20 @@
      column, from Narrow up the grid */
   .photos {
     margin-top: calc(4 * var(--u)); /* with the line between blocks: two lines */
-    display: grid;
-    gap: calc(8 * var(--u));
   }
+  @media (max-width: 767px) {
+    .photos {
+      display: grid;
+      gap: calc(8 * var(--u));
+    }
+  }
+  /* (the grid itself: GRIDS OF IMAGES in styles.css) */
   @media (min-width: 768px) {
     .photos {
       width: calc(26 * var(--col)); /* the space right of the band, less a column on each side */
-      grid-template-columns: repeat(4, 1fr);
-      column-gap: calc(2 * var(--col));
     }
     .cell {
-      container-type: size;
       aspect-ratio: 1;
-      display: grid;
-      place-items: center;
-    }
-  }
-  /* Medium and Narrow: three per row */
-  @media (min-width: 768px) and (max-width: 1439px) {
-    .photos {
-      grid-template-columns: repeat(3, 1fr);
     }
   }
   /* The miniature of a linked article: in the figures' margin, there

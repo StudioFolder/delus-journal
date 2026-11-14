@@ -19,6 +19,8 @@
  * returns null and the element simply fades in.
  */
 
+import {still} from './still.ts';
+
 type Place = {node: HTMLElement; rect: DOMRect};
 
 const onView = new Map<string, HTMLElement>();
@@ -41,7 +43,7 @@ export function carry(node: HTMLElement, key: string) {
 /** Called by the root layout just before a navigation */
 export function snapshot() {
   places = new Map();
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (still()) return;
   for (const [key, node] of onView) {
     const rect = node.getBoundingClientRect();
     if (rect.width && rect.height) places.set(key, {node, rect}); // not hidden (e.g. on mobile)

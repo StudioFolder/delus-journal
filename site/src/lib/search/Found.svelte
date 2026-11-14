@@ -46,6 +46,7 @@
 <script lang="ts">
   import {onMount, untrack} from 'svelte';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
   import {plain} from '#lib/data/format.ts';
   import type {Figure, Inline} from '#lib/data/fixtures.ts';
   import {placesOf, wordsOf} from './find.ts';
@@ -226,7 +227,7 @@
     if (top - from >= 0 && bottom - from < height * 0.8) return;
     const by = top - from - height / 3;
     const behavior =
-      smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant';
+      smooth && !still() ? 'smooth' : 'instant';
     holder!.scrollBy({top: by, behavior});
     if (!own) scrollBy({top: by, behavior});
   }

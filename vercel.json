@@ -4,6 +4,7 @@
   "headers": [
     {
       "source": "/(.*)",
+      "missing": [{ "type": "host", "value": "(www\\.)?delusjournal\\.com" }],
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]

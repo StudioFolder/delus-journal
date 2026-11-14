@@ -5,9 +5,11 @@ import {
   editorialHref,
   editorialTitle,
   editorsOf,
-  issueCitationOf
+  issueCitationOf,
+  issueLabel
 } from '#lib/data/format.ts';
 import {entryImage} from '#lib/data/images.ts';
+import {brief} from '#lib/head/head.ts';
 import type {EntryGenerator, PageLoad} from './$types';
 
 // Which URLs to generate (placeholder list until Sanity is connected)
@@ -35,5 +37,7 @@ export const load: PageLoad = ({params}) => {
   const contents = rows.map((row, i) => ({...row, image: entryImage(i)}));
   // How to cite the issue (not before it is published)
   const citation = issue.publication.forthcoming ? undefined : issueCitationOf(issue, journal);
-  return {issue, contents, citation};
+  // The page's head: "Issue 01, Chasing Water" (Issue 00's title is the journal's name)
+  const title = issue.title === 'DELUS' ? issueLabel(issue.number) : `${issueLabel(issue.number)}, ${issue.title}`;
+  return {issue, contents, citation, title, description: brief(issue.abstract)};
 };

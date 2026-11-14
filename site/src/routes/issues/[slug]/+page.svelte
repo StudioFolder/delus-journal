@@ -78,6 +78,7 @@
   import {leave} from '#lib/motion/leave.ts';
   import {arriving, land} from '#lib/motion/carry.ts';
   import {time} from '#lib/motion/time.ts';
+  import {still} from '#lib/motion/still.ts';
   import {steps} from '#lib/motion/wheel.ts';
   import {opens} from '#lib/type/links.ts';
   import Inlines from '#lib/article/Inlines.svelte';
@@ -134,7 +135,6 @@
     at = Math.round(gallery.scrollLeft / gallery.clientWidth);
     if (at) rest(); // scrolled by hand: the pause starts when the scrolling stops
   }
-  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   // Pointing at an entry of the contents: the gallery slides to its image
   function show(i: number) {
     if (at === i && towards === null) return;
@@ -233,7 +233,7 @@
       {/each}
     </div>
 
-    <div class="grid" inert={!grid} style:--rows-4={rows.four} style:--rows-3={rows.three}>
+    <div class="grid image-grid on-screen" inert={!grid} style:--rows-4={rows.four} style:--rows-3={rows.three}>
       {#each data.contents as entry, i (entry.href)}
         <div class="cell fade next" class:is-hidden={!grid} style:--i={i} out:leave|global>
           <a
@@ -395,48 +395,14 @@
     }
   }
 
-  /* The grid, over the gallery: four cells per row, two columns apart,
-     one column clear at the sides; the rows, 8 units apart, share the
-     height between the top and the bottom of the band's content (--rows
-     of them on the screen; more scroll). Each image is as large as fits
-     in its cell, in the middle of it */
+  /* The grid, over the gallery (GRIDS OF IMAGES in styles.css): rows
+     beyond the screen's scroll */
   .grid {
-    --gap: calc(8 * var(--u));
-    --rows: var(--rows-4);
-    position: absolute;
-    inset: 0;
-    padding: calc(12 * var(--u)) var(--col);
     overflow-y: auto;
     scrollbar-width: none;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
-    gap: var(--gap) calc(2 * var(--col));
-    align-content: start;
-  }
-  /* Medium and Narrow: three per row */
-  @media (min-width: 768px) and (max-width: 1439px) {
-    .grid {
-      --rows: var(--rows-3);
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  /* The images appear one after another (CASCADE), once the gallery has
-     faded out; they disappear together */
-  .cell.fade.next {
-    transition-delay: calc(var(--fade-out-time) + var(--i) * var(--cascade-step));
-  }
-  .cell.fade.is-hidden {
-    transition-delay: 0s;
-  }
-  .cell {
-    container-type: size;
-    display: grid;
-    place-items: center;
   }
   .cell .cover {
     display: block;
-    width: min(100cqw, 100cqh * var(--ratio));
   }
 
   /* The lines above and under the abstract (number and date; Colophon,
