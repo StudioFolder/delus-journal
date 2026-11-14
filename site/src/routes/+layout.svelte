@@ -532,26 +532,6 @@
       transform: translateY(-100%);
       box-shadow: none;
     }
-    /* The soft edge: under the band, --pad of the page's colour fading
-       out, over the content passing under it; it follows the band (with
-       the band away, along the top of the screen) */
-    .stage :global(.band-bg::after) {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      height: var(--pad);
-      background: linear-gradient(var(--bg), transparent);
-      pointer-events: none;
-      /* while the menu is open it is not there: it goes at once, and
-         comes back only once the page is back under the band */
-      transition: opacity 0s linear var(--move-time);
-    }
-    .stage.menu-open :global(.band-bg::after) {
-      opacity: 0;
-      transition-delay: 0s;
-    }
     /* Open, the header and the menu under it are one surface */
     .stage.menu-open :global(.band-bg) {
       box-shadow: none;
@@ -579,8 +559,7 @@
     /* With the band away, the sheet reaches the top of the screen.
        --lift says so (1), a number of its own: only that waits for the
        band — not the band's height, which changes at once from a page
-       to the next (the sheet waiting showed the menu's ground there,
-       and the soft edge on it) */
+       to the next (the sheet waiting showed the menu's ground there) */
     .stage.band-away .page::before {
       --lift: 1;
       transition-delay: 0s;
@@ -619,15 +598,17 @@
     }
     /* Content scrolls the whole height of the screen, under the band
        and to the bottom edge (no zone kept there: the tone dot is in the
-       menu). At rest it starts --pad under the band (the soft edge's
-       height, see .band-bg::after) */
+       menu). At rest it starts --pad under the band */
     .stage :global(.on-band.from-top) {
       top: 0;
       padding-top: 0;
       padding-bottom: 0;
     }
+    /* …and it ends 12 units above the bottom of the screen, as the texts
+       do (an article, a news text) */
     .stage :global(.on-band.from-top > *) {
       padding-top: calc(var(--sheet) + var(--pad));
+      padding-bottom: calc(12 * var(--u));
     }
     /* The section's name (About, Issues…) on the band, under DELUS, as a
        menu item; while the menu is open it gives way to the menu */
@@ -648,7 +629,7 @@
     }
     /* Content on the background with `from-top` takes the same place:
        the whole height, full width (e.g. a news text); what's inside keeps
-       --edge above itself: the band and the soft edge */
+       --edge above itself: the band and --pad */
     .stage :global(.on-ground.from-top) {
       --edge: calc(var(--sheet) + var(--pad));
       left: var(--pad);

@@ -139,7 +139,7 @@
   </div>
 </Panel>
 
-<Panel area="band" inset class="on-band from-top">
+<Panel area="band" inset class="on-band from-top edge-to-edge">
   <div class="table">
     <p class="row head fade" out:leave|global>
       <span>Title</span><span>Issue</span><span>Date</span>
@@ -243,10 +243,18 @@
   }
 
   /* Mobile: titles on the left, then number and date in fixed widths;
-     the covers below, swiped sideways */
+     the covers below, swiped sideways, the row running to the screen's
+     edges (full bleed): the panel takes the whole width and the list
+     keeps --pad at its sides; the row reaches over that --pad, and at
+     rest (and wherever it snaps) a cover starts where the list does */
   @media (max-width: 767px) {
+    :global(.stage .on-band.from-top.edge-to-edge) {
+      left: 0;
+      right: 0;
+    }
     .table {
       --columns: 1fr calc(5 * var(--u)) calc(13 * var(--u));
+      padding-inline: var(--pad);
     }
     .covers,
     .abstract,
@@ -257,6 +265,9 @@
       display: flex;
       gap: calc(2 * var(--u));
       margin-top: calc(5 * var(--u));
+      margin-inline: calc(-1 * var(--pad));
+      padding-inline: var(--pad);
+      scroll-padding-inline: var(--pad);
       padding-bottom: calc(3 * var(--u));
       overflow-x: auto;
       scroll-snap-type: x mandatory;

@@ -331,9 +331,5 @@
     .line {
       padding-right: calc(3 * var(--u));
     }
-    /* Some space after the last result, as after a text */
-    .found {
-      padding-bottom: calc(12 * var(--u));
-    }
   }
 </style>

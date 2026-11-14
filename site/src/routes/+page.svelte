@@ -260,7 +260,6 @@
     .column {
       display: grid;
       gap: calc(8 * var(--u));
-      padding-bottom: calc(3 * var(--u));
     }
     .highlights {
       display: grid;

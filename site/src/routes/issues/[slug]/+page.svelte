@@ -66,8 +66,9 @@
   title is under it, stands out a little more from the background, as
   the figures' miniatures in an article (a touch of the ink colour).
 
-  MOBILE — one column: abstract, contents (or details), cover. No
-  gallery, no grid.
+  MOBILE — one column: abstract, contents (or details); each entry's
+  image, small, above its title, lit as its title when touched. The
+  issue's cover: its place still to decide. No gallery, no grid.
 -->
 <script lang="ts">
   import {onDestroy, untrack} from 'svelte';
@@ -304,6 +305,7 @@
               onfocusin={() => (hold(), show(i + 1))}
               onfocusout={rest}
             >
+              <span class="image" style:--ratio={entry.image.ratio} aria-hidden="true"></span>
               <span class="title"><a href={entry.href}>{entry.title}</a></span>
               <span class="by">{entry.by}</span>
             </li>
@@ -312,8 +314,6 @@
       {/if}
     </div>
 
-    <!-- Mobile only -->
-    <div class="cover cover-mobile fade"></div>
   </div>
 </Panel>
 
@@ -340,10 +340,8 @@
       background: var(--band);
     }
   }
-  /* Contents (or details) and, on phones, the cover: 8 units under what
-     comes before */
-  .below,
-  .cover-mobile {
+  /* Contents (or details): 8 units under what comes before */
+  .below {
     margin-top: calc(8 * var(--u));
   }
   /* The gallery: as wide and as high as the space right of the band; it
@@ -478,7 +476,12 @@
   .by {
     font: var(--type-text);
   }
-  .cover-mobile {
+  /* Phone only: each entry's image, small, above its title — 12 units
+     high, as wide as its own format makes it (--ratio, width / height),
+     2 units above the title; an empty box for now, as the cover. Lit
+     with its title (a touch of the ink colour, softly: --lit, as the
+     gallery's images on desktop) */
+  .entry .image {
     display: none;
   }
 
@@ -489,9 +492,17 @@
     .entry {
       max-width: none;
     }
-    .cover-mobile {
+    .entry .image {
       display: block;
-      margin-bottom: calc(3 * var(--u));
+      width: calc(12 * var(--u) * var(--ratio));
+      height: calc(12 * var(--u));
+      margin-bottom: calc(2 * var(--u));
+      background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
+      transition: --lit var(--hover);
+    }
+    .entry:hover .image,
+    .entry.active .image {
+      --lit: 1;
     }
   }
 </style>
