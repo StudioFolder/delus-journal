@@ -94,6 +94,8 @@
   import PointerWord from '#lib/pointer/PointerWord.svelte';
   import Found from '#lib/search/Found.svelte';
   import Find from '#lib/search/Find.svelte';
+  import ArticlePill from '#lib/article/ArticlePill.svelte'; // a trial (Phone)
+  import {plain} from '#lib/data/format.ts';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
@@ -121,6 +123,7 @@
   let matches = $state(0); // how many are found
   let match = $state(0); // the one being looked at
   let away = $state(false); // the text is out of sight while it changes width
+  let actions = $state<HTMLElement>(); // Download and Cite after the text (Phone): the pill goes there
   $effect(() => {
     if (away) swapped = true; // it comes back at once
   });
@@ -236,7 +239,7 @@
         />
       {/if}
       <!-- Mobile only: on desktop they are on the band -->
-      <div class="actions-mobile">
+      <div class="actions-mobile" bind:this={actions}>
         <ArticleActions
           pdf={data.contribution.pdf}
           pdfSize={data.contribution.pdfSize}
@@ -268,6 +271,25 @@
     count={matches}
     at={match}
     onstep={(by) => found.step(by)}
+  />
+{/if}
+
+<!-- A trial, Phone only: Download, Cite and Find in a floating pill
+     (ArticlePill.svelte; it shares the search's state with Find) -->
+{#if !data.issue.publication.forthcoming}
+  <ArticlePill
+    pdf={data.contribution.pdf}
+    pdfSize={data.contribution.pdfSize}
+    citation={plain(data.citation)}
+    find={!!data.contribution.body}
+    bind:open={finding}
+    bind:query={sought}
+    count={matches}
+    at={match}
+    onstep={(by) => found.step(by)}
+    hidden={textHidden}
+    top={titleOnView}
+    until={actions}
   />
 {/if}
 
