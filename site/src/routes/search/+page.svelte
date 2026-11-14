@@ -2,14 +2,15 @@
   Search: a field on the band, and under it what it finds, while typing.
   The band for this URL is set in #lib/grid/layouts.ts.
 
-  FIELD — the words alone, in the type of the newsletter's field (on
-  phones over a thin line, quiet, full ink while typing), the whole
-  width of the list. Once something is typed, a small cross on its line,
+  FIELD — the words alone, in the type of the newsletter's field, the
+  whole width of the list; the same on every screen. Empty, it reads
+  "Search articles and news" (an article's own search: "Search this article"). Once something is typed, a small cross on its line,
   in the band's last column — under the menu's lens — empties it. It
   stays at the top while the results scroll under it (not on phones,
-  where the column is the page). With a pointer, it is ready to type in on
-  arriving — it appears at once, without waiting for the band, so its
-  caret is already blinking; Enter (the phone keyboard's "search") puts
+  where the column is the page). It is ready to type in on arriving —
+  it appears at once, without waiting for the band, so its caret is
+  already blinking (on a phone that brings the keyboard up, from the tap
+  on "Search" in the menu: #lib/search/keyboard.ts); Enter (the phone keyboard's "search") puts
   the keyboard away.
 
   RESULTS — from the second letter typed: everything that has all the
@@ -22,7 +23,7 @@
   names, passage. Entries are quiet and turn to full ink under the
   pointer; the whole entry is the link. Under the pointer an entry also
   shows how many times the words are found in it (title, names and text
-  together), a number in small capitals, quiet, on its first line, in
+  together: "33 matches", "1 match"), in small capitals, quiet, on its first line, in
   the band's last column — under the lens and the cross; on touch screens, which have no pointer to hover with, it is
   always shown (as the dates of the news). Nothing found: "No results".
 
@@ -47,6 +48,7 @@
   import {leave} from '#lib/motion/leave.ts';
   import {time} from '#lib/motion/time.ts';
   import {find, wordsOf, type Piece, type Result} from '#lib/search/find.ts';
+  import {take} from '#lib/search/keyboard.ts';
 
   let {data} = $props();
 
@@ -102,7 +104,10 @@
 
   onMount(() => {
     query = new URLSearchParams(location.search).get('q') ?? '';
-    if (matchMedia('(hover: hover)').matches) field?.focus({preventScroll: true});
+    // (on phones the caret is handed over from the tap on "Search" in the
+    // menu: #lib/search/keyboard.ts. Arriving another way — the browser's
+    // Back, a link — an iPhone leaves the field without it until tapped)
+    take(field);
     return () => clearTimeout(step);
   });
 
@@ -138,8 +143,8 @@
           type="text"
           inputmode="search"
           name="q"
-          placeholder="Search"
-          aria-label="Search"
+          placeholder="Search articles and news"
+          aria-label="Search articles and news"
           autocomplete="off"
           autocapitalize="off"
           spellcheck="false"
@@ -171,7 +176,7 @@
             animate:flip={{duration: slide}}
           >
             <span class="label">{result.where}</span>
-            <span class="label n" aria-label="found {result.count} times">{result.count}</span>
+            <span class="label n">{result.count} {result.count === 1 ? 'match' : 'matches'}</span>
             <span class="title"><a href={hrefOf(result)}>{@render pieces(result.titled)}</a></span>
             {#if result.by}<span class="by">{@render pieces(result.named)}</span>{/if}
             {#if result.passage}
@@ -197,8 +202,7 @@
   .found {
     max-width: calc(9 * var(--col));
   }
-  /* The field: its words alone (on phones over a thin line, below).
-     The results start 5 units under them */
+  /* The field: its words alone. The results start 5 units under them */
   .field {
     position: relative;
     padding-bottom: calc(4 * var(--u));
@@ -323,16 +327,9 @@
     .entry > .n {
       right: 0;
     }
-    /* The thin line under the field: quiet, full ink while typing; the
-       words stop before the cross */
+    /* The words stop before the cross */
     .line {
       padding-right: calc(3 * var(--u));
-      border-bottom: 1px solid
-        color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
-      transition: --lit var(--hover);
-    }
-    .line:focus-within {
-      --lit: 1;
     }
     /* Some space after the last result, as after a text */
     .found {

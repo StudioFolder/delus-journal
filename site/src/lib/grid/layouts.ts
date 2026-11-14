@@ -10,9 +10,12 @@
  * Change a number here and the band moves; navigating between two URLs
  * animates the band from one setting to the other.
  *
- * A URL can also have a `focus` setting: what changes while the visitor
- * points at the page's image (see focus.ts). No page uses it now (the
- * home page's band stays Large: Marco, 13 Nov).
+ * A URL can also have a `focus` setting: a second state of the page,
+ * with another band. An article's band opens to Medium while the article
+ * is searched (#lib/search/Find.svelte). (It was made for a page's image:
+ * what changes while the visitor points at it, see focus.ts — no page
+ * uses that now: the home page's band stays Large, Marco, 13 Nov.)
+ * The menu or "Back", and Back's address, go by the page's own band.
  *
  * More panels (content, media…) will be added here the same way.
  */
@@ -22,10 +25,12 @@ export const COLUMNS = 36;
 export type Span = [from: number, to: number];
 export type Layout = {
   band: Span;
-  /** What changes while the visitor points at the page's image */
+  /** The page's second state (an article being searched; pointing at a page's image) */
   focus?: {band: Span};
   /** Small band only: where "Back" leads (default: home) */
   back?: string | ((params: Record<string, string>) => string);
+  /** Phone: the page scrolls the window, not its panels (FLOW in routes/+layout.svelte) */
+  flows?: boolean;
 };
 
 // Band sizes
@@ -51,9 +56,9 @@ export const layouts: Record<string, Layout> = {
 
   '/issues/[slug]': {band: m},
   // An issue's editorial ("A Note from the Editors"): as an article
-  '/issues/[slug]/editorial': {band: s, back: (p) => `/issues/${p.slug}/`},
-  // An article (a contribution): under its issue
-  '/issues/[slug]/[contribution]': {band: s, back: (p) => `/issues/${p.slug}/`},
+  '/issues/[slug]/editorial': {band: s, focus: {band: m}, back: (p) => `/issues/${p.slug}/`, flows: true},
+  // An article (a contribution): under its issue; Medium while it is searched
+  '/issues/[slug]/[contribution]': {band: s, focus: {band: m}, back: (p) => `/issues/${p.slug}/`, flows: true},
   '/contributors/[slug]': {band: s, back: '/contributors/'},
   '/events/[slug]': {band: m},
   // Imprint and Privacy (from the footer): laid out as News

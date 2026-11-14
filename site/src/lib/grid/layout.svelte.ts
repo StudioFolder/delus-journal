@@ -1,7 +1,7 @@
 import {page} from '$app/state';
 import {layoutFor, type Layout} from './layouts.ts';
 
-let focused = $state(false); // true while the visitor points at the page's image
+let focused = $state(false); // true while the page is in its second state (`focus` in layouts.ts)
 
 /** The layout of the route currently shown — reactive */
 export const current = {

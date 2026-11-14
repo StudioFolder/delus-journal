@@ -26,6 +26,11 @@
   click elsewhere or Esc, and the figure on view shrinks back onto its
   miniature, then the text returns — at the passage that names it.
 
+  SEARCH — at the right end of the band's top line, a lens: the search
+  within this article (desktop only). The band opens to Medium, with a
+  field on that line; what is typed is marked in the text (Find.svelte
+  and Found.svelte in #lib/search). Not for a forthcoming issue.
+
   DOWNLOAD, CITE — two words at the bottom of the band, above the footer
   (ArticleActions): the link to the article's PDF and a button that
   copies how to cite it. Mobile: after the text.
@@ -88,6 +93,7 @@
   import ArticleLightbox from '#lib/article/ArticleLightbox.svelte';
   import PointerWord from '#lib/pointer/PointerWord.svelte';
   import Found from '#lib/search/Found.svelte';
+  import Find from '#lib/search/Find.svelte';
 
   let {data} = $props();
   let onView = $state<number[]>([]); // the note numbers on the screen
@@ -106,6 +112,18 @@
   );
   let textHidden = $state(false); // a figure is shown large, in place of the text
   let swapped = $state(false); // a figure has been opened: from then on the text comes back at once
+
+  // The search within the article (SEARCH above): Find is the field on
+  // the band, Found marks the words in the text
+  let found: Found;
+  let finding = $state(false);
+  let sought = $state('');
+  let matches = $state(0); // how many are found
+  let match = $state(0); // the one being looked at
+  let away = $state(false); // the text is out of sight while it changes width
+  $effect(() => {
+    if (away) swapped = true; // it comes back at once
+  });
 
   // The notes show only while the pointer is over the space of the text
   // (see NOTES above)
@@ -197,7 +215,7 @@
     bind:this={text}
     class="fade"
     class:now={swapped}
-    class:is-hidden={textHidden}
+    class:is-hidden={textHidden || away}
     style:--text-cols={TEXT_COLUMNS}
     out:leave|global
   >
@@ -232,8 +250,26 @@
 
 <ArticleLightbox bind:this={lightbox} {figures} {inText} bind:hidden={textHidden} />
 
-<!-- Arriving from the search: the words found, marked in the text -->
-<Found notes={data.contribution.notes} figures={inText} />
+<!-- The words found, marked in the text: arriving from the search, or
+     typed in the search within the article -->
+<Found
+  bind:this={found}
+  notes={data.contribution.notes}
+  figures={inText}
+  query={finding ? sought : undefined}
+  bind:count={matches}
+  bind:at={match}
+/>
+{#if data.contribution.body}
+  <Find
+    bind:open={finding}
+    bind:query={sought}
+    bind:away
+    count={matches}
+    at={match}
+    onstep={(by) => found.step(by)}
+  />
+{/if}
 
 <!-- The word that stands for the pointer on the figures (Open, Close, Previous, Next) -->
 <PointerWord />
