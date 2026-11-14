@@ -305,6 +305,11 @@
     text-decoration-color: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), transparent);
     text-underline-offset: 0.2em;
   }
+  /* A link in a text: its line in full ink, as its words — nothing
+     changes under the pointer */
+  [data-contrast='high'] .underlined {
+    text-decoration-color: var(--ink);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
