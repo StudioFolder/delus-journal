@@ -181,6 +181,41 @@
     addEventListener('scroll', onscroll, {capture: true, passive: true});
     return () => removeEventListener('scroll', onscroll, {capture: true});
   });
+
+  // THE BAND'S FADE (desktop; styles: "The band's content, cut above the
+  // footer"): a scrolling box on the band gets `data-more` while more
+  // than a unit of it is below what is shown. Measured when it scrolls,
+  // when anything in the page is added or removed (a page arriving, the
+  // contents ↔ colophon), when the window changes size, when the fonts
+  // arrive
+  $effect(() => {
+    const boxes = () => document.querySelectorAll<HTMLElement>('.on-band.from-top > *');
+    const measure = (box: HTMLElement) => {
+      const unit = parseFloat(getComputedStyle(box).getPropertyValue('--u')) || 8;
+      box.toggleAttribute('data-more', box.scrollHeight - box.clientHeight - box.scrollTop > unit);
+    };
+    let frame = 0;
+    const all = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => boxes().forEach(measure));
+    };
+    const onscroll = (e: Event) => {
+      if (e.target instanceof HTMLElement && e.target.matches('.on-band.from-top > *')) measure(e.target);
+    };
+    const changes = new MutationObserver(all);
+    changes.observe(document.body, {childList: true, subtree: true});
+    const sizes = new ResizeObserver(all);
+    sizes.observe(document.documentElement);
+    addEventListener('scroll', onscroll, {capture: true, passive: true});
+    document.fonts?.ready.then(all);
+    all();
+    return () => {
+      cancelAnimationFrame(frame);
+      changes.disconnect();
+      sizes.disconnect();
+      removeEventListener('scroll', onscroll, {capture: true});
+    };
+  });
 </script>
 
 <svelte:window {onkeydown} />
@@ -381,34 +416,19 @@
   }
   /* The band's content, cut above the footer, doesn't end on a clean
      line but fades out over its last 4 units (Marco, 15 Nov) — only
-     while there is more below: the fade follows the scrolling
-     (scroll-driven), so it is gone at the end of the scroll, and absent
-     where nothing scrolls. Desktop only (Narrow included). Browsers
-     without scroll-driven animations keep the clean cut */
+     while more than a unit of it is still below (`data-more`, set by
+     the script: THE BAND'S FADE). Not where it all fits, nor at the end
+     of the scroll. (A scroll-driven version faded the last line of
+     anything that overflowed by a few pixels: the home statement, the
+     About colophon.) Desktop only (Narrow included) */
   @media (min-width: 768px) {
     /* the cut 1 unit lower than the content's end at rest (Marco: "lower
        it by 8px"), so the fade reaches a little further down */
     .stage :global(.on-band.from-top) {
       padding-bottom: calc(var(--foot-room) - var(--u));
     }
-    .stage :global(.on-band.from-top > *) {
-      mask-image: linear-gradient(to bottom, #000 calc(100% - var(--band-fade)), transparent);
-      animation: band-fade linear both;
-      animation-timeline: scroll(self);
-    }
-  }
-  @property --band-fade {
-    syntax: '<length>';
-    inherits: false;
-    initial-value: 0px;
-  }
-  @keyframes -global-band-fade {
-    from,
-    95% {
-      --band-fade: calc(4 * var(--u));
-    }
-    to {
-      --band-fade: 0px;
+    .stage :global(.on-band.from-top > [data-more]) {
+      mask-image: linear-gradient(to bottom, #000 calc(100% - 4 * var(--u)), transparent);
     }
   }
   .stage :global(.on-band.from-bottom) {
