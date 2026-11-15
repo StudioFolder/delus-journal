@@ -350,7 +350,8 @@ export type Highlight =
   | {_type: 'newsHighlight'; post: string}
   | {_type: 'articleHighlight'; issue: string; article: string};
 
-// A block of a news text, shaped as Sanity's rich text: a paragraph
+// A block of a news text (and of the About text), shaped as Sanity's rich
+// text — drawn by lib/type/Blocks.svelte: a paragraph
 // (italics and links possible), a quote (style Quote), a heading (style
 // Heading), a list
 export type NewsBlock =
@@ -453,12 +454,20 @@ export const journal = `DELUS: ${site.tagline}`;
 
 // About: the text from the Figma About page.
 export const about = {
-  // (a paragraph of inline pieces: the institute's name links to its site)
+  // Blocks as a news text (Sanity's rich text): the description (the
+  // institute's name links to its site), then further chapters, each
+  // opening with a heading — for now the sponsorship program (Marco)
   text: [
-    'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the ',
-    {link: 'Institute for Landscape and Urban Studies', href: 'https://lus.arch.ethz.ch/'},
-    ' (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.'
-  ] as Inline[],
+    [
+      'DELUS began in 2021, initiated by former LUS doctoral fellows Sara Frikech and Johanna Just as a platform to engage with pressing questions in landscape and urban studies. Emerging from the ',
+      {link: 'Institute for Landscape and Urban Studies', href: 'https://lus.arch.ethz.ch/'},
+      ' (LUS) at ETH Zürich, DELUS is a research-driven journal fostering dialogue across disciplines and institutions. Situated at the intersection of architecture, landscape, and urban studies, it gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.'
+    ],
+    {heading: 'Sponsorship program'},
+    'In order to foster a closer relationship with landscape architectural practitioners, the magazine has established a sponsorship program with landscape offices.',
+    'A sponsorship is a way to gain more visibility among students of the Landscape Architecture Master Programme and the Department of Architecture at ETH Zurich and its broader network. Sponsors are mentioned by name on the back of the upcoming issue and receive 2 copies of the issue after the publication, or 4 copies for offices with more than 10 employees. We offer two sponsorship tiers:',
+    {list: ['Offices with less than 10 employees: 500 CHF', 'Offices with more than 10 employees: 1000 CHF']}
+  ] as NewsBlock[],
   // The colophon: Sanity's `credits` (label + value). Here each value is
   // a list of lines, some of them links.
   credits: [

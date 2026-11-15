@@ -12,14 +12,8 @@
   - the date (12.11.2026) in small capitals, quiet, above the title, as the
     issue number above an abstract; title and text in the display type;
     one line (4 units) between blocks;
-  - the text (Sanity's rich text): paragraphs with italics and links
-    (underlined, as in an essay); a quote in the same type, indented as
-    in an essay (3 columns; 3 units on Phone) — news are all in Louize
-    (Marco); a heading in small capitals, quiet, 2
-    units over what follows (as the sections of Imprint and Privacy); a
-    list, one item per line, in the display type: each item after an en
-    dash, quiet, its text 3 units in (wrapped lines too) — as a note's
-    text after its number;
+  - the text (Sanity's rich text): paragraphs, quotes, headings, lists —
+    drawn by lib/type/Blocks.svelte, as the About text;
   - IMAGE — the first image, under the title, centred on the text, with two
     lines below it. It fits a square box half as wide as the text: a
     horizontal image takes the box's width, a vertical one its height, so
@@ -29,6 +23,7 @@
   import type {Post} from '#lib/data/fixtures.ts';
   import {fullDate} from '#lib/data/format.ts';
   import Inlines from '#lib/article/Inlines.svelte';
+  import Blocks from '#lib/type/Blocks.svelte';
 
   let {post}: {post: Post} = $props();
   const image = $derived(post.images?.[0]);
@@ -42,21 +37,7 @@
   {#if image}
     <div class="image" role="img" aria-label="Image" style:--ratio={image.width / image.height}></div>
   {/if}
-  {#each post.body ?? [] as block, i (i)}
-    {#if typeof block === 'object' && 'quote' in block}
-      <blockquote class="display"><Inlines parts={block.quote} /></blockquote>
-    {:else if typeof block === 'object' && 'heading' in block}
-      <h3 class="label">{block.heading}</h3>
-    {:else if typeof block === 'object' && 'list' in block}
-      <ul class="display">
-        {#each block.list as item, j (j)}
-          <li><Inlines parts={item} /></li>
-        {/each}
-      </ul>
-    {:else}
-      <p class="display"><Inlines parts={block} /></p>
-    {/if}
-  {/each}
+  <Blocks blocks={post.body ?? []} />
 </article>
 
 <style>
@@ -75,34 +56,9 @@
   time {
     color: var(--ink-quiet);
   }
-  h2,
-  h3 {
+  h2 {
     margin: 0;
     font-weight: inherit;
-  }
-  /* A heading: 2 units over what follows (as a label over its text) */
-  h3 {
-    color: var(--ink-quiet);
-    margin-bottom: calc(-2 * var(--u));
-  }
-  /* A quote: indented as in an essay (ArticleBody), in the text's type */
-  blockquote {
-    margin: 0;
-    padding-left: calc(3 * var(--col));
-  }
-  ul {
-    padding: 0;
-    list-style: none;
-  }
-  li {
-    position: relative;
-    padding-left: calc(3 * var(--u));
-  }
-  li::before {
-    content: '–';
-    position: absolute;
-    left: 0;
-    color: var(--ink-quiet);
   }
   /* Inside a square box half the text's width: the width is the box's for
      a horizontal image, less for a vertical one (--ratio = width / height) */
@@ -118,9 +74,6 @@
     article {
       padding-left: 0;
       grid-template-columns: 100%;
-    }
-    blockquote {
-      padding-left: calc(3 * var(--u));
     }
   }
 </style>

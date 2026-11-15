@@ -48,6 +48,7 @@
   import Inlines from '#lib/article/Inlines.svelte';
   import {newestFirst} from '#lib/data/fixtures.ts';
   import {issueLabel, issueNumber} from '#lib/data/format.ts';
+  import {opens} from '#lib/type/links.ts';
 
   const step = COVER_COLUMNS + 1; // from one cover to the next: its width + one column
 
@@ -64,6 +65,7 @@
 
   // The abstract follows a moment later: it fades out, changes, fades in
   let shown = $state(0); // the issue whose abstract is written
+  const buy = $derived(newestFirst[shown].publication.buyUrl); // its Hatje Cantz link, if any
   let hidden = $state(false);
   let moved = $state(false); // true once the carousel has been used
   $effect(() => {
@@ -134,7 +136,15 @@
     use:carry={`abstract:${newestFirst[shown].slug}`}
     out:leave|global
   >
-    <p class="label">{issueLabel(newestFirst[shown].number)}</p>
+    <!-- Its number, then Buy ↗ or forthcoming, as on the home page -->
+    <p class="label tags">
+      <span>{issueLabel(newestFirst[shown].number)}</span>
+      {#if buy}
+        <span class="hover link"><a href={buy} {...opens(buy)}>Buy</a></span>
+      {:else if newestFirst[shown].publication.forthcoming}
+        <span><em>forthcoming</em></span>
+      {/if}
+    </p>
     <p class="display"><Inlines parts={newestFirst[shown].abstract} /></p>
   </div>
 </Panel>
@@ -176,6 +186,11 @@
 </Panel>
 
 <style>
+  /* The number and Buy: apart as the items of the menu */
+  .tags {
+    display: flex;
+    gap: calc(4 * var(--u));
+  }
   /* Titles from column 3 (the band's inner edge), numbers from column 8,
      dates from column 10 */
   .table {
