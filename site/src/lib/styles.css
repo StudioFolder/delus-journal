@@ -617,6 +617,15 @@ dd {
 .underlined:hover {
   --lit: 1;
 }
+/* Safari (desktop and iPhone) draws the span's line, under the words
+   that lie directly in the <a>, in the link's own colour and thickness
+   (ink, the font's) — only words in a span of their own (small capitals)
+   got the line's. The link takes the line's values (no line of its own,
+   so nothing is drawn twice; other browsers draw the same as before). */
+.underlined a {
+  text-decoration-color: inherit;
+  text-decoration-thickness: inherit;
+}
 
 /*
   FADE — general behaviour for anything that appears and disappears

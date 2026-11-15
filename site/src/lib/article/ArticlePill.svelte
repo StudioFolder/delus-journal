@@ -13,7 +13,9 @@
     file, 4.6 MB": `pdfSize`, in bytes), quiet, then Download — the
     article's PDF (`pdf`; without one it is there but does nothing, as
     on the band) — and Close;
-  - Cite: copies the citation; the word reads "Copied" for a moment
+  - Cite: the pill grows (below) and shows the beginning of the
+    citation, quiet, on one line, fading out before Copy and Close; Copy
+    copies the whole citation and reads "Copied" for a moment
     (Cite.svelte);
   - Search: the search within the article (only if it has a text). The
     pill grows and holds a field, ready to type in ("Search this
@@ -93,11 +95,12 @@
 
   let field = $state<HTMLInputElement>();
   let file = $state(false); // Download open: what the file is
+  let cite = $state(false); // Cite open: the citation
 
   // What is asked for, and what is written in the pill: the change
   // follows in steps (GROWING above)
-  const mode = $derived(open ? 'search' : file ? 'file' : 'rest');
-  let shown = $state<'rest' | 'search' | 'file'>('rest');
+  const mode = $derived(open ? 'search' : file ? 'file' : cite ? 'cite' : 'rest');
+  let shown = $state<'rest' | 'search' | 'file' | 'cite'>('rest');
   let faded = $state(false);
   $effect(() => {
     const target = mode;
@@ -207,10 +210,16 @@
           </span>
           <span class="hover"><button type="button" onclick={() => (file = false)}>Close</button></span>
         </div>
+      {:else if shown === 'cite'}
+        <div class="row">
+          <p class="citation">{citation}</p>
+          <Cite {citation} label="Copy" />
+          <span class="hover"><button type="button" onclick={() => (cite = false)}>Close</button></span>
+        </div>
       {:else}
         <div class="row rest" bind:this={words}>
           <span class="hover"><button type="button" onclick={() => (file = true)}>Download</button></span>
-          <Cite {citation} />
+          <span class="hover"><button type="button" onclick={() => (cite = true)}>Cite</button></span>
           {#if find}
             <span class="hover"><button type="button" onclick={start}>Search</button></span>
           {/if}
@@ -336,6 +345,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: var(--ink-quiet);
+    }
+    /* The citation's beginning: what fits, fading out over its last
+       3 units (the gap before Copy) */
+    .citation {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      color: var(--ink-quiet);
+      mask-image: linear-gradient(to right, #000 calc(100% - 3 * var(--u)), transparent);
     }
   }
 </style>

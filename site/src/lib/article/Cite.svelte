@@ -4,13 +4,19 @@
   under the pointer (.hover), in the type of where it stands. On an
   article (ArticleActions) and on an issue's page.
   `class` and `i`: for the element around the word, e.g. `fade` and its
-  place in a cascade.
+  place in a cascade. `label`: the word, if not "Cite" (the Phone pill
+  says "Copy" beside the citation).
 -->
 <script lang="ts">
   import {onDestroy} from 'svelte';
   import {time} from '#lib/motion/time.ts';
 
-  let {citation, class: klass = '', i}: {citation: string; class?: string; i?: number} = $props();
+  let {
+    citation,
+    label = 'Cite',
+    class: klass = '',
+    i
+  }: {citation: string; label?: string; class?: string; i?: number} = $props();
 
   let copied = $state(false);
   let back: ReturnType<typeof setTimeout>;
@@ -28,7 +34,7 @@
 </script>
 
 <span class="hover {klass}" class:active={copied} style:--i={i}>
-  <button type="button" onclick={cite} aria-live="polite">{copied ? 'Copied' : 'Cite'}</button>
+  <button type="button" onclick={cite} aria-live="polite">{copied ? 'Copied' : label}</button>
 </span>
 
 <style>

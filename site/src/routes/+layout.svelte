@@ -88,8 +88,14 @@
   const overBand = $derived(side.now === 'band'); // (#lib/pointer/side.svelte.ts)
   onMount(watch);
 
-  // Phone: the section's name at the top of the page (not on pages with "Back")
-  const section = $derived(small ? undefined : nav.find((item) => isActive(item.href))?.label);
+  // Phone: the section's name at the top of the page (not on pages with
+  // "Back"); Imprint and Privacy too
+  const section = $derived(
+    small
+      ? undefined
+      : (nav.find((item) => isActive(item.href))?.label ??
+          legal.find((text) => isActive(`/${text.slug}/`))?.title)
+  );
 
   // The window carries the tone as the stage does: on a phone its colour
   // is what shows past the page's ends, and around the browser's bars
