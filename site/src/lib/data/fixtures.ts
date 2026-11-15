@@ -7,10 +7,16 @@ import * as navel from './articles/navel.ts';
 // The issues. `date` is how the issue is dated in print (season and year).
 // The abstracts are placeholders (the issue's title in italics, then
 // filler text, about as long as a real abstract).
-// `publication`: the Publication fields of the CMS. ISBNs, Hatje Cantz
-// links and the open-access PDF are real (from the holding page); pages,
-// binding and format are placeholders.
-const placeholder = {pages: '000 pages, 00 photos', binding: 'Binding', format: '000 × 000 mm'};
+// `publication`: the Publication fields of the CMS — the standard colophon
+// of every issue (Marco, 15 Nov): editors, the credits of the printed
+// issue as in its colophon, publisher, date, pages, format, language,
+// ISBN, PDF. ISBNs, Hatje Cantz links and the open-access PDF are real
+// (from the holding page); the credits and pages of Issues 00 and 01 are
+// from their printed colophons (Marco), Issue 01's format too; the rest
+// are placeholders (Issue 02: no credits yet).
+const placeholder = {pages: '000', format: '000 × 000 mm'};
+// A line of the colophon: a name, or a name with its site's address
+export type CreditLine = string | {text: string; href: string};
 const editors = 'Sara Frikech, Johanna Just';
 // The text of a contribution, as Sanity's rich text: blocks of inline
 // pieces — plain text, italics (Sanity: the Italic decorator) and note
@@ -73,11 +79,21 @@ export type Issue = {
   // has only that, so far).
   editorial?: {page?: number; doi?: string; body?: Block[]; notes?: Inline[][]};
   publication: {
-    editedBy: string;
-    designedBy: string;
+    editedBy: string; // "Editors"
+    designedBy: string; // "Graphic design"
+    designedByUrl?: string; // its site
+    // The credits of the printed issue, as in its colophon (each a line
+    // or more, a line a link where it has an address; a row only where
+    // filled in)
+    projectManagement?: CreditLine[];
+    copyediting?: CreditLine[];
+    proofreading?: CreditLine[];
+    production?: CreditLine[];
+    reproductions?: CreditLine[];
+    printing?: CreditLine[]; // "Printing"
     pages: string;
-    binding: string;
     format: string;
+    language?: string;
     isbn?: string;
     doi?: string; // of the whole issue
     buyUrl?: string;
@@ -252,7 +268,17 @@ export const issues: Issue[] = [
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',
+      designedByUrl: 'https://studiofolder.it/',
+      projectManagement: ['Dorothee Hahn'],
+      copyediting: ['Liana Simmons'],
+      proofreading: ['Irene Schaudies'],
+      production: ['Alise Ausmane'],
+      reproductions: ['ReproMayer Medienproduktion GmbH, Reutlingen'],
+      printing: [{text: 'Livonia Print, Riga', href: 'https://www.livoniaprint.lv/'}],
       ...placeholder,
+      pages: '80',
+      format: '210 × 240 mm',
+      language: 'English',
       isbn: '978-3-7757-5636-5',
       doi: '10.61608/9783775756372',
       buyUrl: 'https://www.hatjecantz.com/products/66089-delus-the-journal-of-the-institute-of-landscape-and-urban-studies',
@@ -275,10 +301,20 @@ export const issues: Issue[] = [
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',
-      ...placeholder,
+      designedByUrl: 'https://studiofolder.it/',
+      projectManagement: ['Dorothee Hahn'],
+      copyediting: ['Irene Schaudies', 'Liana Simmons'],
+      production: ['Alise Ausmane'],
+      reproductions: [{text: 'LONGO AG, Italy', href: 'https://www.longo.media/'}],
+      printing: [{text: 'Livonia Print, Riga', href: 'https://www.livoniaprint.lv/'}],
+      pages: '96',
+      format: '210 × 240 mm',
+      language: 'English',
       isbn: '978-3-7757-5874-1',
       doi: '10.61608/9783775758758',
       buyUrl: 'https://www.hatjecantz.com/products/77075-delus-journal-for-landscape-and-urban-studies',
+      // the open-access edition through its DOI (its OAPEN record's address not found yet)
+      pdfUrl: 'https://doi.org/10.61608/9783775758758',
       forthcoming: false
     },
     contributions: withSlugs(contents1)
@@ -296,7 +332,9 @@ export const issues: Issue[] = [
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',
+      designedByUrl: 'https://studiofolder.it/',
       ...placeholder,
+      language: 'English',
       forthcoming: true
     },
     contributions: withSlugs(contents2)

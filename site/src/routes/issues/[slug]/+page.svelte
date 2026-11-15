@@ -13,6 +13,9 @@
     Cite — copies how to cite the issue; the word then reads "Copied"
     for a moment (Cite.svelte, as on an article). Not for a forthcoming
     issue;
+    PDF — the open-access PDF (Marco, 15 Nov: before Buy, on the same
+    line; no longer in the colophon), with the arrow (only if the issue
+    has one);
     Buy — last (Marco, 15 Nov), the link to the publisher's page of the
     issue, with the arrow of a link to another site (.link) (only if the
     issue has one).
@@ -281,8 +284,13 @@
         {#if data.citation}
           <Cite citation={data.citation} class="fade" i={2} />
         {/if}
-        {#if issue.publication.buyUrl}
+        {#if issue.publication.pdfUrl}
           <span class="hover link fade" style:--i={3}>
+            <a href={issue.publication.pdfUrl} {...opens(issue.publication.pdfUrl)}>PDF</a>
+          </span>
+        {/if}
+        {#if issue.publication.buyUrl}
+          <span class="hover link fade" style:--i={4}>
             <a href={issue.publication.buyUrl} {...opens(issue.publication.buyUrl)}>Buy</a>
           </span>
         {/if}

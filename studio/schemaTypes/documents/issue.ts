@@ -48,13 +48,20 @@ export const issue = defineType({
       of: [defineArrayMember({type: 'figure'})],
       options: {layout: 'grid'},
     }),
-    defineField({name: 'editedBy', title: 'Edited by', type: 'string', group: 'main'}),
+    defineField({name: 'editedBy', title: 'Editors', type: 'string', group: 'main', description: 'Names separated by commas'}),
     defineField({
       name: 'designedBy',
-      title: 'Designed by',
+      title: 'Graphic design',
       type: 'string',
       group: 'main',
       initialValue: 'Studio Folder',
+    }),
+    defineField({
+      name: 'designedByUrl',
+      title: 'Graphic design link',
+      type: 'url',
+      group: 'main',
+      initialValue: 'https://studiofolder.it/',
     }),
 
     // Editorial
@@ -93,8 +100,17 @@ export const issue = defineType({
     defineField({name: 'publicationDate', title: 'Publication date', type: 'date', group: 'publication'}),
     defineField({name: 'pageCount', title: 'Pages', type: 'number', group: 'publication'}),
     defineField({name: 'photoCount', title: 'Photos', type: 'number', group: 'publication'}),
-    defineField({name: 'binding', title: 'Binding', type: 'string', group: 'publication', description: 'e.g. Paperback with lay-flat binding'}),
+    // The credits of the printed issue, as in its colophon: one name (or
+    // name and place) per line, a link where it has a site (simpleText).
+    // The site shows a row only where filled in.
+    defineField({name: 'projectManagement', title: 'Project management', type: 'simpleText', group: 'publication', description: 'One per line (Shift+Enter); a name can carry a link (the Link button)'}),
+    defineField({name: 'copyediting', title: 'Copyediting', type: 'simpleText', group: 'publication', description: 'One per line (Shift+Enter); a name can carry a link (the Link button)'}),
+    defineField({name: 'proofreading', title: 'Proofreading', type: 'simpleText', group: 'publication', description: 'One per line (Shift+Enter); a name can carry a link (the Link button)'}),
+    defineField({name: 'production', title: 'Production', type: 'simpleText', group: 'publication', description: 'One per line (Shift+Enter); a name can carry a link (the Link button), e.g. Alise Ausmane'}),
+    defineField({name: 'reproductions', title: 'Reproductions', type: 'simpleText', group: 'publication', description: 'One per line (Shift+Enter); a name can carry a link (the Link button)'}),
+    defineField({name: 'printing', title: 'Printing', type: 'simpleText', group: 'publication', description: 'One per line (Shift+Enter); a name can carry a link (the Link button), e.g. Livonia Print, Riga'}),
     defineField({name: 'format', title: 'Format', type: 'string', group: 'publication', description: 'e.g. 210 × 240 mm'}),
+    defineField({name: 'language', title: 'Language', type: 'string', group: 'publication', initialValue: 'English'}),
     defineField({name: 'isbn', title: 'ISBN', type: 'string', group: 'publication'}),
     defineField({name: 'doi', title: 'DOI', type: 'string', group: 'publication', description: 'Of the whole issue, without https://doi.org/ — e.g. 10.61608/9783775758758'}),
     defineField({

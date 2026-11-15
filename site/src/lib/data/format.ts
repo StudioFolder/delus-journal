@@ -1,7 +1,7 @@
 /**
  * How things are written out, in one place.
  */
-import type {Contribution, Inline, Issue} from './fixtures.ts';
+import type {Contribution, CreditLine, Inline, Issue} from './fixtures.ts';
 
 /** A row of credits or details: a label, and one or more lines (some links) */
 export type Credit = {label: string; value: {text: string; href?: string; em?: boolean}[]};
@@ -68,20 +68,30 @@ export const longDate = (date: string) =>
 export const monthYear = (date: string) => fullDate(date.slice(0, 7));
 
 /** An issue's publication details, as rows (empty fields are left out) */
+// The standard colophon of every issue (Marco, 15 Nov): editors, graphic
+// design, publisher, then the other credits as in the printed colophon,
+// then the publication; a row only where there is something to say
 export function issueDetails(issue: Issue): Credit[] {
   const p = issue.publication;
+  const lines = (label: string, value?: CreditLine[]): Credit[] =>
+    value?.length ? [{label, value: value.map((x) => (typeof x === 'string' ? {text: x} : x))}] : [];
   const rows: Credit[] = [
-    {label: 'Edited by', value: editorsOf(issue).map((text) => ({text}))},
-    {label: 'Designed by', value: [{text: p.designedBy}]},
+    {label: 'Editors', value: editorsOf(issue).map((text) => ({text}))},
+    {label: 'Graphic design', value: [{text: p.designedBy, href: p.designedByUrl}]},
     {label: 'Publisher', value: [{text: 'Hatje Cantz', href: p.buyUrl}]},
-    // a forthcoming issue: no date yet, the word in italics (as wherever its date would be)
-    {label: 'Published', value: [p.forthcoming ? {text: 'forthcoming', em: true} : {text: issue.date}]},
+    ...lines('Project management', p.projectManagement),
+    ...lines('Copyediting', p.copyediting),
+    ...lines('Proofreading', p.proofreading),
+    ...lines('Production', p.production),
+    ...lines('Reproductions', p.reproductions),
+    ...lines('Printing', p.printing),
+    // (no "Published": the date, or forthcoming, is on the number line above)
     {label: 'Pages', value: [{text: p.pages}]},
-    {label: 'Binding', value: [{text: p.binding}]},
-    {label: 'Format', value: [{text: p.format}]}
+    {label: 'Format', value: [{text: p.format}]},
+    ...lines('Language', p.language ? [p.language] : undefined)
   ];
   if (p.isbn) rows.push({label: 'ISBN', value: [{text: p.isbn}]});
-  if (p.pdfUrl) rows.push({label: 'PDF', value: [{text: 'Open access', href: p.pdfUrl}]});
+  // (the open-access PDF: on the line of words under the abstract, before Buy)
   return rows;
 }
 

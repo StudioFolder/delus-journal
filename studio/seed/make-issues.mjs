@@ -87,6 +87,20 @@ const docs = issues.map((issue) => {
     ...(real(issue.abstract) && {abstract: simple(issue.abstract)}),
     editedBy: p.editedBy,
     designedBy: p.designedBy,
+    ...(p.designedByUrl && {designedByUrl: p.designedByUrl}),
+    // the colophon's credits (one per line), the format and pages where real
+    ...Object.fromEntries(
+      ['projectManagement', 'copyediting', 'proofreading', 'production', 'reproductions', 'printing']
+        .filter((k) => p[k]?.length)
+        // simpleText: one line each, a link where there is an address
+        .map((k) => [
+          k,
+          simple(p[k].flatMap((x, i) => [...(i ? ['\n'] : []), typeof x === 'string' ? x : {link: x.text, href: x.href}]), k)
+        ])
+    ),
+    ...(p.language && {language: p.language}),
+    ...(!p.format.startsWith('000') && {format: p.format}),
+    ...(/^\d+$/.test(p.pages) && p.pages !== '000' && {pageCount: Number(p.pages)}),
     contributions: issue.contributions.map((c, i) => ({
       _key: `c${i}`,
       _type: 'contribution',

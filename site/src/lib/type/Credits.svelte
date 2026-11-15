@@ -66,7 +66,9 @@
   }
   .compact > div {
     display: grid;
-    grid-template-columns: calc(3 * var(--col)) 1fr;
+    /* the label 5 columns wide (3 until 15 Nov: "Project management" took
+       two lines) */
+    grid-template-columns: calc(5 * var(--col)) 1fr;
   }
   .compact dt {
     margin-bottom: 0;
@@ -74,9 +76,24 @@
   .compact dd {
     grid-column: 2;
   }
+  /* Narrow (Marco, 15 Nov): the band is too narrow for the two columns —
+     each label on its own line, its lines under it, rows 2 units apart */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .compact {
+      gap: calc(2 * var(--u));
+    }
+    .compact > div {
+      grid-template-columns: 1fr;
+    }
+    .compact dd {
+      grid-column: 1;
+    }
+  }
+  /* Phone: the two columns, the labels' 16 units (12 until 15 Nov: too
+     few for "Reproductions"; then 14, Marco: a little more air) */
   @media (max-width: 767px) {
     .compact > div {
-      grid-template-columns: calc(12 * var(--u)) 1fr;
+      grid-template-columns: calc(16 * var(--u)) 1fr;
     }
   }
 </style>
