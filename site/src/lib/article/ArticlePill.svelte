@@ -15,8 +15,8 @@
     on the band) — and Close;
   - Cite: the pill grows (below) and shows the beginning of the
     citation, quiet, on one line, fading out before Copy and Close; Copy
-    copies the whole citation and reads "Copied" for a moment
-    (Cite.svelte);
+    copies the whole citation; a check mark is drawn in its place for a
+    moment (Cite.svelte, `tick`);
   - Search: the search within the article (only if it has a text). The
     pill grows and holds a field, ready to type in ("Search this
     article", in the search page's type: smaller, and the iPhone would
@@ -213,7 +213,7 @@
       {:else if shown === 'cite'}
         <div class="row">
           <p class="citation">{citation}</p>
-          <Cite {citation} label="Copy" />
+          <Cite {citation} label="Copy" tick />
           <span class="hover"><button type="button" onclick={() => (cite = false)}>Close</button></span>
         </div>
       {:else}
