@@ -341,13 +341,6 @@ export const people = [
   {slug: 'emily-schlickman', name: 'Emily Schlickman', sortName: 'Schlickman, Emily', issues: [2]}
 ];
 
-// Eight invented news items, newest first. `slug` is what the CMS
-// generates from the title ("News title A" → news-title-a), so the URLs
-// are already the real ones. `date` is the full date (YYYY-MM-DD). A, B and
-// C have a text (`body`, one string per paragraph), as a placeholder; B and
-// C an image (B horizontal, C vertical).
-// `images`: the post's images (Sanity's figures) — for now only their
-// proportions, shown as empty frames.
 // A highlight of the home page, shaped as in the CMS: a reference to an
 // issue or to a post (here their slugs), or an article picked inside its
 // issue (`article`: the contribution — its slug here, its key in the CMS
@@ -357,50 +350,85 @@ export type Highlight =
   | {_type: 'newsHighlight'; post: string}
   | {_type: 'articleHighlight'; issue: string; article: string};
 
+// A block of a news text, shaped as Sanity's rich text: a paragraph
+// (italics and links possible), a heading (style Heading), a list
+export type NewsBlock = string | Inline[] | {heading: string} | {list: (string | Inline[])[]};
+
 export type Post = {
   slug: string;
   kind: string;
   date: string;
   title: string;
-  body?: string[];
+  body?: NewsBlock[];
   images?: {width: number; height: number}[];
 };
 
-const placeholderBody = [
-  'Placeholder for the text of a news item. The first paragraph says what happens, when and where, in a few plain sentences, so that the page can be judged with a realistic amount of text in this position.',
-  'A second paragraph gives the details: who is taking part, how to join or apply, what the event or the call is about, and how it relates to the work of the journal and to its latest issue.',
-  'A last, shorter paragraph with practical information: the date and time, the place, a link for registration or submission.'
-];
-
+// The news, newest first. `slug` is what the CMS generates from the title
+// ("Open call: Season Creep" → open-call-season-creep), so the URLs are
+// already the real ones. `date` is the full date (YYYY-MM-DD).
+// `images`: the post's images (Sanity's figures) — for now only their
+// proportions, shown as empty frames.
+// The first three are real texts (Marco, 15 Nov: the open call of Issue
+// 02 from its draft, the exhibition at Microscope; their dates before 15
+// Nov are guesses); D to H stay placeholders, titles only, all News, dated
+// before them.
 export const posts: Post[] = [
   {
-    slug: 'news-title-a',
+    slug: 'the-open-call-for-issue-02-is-closed',
     kind: 'News',
-    date: '2026-11-12',
-    title: 'News title A',
-    body: placeholderBody
+    date: '2026-06-02',
+    title: 'The open call for Issue 02 is closed',
+    body: [
+      ['The open call for ', {em: 'Season Creep'}, ', Issue 02 of DELUS, closed on 1 June 2026. Thank you to everyone who sent a proposal.'],
+      'The editorial team is now reading the submissions and will write to the authors whose contributions have been selected.',
+      ['Issue 02, ', {em: 'Season Creep'}, ', will be published in spring 2027.']
+    ]
   },
   {
-    slug: 'news-title-b',
+    slug: 'open-call-season-creep',
+    kind: 'Open call',
+    date: '2026-03-02',
+    title: 'Open call: Season Creep',
+    body: [
+      [
+        {em: 'The gradual changing in the length of the seasons, as demonstrated by earlier flowering of plants, … thought by many to be caused by climate change.'},
+        ' — Collins English Dictionary'
+      ],
+      ['As seasons shift in response to climate change, the rhythms that once structured landscapes, bodies, and built environments begin to destabilize. ', {em: 'Season Creep'}, ' invites reflections on phenological change, ecological precarity, and the uneven, often imperceptible pace of irreversible transformation.'],
+      'This issue brings together researchers and practitioners across architecture, urban design, landscape architecture, and the arts to examine how seasonal knowledge—once grounded in cycles of cultivation, migration, and celebration—is being reconfigured across disciplines and geographies. Through writing, drawing, and documentation, contributors are invited to trace what it means to inhabit a world in which seasons no longer arrive as expected.',
+      {heading: 'Submission guidelines'},
+      ['Please send submissions to ', {link: 'delus@arch.ethz.ch', href: 'mailto:delus@arch.ethz.ch'}, '. Texts must be submitted as Word files (.docx). Images should be high-resolution JPEGs. Authors are responsible for securing all necessary copyright permissions.'],
+      {heading: 'For a 3000-word article'},
+      {list: ['Proposed title', 'Abstract (max. 250 words)', 'Name and contact information', '50-word bio', 'Up to 3 images', '1 writing sample']},
+      {heading: 'For a visual essay'},
+      {list: ['Proposed title', 'Abstract (max. 200 words)', 'Name and contact information', '50-word bio', 'Up to 10 images', '1 visual work sample']},
+      ['All submissions must clearly state their relation to the theme of this issue of ', {em: 'DELUS'}, '. Contributions will be selected by the editorial team.'],
+      {heading: 'Deadline'},
+      '1 June 2026'
+    ]
+  },
+  {
+    slug: 'chasing-water-in-london',
     kind: 'Event',
-    date: '2026-10-08',
-    title: 'News title B',
-    body: placeholderBody,
+    date: '2025-07-21',
+    title: 'Chasing Water in London',
+    body: [
+      [
+        {em: 'Chasing Water'},
+        ', Issue 01 of ETH Zurich’s DELUS, was launched in London with an exhibition at ',
+        {link: 'Microscope', href: 'https://www.micro-scope.uk/'},
+        ', a non-profit art-and-ecology space in Dalston.'
+      ],
+      {list: ['Opening: 3 July 2025, 18:00–21:00', 'Exhibition: 3–19 July 2025']},
+      'Microscope, 2–4 Tottenham Road, London E9 7BL.'
+    ],
     images: [{width: 3, height: 2}] // horizontal
   },
-  {
-    slug: 'news-title-c',
-    kind: 'News',
-    date: '2026-08-27',
-    title: 'News title C',
-    body: placeholderBody,
-    images: [{width: 2, height: 3}] // vertical
-  },
-  {slug: 'news-title-d', kind: 'Open call', date: '2026-06-15', title: 'News title D'},
-  {slug: 'news-title-e', kind: 'Event', date: '2026-04-03', title: 'News title E'},
-  {slug: 'news-title-f', kind: 'News', date: '2026-02-19', title: 'News title F'},
-  {slug: 'news-title-g', kind: 'Open call', date: '2025-11-21', title: 'News title G'},
-  {slug: 'news-title-h', kind: 'News', date: '2025-09-30', title: 'News title H'}
+  {slug: 'news-title-d', kind: 'News', date: '2025-06-15', title: 'News title D'},
+  {slug: 'news-title-e', kind: 'News', date: '2025-04-03', title: 'News title E'},
+  {slug: 'news-title-f', kind: 'News', date: '2025-02-19', title: 'News title F'},
+  {slug: 'news-title-g', kind: 'News', date: '2024-11-21', title: 'News title G'},
+  {slug: 'news-title-h', kind: 'News', date: '2024-09-30', title: 'News title H'}
 ];
 
 // The site's tagline (Site settings → Footer text in the CMS): in the
@@ -532,7 +560,7 @@ export const home = {
     {_type: 'issueHighlight', issue: '02-season-creep'},
     {_type: 'issueHighlight', issue: '01-chasing-water'},
     {_type: 'articleHighlight', issue: '01-chasing-water', article: 'not-a-drop-is-lost'},
-    {_type: 'newsHighlight', post: 'news-title-a'}
+    {_type: 'newsHighlight', post: 'the-open-call-for-issue-02-is-closed'}
   ] satisfies Highlight[] as Highlight[]
 };
 

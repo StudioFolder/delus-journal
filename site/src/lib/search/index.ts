@@ -11,7 +11,7 @@
  * (routes/search.json), which the search page reads. When the site reads
  * from the CMS, only where this list comes from changes.
  */
-import {issues, newestFirst, peopleOf, posts, type Block, type Inline} from '#lib/data/fixtures.ts';
+import {issues, newestFirst, peopleOf, posts, type Block, type Inline, type NewsBlock} from '#lib/data/fixtures.ts';
 import {
   articleHref,
   editorialHref,
@@ -39,6 +39,10 @@ const block = (b: Block) =>
       : 'heading' in b
         ? b.heading
         : plain(b.figure.caption);
+
+// A block of a news text: a paragraph, a heading, a list (one item per line)
+const newsBlock = (b: NewsBlock) =>
+  typeof b === 'string' || Array.isArray(b) ? inline(b) : 'heading' in b ? b.heading : b.list.map(inline).join('\n');
 
 // The parts of a text, one per line; composed letters (é as one letter),
 // so that finding ignores accents letter by letter (find.ts)
@@ -86,7 +90,7 @@ export function entries(): Entry[] {
       where: post.kind,
       title: post.title,
       by: '',
-      text: lines(...(post.body ?? []))
+      text: lines(...(post.body ?? []).map(newsBlock))
     });
   return list;
 }

@@ -1,5 +1,5 @@
 import {error} from '@sveltejs/kit';
-import {posts} from '#lib/data/fixtures.ts';
+import {posts, type Inline} from '#lib/data/fixtures.ts';
 import {brief} from '#lib/head/head.ts';
 import type {EntryGenerator, PageLoad} from './$types';
 
@@ -10,5 +10,6 @@ export const load: PageLoad = ({params}) => {
   const post = posts.find((x) => x.slug === params.slug);
   if (!post) error(404);
   // The page's head: the item's title, and how its text opens
-  return {post, title: post.title, description: brief(post.body?.[0])};
+  const opening = post.body?.find((b): b is string | Inline[] => typeof b === 'string' || Array.isArray(b));
+  return {post, title: post.title, description: brief(opening)};
 };
