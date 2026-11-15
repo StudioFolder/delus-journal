@@ -6,14 +6,16 @@
     in from each side. Its width follows the band as it resizes; the type
     size stays the same and the lines re-break.
   - The highlight on view sits at the bottom of the band, above the
-    footer: a label in small capitals (e.g. the issue number) — for an
-    issue that can be bought, Buy ↗ beside it (as on the issue's page);
-    for one not out yet, forthcoming in italics (as wherever its date
-    would be) —,
-    then a text (its abstract). Same width and type as the statement.
+    footer: a line of labels in small capitals, apart as the items of
+    the menu, then a text. Same width and type as the statement. What
+    they say depends on what the highlight is — an issue, an article, a
+    news item (lib/home/highlights.ts). A label that is a link is quiet,
+    full ink under the pointer (Buy ↗, Read), as on an issue's page.
   - Its image sits on the background, in the middle of the space to the
     right of the band (13 columns wide), in the proportions of the book
-    cover. For now an empty box. It follows the band: when the band
+    cover. For now an empty box. It is a link to the highlight's content
+    (an issue, an article, a news item), lit under the pointer as every
+    image that is a link. It follows the band: when the band
     shrinks, the image moves to the middle of the larger space.
 
   HIGHLIGHTS — the home page shows a series of them, one at a time
@@ -57,7 +59,7 @@
   import Acronyms from '#lib/type/Acronyms.svelte';
   import Inlines from '#lib/article/Inlines.svelte';
   import Dots from '#lib/home/Dots.svelte';
-  import {shown as shownOf} from '#lib/home/highlights.ts';
+  import {shown as shownOf, type Tag} from '#lib/home/highlights.ts';
   import {opens} from '#lib/type/links.ts';
 
   // waiting: hidden, about to start · words: appearing in the middle ·
@@ -117,7 +119,6 @@
   let at = $state(0); // the highlight on view
   let swapping = $state(false); // one highlight is replacing another
   let hidden = $state(false); // text and image faded out, between two highlights
-  const buy = $derived(highlights[at].buy); // the issue's Hatje Cantz link, if any
 
   // Round and round: after the last comes the first, before the first the last
   // (false: nothing changed — motion/wheel.ts then keeps the gesture)
@@ -159,6 +160,22 @@
 
 <svelte:window {onwheel} {onkeydown} {ontouchstart} {ontouchend} />
 
+<!-- A highlight's line of labels: plain, a link (with ↗ to another
+     site), or in italics -->
+{#snippet labels(tags: Tag[])}
+  <p class="label tags">
+    {#each tags as tag (tag.text)}
+      {#if tag.href}
+        <span class="hover" class:link={tag.external}><a href={tag.href} {...opens(tag.href)}>{tag.text}</a></span>
+      {:else if tag.em}
+        <span><em>{tag.text}</em></span>
+      {:else}
+        <span>{tag.text}</span>
+      {/if}
+    {/each}
+  </p>
+{/snippet}
+
 <svelte:head>
   <!-- Without JavaScript there is no intro: show everything -->
   <noscript>
@@ -174,12 +191,14 @@
 </svelte:head>
 
 <Panel area="right" cols={COVER_COLUMNS} class="on-ground">
-  <div
+  <a
+    href={highlights[at].href}
+    aria-label={highlights[at].name}
     class="image cover fade"
     class:now={swapping}
     class:is-hidden={!imageShown || hidden}
     out:leave|global
-  ></div>
+  ></a>
 </Panel>
 
 {#if highlights.length > 1}
@@ -204,14 +223,7 @@
     style:transform={below ? `translateY(${drop}px)` : undefined}
     out:leave|global
   >
-    <p class="label tags">
-      <span>{highlights[at].label}</span>
-      {#if buy}
-        <span class="hover link"><a href={buy} {...opens(buy)}>Buy</a></span>
-      {:else if highlights[at].forthcoming}
-        <span><em>forthcoming</em></span>
-      {/if}
-    </p>
+    {@render labels(highlights[at].tags)}
     <p class="display"><Inlines parts={highlights[at].text} /></p>
   </div>
 </Panel>
@@ -240,15 +252,8 @@
     <div class="highlights" class:is-below={below}>
       {#each highlights as highlight}
         <section class="labelled">
-          <div class="image cover"></div>
-          <p class="label tags">
-            <span>{highlight.label}</span>
-            {#if highlight.buy}
-              <span class="hover link"><a href={highlight.buy} {...opens(highlight.buy)}>Buy</a></span>
-            {:else if highlight.forthcoming}
-              <span><em>forthcoming</em></span>
-            {/if}
-          </p>
+          <a href={highlight.href} aria-label={highlight.name} class="image cover"></a>
+          {@render labels(highlight.tags)}
           <p class="display"><Inlines parts={highlight.text} /></p>
         </section>
       {/each}
@@ -262,6 +267,17 @@
   }
   .highlights {
     display: none; /* desktop shows one highlight at a time, at the bottom of the band */
+  }
+  /* The image, a link: a touch of ink under the pointer (as an image on
+     an issue's page) */
+  a.image {
+    display: block;
+    background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
+  }
+  @media (hover: hover) {
+    a.image:hover {
+      --lit: 1;
+    }
   }
   /* The label and Buy: apart as the items of the menu (as on an issue's page) */
   .tags {

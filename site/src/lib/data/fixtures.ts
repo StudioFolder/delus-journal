@@ -526,8 +526,14 @@ export const home = {
   // Highlights: what the home page shows, one at a time, in this order —
   // as in the CMS (Site settings → Highlights), only an issue, a news
   // item or an article; what each shows comes from it (lib/home/
-  // highlights.ts). For now the three issues, newest first.
-  highlights: newestFirst.map((issue): Highlight => ({_type: 'issueHighlight', issue: issue.slug}))
+  // highlights.ts). For now one of each kind, to try them (Marco, 15 Nov):
+  // Issue 02, Issue 01, Breit and Streit's essay, the newest news item.
+  highlights: [
+    {_type: 'issueHighlight', issue: '02-season-creep'},
+    {_type: 'issueHighlight', issue: '01-chasing-water'},
+    {_type: 'articleHighlight', issue: '01-chasing-water', article: 'not-a-drop-is-lost'},
+    {_type: 'newsHighlight', post: 'news-title-a'}
+  ] satisfies Highlight[] as Highlight[]
 };
 
 // The people of a contribution, in their order (a slug without an
