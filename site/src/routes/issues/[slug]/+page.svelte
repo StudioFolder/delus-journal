@@ -10,11 +10,12 @@
     ink under the pointer (.hover), apart as the items of the menu:
     Colophon — shows the publication details in place of the table of
     contents, and back; in full ink while they are on view;
-    Buy — the link to the publisher's page of the issue (only if the
-    issue has one);
     Cite — copies how to cite the issue; the word then reads "Copied"
     for a moment (Cite.svelte, as on an article). Not for a forthcoming
-    issue.
+    issue;
+    Buy — last (Marco, 15 Nov), the link to the publisher's page of the
+    issue, with the arrow of a link to another site (.link) (only if the
+    issue has one).
   - Below the abstract the table of contents: title, people; each
     entry is the link to its article. The first entry is the editorial
     ("A Note from the Editors", by the issue's editors). Or, after Colophon, the
@@ -277,13 +278,13 @@
             Colophon
           </button>
         </span>
+        {#if data.citation}
+          <Cite citation={data.citation} class="fade" i={2} />
+        {/if}
         {#if issue.publication.buyUrl}
-          <span class="hover fade" style:--i={2}>
+          <span class="hover link fade" style:--i={3}>
             <a href={issue.publication.buyUrl} {...opens(issue.publication.buyUrl)}>Buy</a>
           </span>
-        {/if}
-        {#if data.citation}
-          <Cite citation={data.citation} class="fade" i={issue.publication.buyUrl ? 3 : 2} />
         {/if}
       </p>
     </div>
@@ -406,13 +407,21 @@
   }
 
   /* The lines above and under the abstract (number and date; Colophon,
-     Buy, Cite): their words apart as the items of the menu */
+     Cite, Buy): their words apart as the items of the menu */
   .tags {
     display: flex;
     gap: calc(4 * var(--u));
   }
   .tags button {
     cursor: pointer;
+  }
+  /* Buy's arrow (.link) beside the small capitals: as tall as they are
+     (7px), its stroke 1px (8/7 in the 8-unit drawing drawn at 7px; the
+     colophons' arrow: 8px, 1.25px) — that arrow is too strong here */
+  .tags .link::after {
+    width: calc(0.875 * var(--u));
+    height: calc(0.875 * var(--u));
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' fill='none' stroke='black' stroke-width='1.143'%3E%3Cpath d='M0.5 7.5 7.5 0.5M2 0.5h5.5V6'/%3E%3C/svg%3E");
   }
 
   /* The table of contents: entries 4 units apart, 9 columns wide — one
