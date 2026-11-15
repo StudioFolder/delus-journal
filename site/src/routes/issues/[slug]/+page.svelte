@@ -9,10 +9,16 @@
   - Under the abstract, a line of words in small capitals, quiet → full
     ink under the pointer (.hover), apart as the items of the menu:
     Colophon — shows the publication details in place of the table of
-    contents, and back; in full ink while they are on view;
-    Cite — copies how to cite the issue; the word then reads "Copied"
-    for a moment (Cite.svelte, as on an article). Not for a forthcoming
+    contents; in full ink while they are on view;
+    Cite — shows how to cite the issue there (issueCitationOf: Chicago,
+    with the DOI), to be selected and copied. Not for a forthcoming
     issue;
+    Where there is a pointer (Marco, 15 Nov) the two work on hover, not
+    on a click: pointing at the word shows what it stands for, and it
+    stays while the pointer goes down to it (anywhere in the column
+    below the line); pointing back at the abstract, or leaving the
+    column, brings the contents back. Without a pointer (touch, the
+    keyboard) a tap or Enter shows it, and again hides it;
     PDF — the open-access PDF (Marco, 15 Nov: before Buy, on the same
     line; no longer in the colophon), with the arrow (only if the issue
     has one);
@@ -87,21 +93,33 @@
   import {opens} from '#lib/type/links.ts';
   import Inlines from '#lib/article/Inlines.svelte';
   import Credits from '#lib/type/Credits.svelte';
-  import Cite from '#lib/article/Cite.svelte';
   import Found from '#lib/search/Found.svelte';
   import {issueDetails, issueLabel} from '#lib/data/format.ts';
 
   let {data} = $props();
   const issue = $derived(data.issue);
 
-  // Contents or colophon, below the abstract. The change follows a
-  // moment later: what is there fades out, changes, fades in
-  let colophon = $state(false); // what is asked for
-  let shown = $state(false); // what is written
+  // Contents, colophon or citation, below the abstract. The change
+  // follows a moment later: what is there fades out, changes, fades in
+  type View = 'contents' | 'colophon' | 'cite';
+  let view = $state<View>('contents'); // what is asked for
+  let shown = $state<View>('contents'); // what is written
   let hidden = $state(false);
-  let switched = $state(false); // true once Colophon has been used
+  let switched = $state(false); // true once Colophon or Cite has been used
+  // The words: on hover where there is a pointer; else a tap shows, a
+  // second tap hides
+  const point = (to: View) => (e: PointerEvent) => {
+    if (e.pointerType === 'mouse') view = to;
+  };
+  const hovers = () => matchMedia('(hover: hover)').matches;
+  const tap = (to: View) => () => {
+    if (!hovers()) view = view === to ? 'contents' : to;
+  };
+  const toContents = (e: PointerEvent) => {
+    if (e.pointerType === 'mouse') view = 'contents';
+  };
   $effect(() => {
-    const target = colophon;
+    const target = view;
     if (target === shown) return void (hidden = false);
     switched = true;
     hidden = true;
@@ -266,7 +284,15 @@
 <Panel area="band" inset class="on-band from-top">
   <!-- The whole column lands from the list's abstract (its number line and
        text are at the top; the rest appears after) -->
-  <div class="column" class:fade={!from.abstract} use:land={from.abstract} out:leave|global>
+  <!-- (the pointer leaving the column brings the contents back: not an interaction) -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="column"
+    class:fade={!from.abstract}
+    use:land={from.abstract}
+    onpointerleave={toContents}
+    out:leave|global
+  >
     <p class="label tags head">
       <span>{issueLabel(issue.number)}</span>
       <span class="fade" style:--i={0}
@@ -274,15 +300,25 @@
       >
     </p>
     <div class="labelled">
-      <p class="display"><Inlines parts={issue.abstract} /></p>
-      <p class="label tags">
-        <span class="hover fade" class:active={colophon} style:--i={1}>
-          <button type="button" aria-pressed={colophon} onclick={() => (colophon = !colophon)}>
-            Colophon
-          </button>
+      <p class="display" onpointerenter={toContents}><Inlines parts={issue.abstract} /></p>
+    </div>
+    <!-- The words: out of the abstract's block so that they can stay at
+         the top, under the number line, while the contents scroll -->
+    <p class="label tags words">
+        <span class="hover fade" class:active={view === 'colophon'} style:--i={1}>
+          <button
+            type="button"
+            aria-pressed={view === 'colophon'}
+            onpointerenter={point('colophon')}
+            onclick={tap('colophon')}>Colophon</button
+          >
         </span>
         {#if data.citation}
-          <Cite citation={data.citation} class="fade" i={2} />
+          <span class="hover fade" class:active={view === 'cite'} style:--i={2}>
+            <button type="button" aria-pressed={view === 'cite'} onpointerenter={point('cite')} onclick={tap('cite')}
+              >Cite</button
+            >
+          </span>
         {/if}
         {#if issue.publication.pdfUrl}
           <span class="hover link fade" style:--i={3}>
@@ -295,11 +331,12 @@
           </span>
         {/if}
       </p>
-    </div>
 
     <div class="below fade" class:now={switched} class:is-hidden={hidden}>
-      {#if shown}
+      {#if shown === 'colophon'}
         <Credits rows={issueDetails(issue)} compact />
+      {:else if shown === 'cite' && data.citation}
+        <p class="citation"><Inlines parts={data.citation} sc={false} /></p>
       {:else}
         <ol class="contents">
           {#each data.contents as entry, i (entry.href)}
@@ -338,9 +375,14 @@
   .head {
     padding-bottom: calc(2 * var(--u));
   }
+  /* The words: 2 units under the abstract (as a label's distance) */
+  .words {
+    margin-top: calc(2 * var(--u));
+  }
   @media (min-width: 768px) {
     .column {
-      scroll-padding-top: calc(4 * var(--u)); /* what scrolls into view stops under the number line */
+      /* what scrolls into view stops under the number line and the words */
+      scroll-padding-top: calc(8 * var(--u));
     }
     .head {
       position: sticky;
@@ -348,10 +390,31 @@
       z-index: 1;
       background: var(--band);
     }
+    /* The words stay too, under the number line (Marco, 15 Nov), the
+       band's colour behind them and 2 units under them */
+    .words {
+      position: sticky;
+      top: calc(4 * var(--u));
+      z-index: 1;
+      padding-bottom: calc(2 * var(--u));
+      background: var(--band);
+    }
   }
-  /* Contents (or details): 8 units under what comes before */
+  /* Narrow: the words one under the other — four lines */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .column {
+      scroll-padding-top: calc(17 * var(--u));
+    }
+  }
+  /* Contents (or details): 8 units under what comes before (with the
+     words' 2 units of padding where they are sticky) */
   .below {
     margin-top: calc(8 * var(--u));
+  }
+  @media (min-width: 768px) {
+    .below {
+      margin-top: calc(6 * var(--u));
+    }
   }
   /* The gallery: as wide and as high as the space right of the band; it
      scrolls sideways, one image per screenful, each in the middle (the
@@ -422,6 +485,32 @@
   }
   .tags button {
     cursor: pointer;
+  }
+  /* A word and its arrow never part */
+  .tags > span {
+    white-space: nowrap;
+  }
+  /* Narrow (Marco, 15 Nov): the four words don't fit the band's line —
+     one under the other, 1 unit apart (as the legal pages' titles) */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .tags:not(.head) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--u);
+    }
+  }
+  /* Where they work on hover, Colophon and Cite are not things to click */
+  @media (hover: hover) {
+    .tags button {
+      cursor: default;
+    }
+  }
+  /* The citation, in place of the contents: the colophon's type, full
+     ink, to be selected; a long address breaks */
+  .citation {
+    font: var(--type-ui);
+    overflow-wrap: anywhere;
+    user-select: text;
   }
 
   /* The table of contents: entries 4 units apart, 9 columns wide — one

@@ -35,7 +35,7 @@ export const load: PageLoad = ({params}) => {
     }))
   ];
   const contents = rows.map((row, i) => ({...row, image: entryImage(i)}));
-  // How to cite the issue (not before it is published)
+  // How to cite the issue (not before it is published): inline pieces
   const citation = issue.publication.forthcoming ? undefined : issueCitationOf(issue, journal);
   // The page's head: "Issue 01, Chasing Water" (Issue 00's title is the journal's name)
   const title = issue.title === 'DELUS' ? issueLabel(issue.number) : `${issueLabel(issue.number)}, ${issue.title}`;

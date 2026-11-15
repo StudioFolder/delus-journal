@@ -141,15 +141,25 @@ export const doiUrl = (doi: string) => `https://doi.org/${doi}`;
 export const megabytes = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
 
 /**
- * How to cite a whole issue (the text "Cite" copies on the issue's
- * page), in the same style: the editors, the first surname first, the
- * journal with the issue's number, title and season.
- *   Frikech, Sara, and Johanna Just, eds. DELUS: Journal for Landscape
- *   and Urban Studies 01, Chasing Water (Autumn 2024).
+ * How to cite a whole issue (shown under "Cite" on the issue's page), in
+ * the Chicago style as an article's (Marco, 15 Nov: "the complete and
+ * correct citation, with DOI"): the editors, the first surname first;
+ * the issue's title in quotes (not Issue 00's, which is the journal's
+ * name); the journal in italics, the number and season; the publisher;
+ * the DOI as an address.
+ *   Frikech, Sara, and Johanna Just, eds. “Chasing Water.” DELUS: Journal
+ *   for Landscape and Urban Studies, no. 1 (Autumn 2024). Berlin: Hatje
+ *   Cantz. https://doi.org/10.61608/9783775758758.
+ * As inline pieces (the journal: `em`); `plain()` gives the text.
  */
-export function issueCitationOf(issue: Issue, journal: string): string {
+export function issueCitationOf(issue: Issue, journal: string): Inline[] {
   const editors = editorsOf(issue);
   const by = nameList(editors.map((name, i) => (i ? name : surnameFirst(name))));
-  const named = issue.title === 'DELUS' ? '' : `, ${issue.title}`;
-  return `${by}, ${editors.length > 1 ? 'eds' : 'ed'}. ${journal} ${issueNumber(issue.number)}${named} (${issue.date}).`;
+  const named = issue.title === 'DELUS' ? '' : ` “${issue.title}.”`;
+  const doi = issue.publication.doi ? ` ${doiUrl(issue.publication.doi)}.` : '';
+  return [
+    `${by}, ${editors.length > 1 ? 'eds' : 'ed'}.${named} `,
+    {em: journal},
+    `, no. ${issue.number} (${issue.date}). Berlin: Hatje Cantz.${doi}`
+  ];
 }
