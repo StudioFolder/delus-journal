@@ -420,7 +420,7 @@ export const posts: Post[] = [
     slug: 'chasing-water-in-london',
     kind: 'Event',
     date: '2025-07-21',
-    title: 'Chasing Water in London',
+    title: [{em: 'Chasing Water'}, ' in London'],
     body: [
       [
         {em: 'Chasing Water'},
@@ -572,12 +572,12 @@ export const home = {
   // as in the CMS (Site settings → Highlights), only an issue, a news
   // item or an article; what each shows comes from it (lib/home/
   // highlights.ts). For now one of each kind, to try them (Marco, 15 Nov):
-  // Issue 02, Issue 01, Breit and Streit's essay, the newest news item.
+  // Issue 02, Issue 01, Breit and Streit's essay, the London launch of Issue 01.
   highlights: [
     {_type: 'issueHighlight', issue: '02-season-creep'},
     {_type: 'issueHighlight', issue: '01-chasing-water'},
     {_type: 'articleHighlight', issue: '01-chasing-water', article: 'not-a-drop-is-lost'},
-    {_type: 'newsHighlight', post: 'the-open-call-for-issue-02-is-closed'}
+    {_type: 'newsHighlight', post: 'chasing-water-in-london'}
   ] satisfies Highlight[] as Highlight[]
 };
 
