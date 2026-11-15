@@ -89,12 +89,56 @@ export const siteSettings = defineType({
   type: 'document',
   fields: [
     defineField({name: 'statement', title: 'Homepage statement', type: 'text', rows: 3}),
+    // What the home page shows, one at a time, in this order. Only three
+    // kinds of content can be a highlight: an issue, a news item (a post)
+    // or an article (picked inside its issue, as for a link). The site
+    // shows each kind with its own block: an issue its number with Buy
+    // (from its Hatje Cantz link) or "forthcoming", and its abstract.
     defineField({
-      name: 'featuredIssue',
-      title: 'Featured issue',
-      type: 'reference',
-      to: [{type: 'issue'}],
-      description: 'Leave empty to feature the latest issue.',
+      name: 'highlights',
+      title: 'Highlights',
+      type: 'array',
+      description:
+        'What the home page shows, one at a time, in this order: up to five. Only issues, news and articles can be highlights.',
+      validation: (r) => r.max(5).error('Up to five highlights'),
+      of: [
+        defineArrayMember({type: 'reference', name: 'issueHighlight', title: 'Issue', to: [{type: 'issue'}]}),
+        defineArrayMember({type: 'reference', name: 'newsHighlight', title: 'News', to: [{type: 'post'}]}),
+        defineArrayMember({
+          type: 'object',
+          name: 'articleHighlight',
+          title: 'Article',
+          fields: [
+            defineField({
+              name: 'article',
+              title: 'Article',
+              type: 'articleLink',
+              validation: (r) =>
+                r.custom((value?: {issue?: unknown; key?: string}) =>
+                  value?.issue && value?.key
+                    ? true
+                    : 'Choose an article (for a whole issue, add an Issue instead)'
+                ),
+            }),
+          ],
+          preview: {
+            select: {
+              number: 'article.issue.number',
+              key: 'article.key',
+              contributions: 'article.issue.contributions',
+            },
+            prepare({number, key, contributions}) {
+              const issue = `Issue ${String(number ?? 0).padStart(2, '0')}`
+              const title =
+                key === 'editorial'
+                  ? 'A Note from the Editors'
+                  : (contributions as {_key: string; title?: string}[] | undefined)?.find((c) => c._key === key)
+                      ?.title
+              return {title: title ?? 'Article', subtitle: number === undefined ? 'Article' : `Article · ${issue}`}
+            },
+          },
+        }),
+      ],
     }),
     defineField({name: 'footer', title: 'Footer text', type: 'string', initialValue: 'Journal for Landscape and Urban Studies'}),
     defineField({

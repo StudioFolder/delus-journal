@@ -415,14 +415,6 @@
   .tags button {
     cursor: pointer;
   }
-  /* Buy's arrow (.link) beside the small capitals: as tall as they are
-     (7px), its stroke 1px (8/7 in the 8-unit drawing drawn at 7px; the
-     colophons' arrow: 8px, 1.25px) — that arrow is too strong here */
-  .tags .link::after {
-    width: calc(0.875 * var(--u));
-    height: calc(0.875 * var(--u));
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' fill='none' stroke='black' stroke-width='1.143'%3E%3Cpath d='M0.5 7.5 7.5 0.5M2 0.5h5.5V6'/%3E%3C/svg%3E");
-  }
 
   /* The table of contents: entries 4 units apart, 9 columns wide — one
      fewer than the band's content; on phones the whole width;

@@ -1,4 +1,4 @@
-import {articleHref, issueLabel, slugOf, type Credit} from './format.ts';
+import {articleHref, slugOf, type Credit} from './format.ts';
 import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
 import * as editorial01 from './articles/editorial01.ts';
@@ -348,6 +348,15 @@ export const people = [
 // C an image (B horizontal, C vertical).
 // `images`: the post's images (Sanity's figures) — for now only their
 // proportions, shown as empty frames.
+// A highlight of the home page, shaped as in the CMS: a reference to an
+// issue or to a post (here their slugs), or an article picked inside its
+// issue (`article`: the contribution — its slug here, its key in the CMS
+// — or 'editorial' for the editors' note)
+export type Highlight =
+  | {_type: 'issueHighlight'; issue: string}
+  | {_type: 'newsHighlight'; post: string}
+  | {_type: 'articleHighlight'; issue: string; article: string};
+
 export type Post = {
   slug: string;
   kind: string;
@@ -514,10 +523,11 @@ export const legal: LegalPage[] = [
 export const home = {
   statement:
     'Situated at the intersection of architecture, landscape, and urban studies, DELUS gives visibility to new topics, concepts, and perspectives shaping contemporary discourse.',
-  // Highlights: what the home page shows, one at a time, in this order.
-  // For now the issues, newest first; later chosen and ordered by the
-  // editors in the CMS.
-  highlights: newestFirst.map((issue) => ({label: issueLabel(issue.number), text: issue.abstract}))
+  // Highlights: what the home page shows, one at a time, in this order —
+  // as in the CMS (Site settings → Highlights), only an issue, a news
+  // item or an article; what each shows comes from it (lib/home/
+  // highlights.ts). For now the three issues, newest first.
+  highlights: newestFirst.map((issue): Highlight => ({_type: 'issueHighlight', issue: issue.slug}))
 };
 
 // The people of a contribution, in their order (a slug without an

@@ -6,8 +6,11 @@
     in from each side. Its width follows the band as it resizes; the type
     size stays the same and the lines re-break.
   - The highlight on view sits at the bottom of the band, above the
-    footer: a label in small capitals (e.g. the issue number), then a
-    text (its abstract). Same width and type as the statement.
+    footer: a label in small capitals (e.g. the issue number) — for an
+    issue that can be bought, Buy ↗ beside it (as on the issue's page);
+    for one not out yet, forthcoming in italics (as wherever its date
+    would be) —,
+    then a text (its abstract). Same width and type as the statement.
   - Its image sits on the background, in the middle of the space to the
     right of the band (13 columns wide), in the proportions of the book
     cover. For now an empty box. It follows the band: when the band
@@ -18,6 +21,11 @@
   the next or the previous one: text and image fade out, then the new
   ones fade in; the statement stays. One scroll gesture = one step; also
   the up/down arrow keys, Page Up/Down, and a swipe on touch screens.
+  They also move on by themselves (Marco, 15 Nov): each stays
+  --highlight-time, shown by the dots on the footer's line
+  (lib/home/Dots.svelte: one per highlight, the current one longer, with
+  a bar filling up until the next); a step by hand, or a click on a dot,
+  starts the time again. Not with reduced motion.
 
   MOBILE — one column that scrolls in the ordinary way, under the header:
   the statement, then every highlight in turn (label, text, image). No
@@ -48,6 +56,9 @@
   import {home} from '#lib/data/fixtures.ts';
   import Acronyms from '#lib/type/Acronyms.svelte';
   import Inlines from '#lib/article/Inlines.svelte';
+  import Dots from '#lib/home/Dots.svelte';
+  import {shown as shownOf} from '#lib/home/highlights.ts';
+  import {opens} from '#lib/type/links.ts';
 
   // waiting: hidden, about to start · words: appearing in the middle ·
   // rising: moving to the top · done: the final state
@@ -102,16 +113,20 @@
   });
 
   // ---------- Highlights ----------
-  const highlights = home.highlights;
+  const highlights = home.highlights.map(shownOf);
   let at = $state(0); // the highlight on view
   let swapping = $state(false); // one highlight is replacing another
   let hidden = $state(false); // text and image faded out, between two highlights
+  const buy = $derived(highlights[at].buy); // the issue's Hatje Cantz link, if any
 
   // Round and round: after the last comes the first, before the first the last
+  // (false: nothing changed — motion/wheel.ts then keeps the gesture)
   function go(step: 1 | -1) {
-    const next = (at + step + highlights.length) % highlights.length;
-    if (phase !== 'done' || swapping || highlights.length < 2) return;
-    if (innerWidth < 768) return; // mobile shows them all, one after another: no steps
+    return show((at + step + highlights.length) % highlights.length);
+  }
+  function show(next: number) {
+    if (phase !== 'done' || swapping || highlights.length < 2 || next === at) return false;
+    if (innerWidth < 768) return false; // mobile shows them all, one after another: no steps
     swapping = true;
     hidden = true;
     const out = time('--fade-out-time');
@@ -120,6 +135,7 @@
       hidden = false;
     });
     after(out + time('--fade-time'), () => (swapping = false));
+    return true;
   }
 
   // One scroll gesture = one step (motion/wheel.ts)
@@ -166,6 +182,17 @@
   ></div>
 </Panel>
 
+{#if highlights.length > 1}
+  <Dots
+    count={highlights.length}
+    {at}
+    running={phase === 'done' && !still()}
+    hidden={!imageShown}
+    onpick={show}
+    onend={() => go(1)}
+  />
+{/if}
+
 <Panel area="band" inset class="on-band from-bottom">
   <div
     class="highlight labelled"
@@ -177,7 +204,14 @@
     style:transform={below ? `translateY(${drop}px)` : undefined}
     out:leave|global
   >
-    <p class="label">{highlights[at].label}</p>
+    <p class="label tags">
+      <span>{highlights[at].label}</span>
+      {#if buy}
+        <span class="hover link"><a href={buy} {...opens(buy)}>Buy</a></span>
+      {:else if highlights[at].forthcoming}
+        <span><em>forthcoming</em></span>
+      {/if}
+    </p>
     <p class="display"><Inlines parts={highlights[at].text} /></p>
   </div>
 </Panel>
@@ -207,7 +241,14 @@
       {#each highlights as highlight}
         <section class="labelled">
           <div class="image cover"></div>
-          <p class="label">{highlight.label}</p>
+          <p class="label tags">
+            <span>{highlight.label}</span>
+            {#if highlight.buy}
+              <span class="hover link"><a href={highlight.buy} {...opens(highlight.buy)}>Buy</a></span>
+            {:else if highlight.forthcoming}
+              <span><em>forthcoming</em></span>
+            {/if}
+          </p>
           <p class="display"><Inlines parts={highlight.text} /></p>
         </section>
       {/each}
@@ -221,6 +262,11 @@
   }
   .highlights {
     display: none; /* desktop shows one highlight at a time, at the bottom of the band */
+  }
+  /* The label and Buy: apart as the items of the menu (as on an issue's page) */
+  .tags {
+    display: flex;
+    gap: calc(4 * var(--u));
   }
 
   /* Intro */
