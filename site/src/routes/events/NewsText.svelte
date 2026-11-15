@@ -13,7 +13,9 @@
     issue number above an abstract; title and text in the display type;
     one line (4 units) between blocks;
   - the text (Sanity's rich text): paragraphs with italics and links
-    (underlined, as in an essay); a heading in small capitals, quiet, 2
+    (underlined, as in an essay); a quote in the same type, indented as
+    in an essay (3 columns; 3 units on Phone) — news are all in Louize
+    (Marco); a heading in small capitals, quiet, 2
     units over what follows (as the sections of Imprint and Privacy); a
     list, one item per line, in the display type: each item after an en
     dash, quiet, its text 3 units in (wrapped lines too) — as a note's
@@ -26,7 +28,6 @@
 <script lang="ts">
   import type {Post} from '#lib/data/fixtures.ts';
   import {fullDate} from '#lib/data/format.ts';
-  import Acronyms from '#lib/type/Acronyms.svelte';
   import Inlines from '#lib/article/Inlines.svelte';
 
   let {post}: {post: Post} = $props();
@@ -36,13 +37,15 @@
 <article data-slug={post.slug}>
   <header class="labelled">
     <time class="label" datetime={post.date}>{fullDate(post.date)}</time>
-    <h2 class="display"><Acronyms text={post.title} /></h2>
+    <h2 class="display"><Inlines parts={post.title} /></h2>
   </header>
   {#if image}
     <div class="image" role="img" aria-label="Image" style:--ratio={image.width / image.height}></div>
   {/if}
   {#each post.body ?? [] as block, i (i)}
-    {#if typeof block === 'object' && 'heading' in block}
+    {#if typeof block === 'object' && 'quote' in block}
+      <blockquote class="display"><Inlines parts={block.quote} /></blockquote>
+    {:else if typeof block === 'object' && 'heading' in block}
       <h3 class="label">{block.heading}</h3>
     {:else if typeof block === 'object' && 'list' in block}
       <ul class="display">
@@ -82,6 +85,11 @@
     color: var(--ink-quiet);
     margin-bottom: calc(-2 * var(--u));
   }
+  /* A quote: indented as in an essay (ArticleBody), in the text's type */
+  blockquote {
+    margin: 0;
+    padding-left: calc(3 * var(--col));
+  }
   ul {
     padding: 0;
     list-style: none;
@@ -110,6 +118,9 @@
     article {
       padding-left: 0;
       grid-template-columns: 100%;
+    }
+    blockquote {
+      padding-left: calc(3 * var(--u));
     }
   }
 </style>

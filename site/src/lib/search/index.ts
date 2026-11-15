@@ -42,7 +42,13 @@ const block = (b: Block) =>
 
 // A block of a news text: a paragraph, a heading, a list (one item per line)
 const newsBlock = (b: NewsBlock) =>
-  typeof b === 'string' || Array.isArray(b) ? inline(b) : 'heading' in b ? b.heading : b.list.map(inline).join('\n');
+  typeof b === 'string' || Array.isArray(b)
+    ? inline(b)
+    : 'quote' in b
+      ? inline(b.quote)
+      : 'heading' in b
+        ? b.heading
+        : b.list.map(inline).join('\n');
 
 // The parts of a text, one per line; composed letters (é as one letter),
 // so that finding ignores accents letter by letter (find.ts)
@@ -88,7 +94,7 @@ export function entries(): Entry[] {
     list.push({
       href: `/events/${post.slug}/`,
       where: post.kind,
-      title: post.title,
+      title: inline(post.title),
       by: '',
       text: lines(...(post.body ?? []).map(newsBlock))
     });

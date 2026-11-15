@@ -9,7 +9,7 @@
 // - news: its category, then its date (12.11.2026); its title.
 // Its image is a link to it (`href`; `name`: for those who can't see it).
 import {issues, posts, type Highlight, type Inline} from '#lib/data/fixtures.ts';
-import {articleHref, editorialHref, editorialTitle, fullDate, issueLabel} from '#lib/data/format.ts';
+import {articleHref, editorialHref, editorialTitle, fullDate, issueLabel, plainText} from '#lib/data/format.ts';
 
 /** One label: plain; a link (`href`; `external`: to another site, with
  *  the arrow ↗); or in italics (`em`) */
@@ -31,7 +31,7 @@ export function shown(highlight: Highlight): Shown {
       tags: post ? [{text: post.kind}, {text: fullDate(post.date)}] : [],
       text: post?.title ?? '',
       href: post && `/events/${post.slug}/`,
-      name: post?.title
+      name: post && plainText(post.title)
     };
   }
   const issue = issues.find((x) => x.slug === highlight.issue);

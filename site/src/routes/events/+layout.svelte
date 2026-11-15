@@ -43,7 +43,8 @@
   import {leave} from '#lib/motion/leave.ts';
   import {still} from '#lib/motion/still.ts';
   import {posts} from '#lib/data/fixtures.ts';
-  import {monthYear} from '#lib/data/format.ts';
+  import {monthYear, plainText} from '#lib/data/format.ts';
+  import Inlines from '#lib/article/Inlines.svelte';
   import {pageTitle} from '#lib/head/head.ts';
   import NewsText from './NewsText.svelte';
 
@@ -121,7 +122,8 @@
     const path = `/events/${onView}/`;
     if (!onView || location.pathname === path) return;
     replaceState(path, page.state);
-    document.title = pageTitle(posts.find((x) => x.slug === onView)?.title); // as the address
+    const post = posts.find((x) => x.slug === onView);
+    document.title = pageTitle(post && plainText(post.title)); // as the address
   }
 </script>
 
@@ -141,7 +143,7 @@
         <!-- The title is the link; it is stretched over the whole entry.
              The date sits outside the link so it can keep its own colour
              (see LINKS in styles.css) -->
-        <a href="/events/{post.slug}/">{post.title}</a>
+        <a href="/events/{post.slug}/"><Inlines parts={post.title} sc={false} /></a>
       </li>
     {/each}
   </ul>

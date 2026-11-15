@@ -351,14 +351,20 @@ export type Highlight =
   | {_type: 'articleHighlight'; issue: string; article: string};
 
 // A block of a news text, shaped as Sanity's rich text: a paragraph
-// (italics and links possible), a heading (style Heading), a list
-export type NewsBlock = string | Inline[] | {heading: string} | {list: (string | Inline[])[]};
+// (italics and links possible), a quote (style Quote), a heading (style
+// Heading), a list
+export type NewsBlock =
+  | string
+  | Inline[]
+  | {quote: string | Inline[]}
+  | {heading: string}
+  | {list: (string | Inline[])[]};
 
 export type Post = {
   slug: string;
   kind: string;
   date: string;
-  title: string;
+  title: string | Inline[]; // italics possible (a title of an issue in it)
   body?: NewsBlock[];
   images?: {width: number; height: number}[];
 };
@@ -388,12 +394,14 @@ export const posts: Post[] = [
     slug: 'open-call-season-creep',
     kind: 'Open call',
     date: '2026-03-02',
-    title: 'Open call: Season Creep',
+    title: ['Open call: ', {em: 'Season Creep'}],
     body: [
-      [
-        {em: 'The gradual changing in the length of the seasons, as demonstrated by earlier flowering of plants, … thought by many to be caused by climate change.'},
-        ' — Collins English Dictionary'
-      ],
+      {
+        quote: [
+          {em: 'The gradual changing in the length of the seasons, as demonstrated by earlier flowering of plants, … thought by many to be caused by climate change.'},
+          ' — Collins English Dictionary'
+        ]
+      },
       ['As seasons shift in response to climate change, the rhythms that once structured landscapes, bodies, and built environments begin to destabilize. ', {em: 'Season Creep'}, ' invites reflections on phenological change, ecological precarity, and the uneven, often imperceptible pace of irreversible transformation.'],
       'This issue brings together researchers and practitioners across architecture, urban design, landscape architecture, and the arts to examine how seasonal knowledge—once grounded in cycles of cultivation, migration, and celebration—is being reconfigured across disciplines and geographies. Through writing, drawing, and documentation, contributors are invited to trace what it means to inhabit a world in which seasons no longer arrive as expected.',
       {heading: 'Submission guidelines'},

@@ -121,6 +121,9 @@ export function citationOf(
 export const plain = (parts: Inline[]) =>
   parts.map((x) => (typeof x === 'string' ? x : 'em' in x ? x.em : 'link' in x ? x.link : '')).join('');
 
+/** A text that may have italics (a news title), as plain text */
+export const plainText = (x: string | Inline[]) => (typeof x === 'string' ? x : plain(x));
+
 /** A DOI as an address: '10.61608/…' → "https://doi.org/10.61608/…" */
 export const doiUrl = (doi: string) => `https://doi.org/${doi}`;
 
