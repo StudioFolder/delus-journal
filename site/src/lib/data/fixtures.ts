@@ -82,6 +82,8 @@ export type Issue = {
     editedBy: string; // "Editors"
     designedBy: string; // "Graphic design"
     designedByUrl?: string; // its site
+    publisher?: string; // the colophon's row, and the issue's citation
+    publisherPlace?: string; // its city, for the citation (Chicago: "Berlin: Hatje Cantz")
     // The credits of the printed issue, as in its colophon (each a line
     // or more, a line a link where it has an address; a row only where
     // filled in)
@@ -269,6 +271,8 @@ export const issues: Issue[] = [
       editedBy: editors,
       designedBy: 'Studio Folder',
       designedByUrl: 'https://studiofolder.it/',
+      publisher: 'Hatje Cantz',
+      publisherPlace: 'Berlin',
       projectManagement: ['Dorothee Hahn'],
       copyediting: ['Liana Simmons'],
       proofreading: ['Irene Schaudies'],
@@ -302,6 +306,8 @@ export const issues: Issue[] = [
       editedBy: editors,
       designedBy: 'Studio Folder',
       designedByUrl: 'https://studiofolder.it/',
+      publisher: 'Hatje Cantz',
+      publisherPlace: 'Berlin',
       projectManagement: ['Dorothee Hahn'],
       copyediting: ['Irene Schaudies', 'Liana Simmons'],
       production: ['Alise Ausmane'],
@@ -333,6 +339,8 @@ export const issues: Issue[] = [
       editedBy: editors,
       designedBy: 'Studio Folder',
       designedByUrl: 'https://studiofolder.it/',
+      publisher: 'Hatje Cantz',
+      publisherPlace: 'Berlin',
       ...placeholder,
       language: 'English',
       forthcoming: true

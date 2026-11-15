@@ -111,6 +111,7 @@
   /* Pauses */
   --copied-time: 1600ms; /* how long "Copied" stands in for "Cite" (Cite.svelte) */
   --highlight-time: 8000ms; /* how long a highlight stays on the home page before the next comes up (lib/home/Dots.svelte) */
+  --dwell-time: 250ms; /* how long the pointer must rest on a word that opens on hover (an issue's Colophon and Cite) before it does: a quick pass over it opens nothing */
   --settle-time: 300ms; /* how long the note numbers on the screen must stay the same before an article's notes follow (ArticleBody) */
   --return-time: 800ms; /* how long an issue's gallery waits, with the pointer elsewhere, before going back to the cover */
 

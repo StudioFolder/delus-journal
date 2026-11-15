@@ -67,6 +67,27 @@ export const simpleText = defineType({
   ],
 })
 
+// A title that can have words in italics (the title of an issue or of a
+// work, in a news title): one line, italics only. `plainTitle` gives its
+// words alone — for the URL name and for the Studio's lists.
+export const titleText = defineType({
+  name: 'titleText',
+  title: 'Title',
+  type: 'array',
+  of: [
+    defineArrayMember({
+      type: 'block',
+      styles: [{title: 'Normal', value: 'normal'}],
+      lists: [],
+      marks: {decorators: [{title: 'Italic', value: 'em'}], annotations: []},
+    }),
+  ],
+})
+export const plainTitle = (title?: {children?: {text?: string}[]}[] | string) =>
+  typeof title === 'string'
+    ? title
+    : (title ?? []).map((block) => (block.children ?? []).map((span) => span.text ?? '').join('')).join(' ').trim()
+
 // Long formatted text with headings, quotes, lists and footnotes. For the
 // editorial, the text of a contribution, posts, About.
 // A footnote is attached to the word it follows: select the last word

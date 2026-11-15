@@ -99,6 +99,8 @@ const docs = issues.map((issue) => {
         ])
     ),
     ...(p.language && {language: p.language}),
+    ...(p.publisher && {publisher: p.publisher}),
+    ...(p.publisherPlace && {publisherPlace: p.publisherPlace}),
     ...(!p.format.startsWith('000') && {format: p.format}),
     ...(/^\d+$/.test(p.pages) && p.pages !== '000' && {pageCount: Number(p.pages)}),
     contributions: issue.contributions.map((c, i) => ({

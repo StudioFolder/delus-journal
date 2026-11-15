@@ -27,7 +27,11 @@
   --highlight-time, shown by the dots on the footer's line
   (lib/home/Dots.svelte: one per highlight, the current one longer, with
   a bar filling up until the next); a step by hand, or a click on a dot,
-  starts the time again. Not with reduced motion.
+  starts the time again. Not with reduced motion. **The time stands
+  still while the pointer is on the highlight** — its text or its image
+  — **or the keyboard is in it** (15 Nov): nothing changes under a
+  reader, or under a link about to be followed; the bar stops where it
+  is and goes on from there.
 
   MOBILE — one column that scrolls in the ordinary way, under the header:
   the statement, then every highlight in turn (label, text, image). No
@@ -154,6 +158,15 @@
   }
   onDestroy(stepper.stop);
 
+  // The time stands still while the highlight is pointed at (a mouse) or
+  // holds the keyboard (not after a click: only where the focus shows)
+  let pointed = $state(false);
+  let focused = $state(false);
+  const onpointerenter = (e: PointerEvent) => e.pointerType === 'mouse' && (pointed = true);
+  const onpointerleave = () => (pointed = false);
+  const onfocusin = (e: FocusEvent) => (focused = (e.target as Element).matches(':focus-visible'));
+  const onfocusout = () => (focused = false);
+
   const playing = $derived(phase === 'words' || phase === 'rising');
   const below = $derived(phase === 'waiting' || phase === 'words'); // before the rise
 </script>
@@ -197,6 +210,10 @@
     class="image cover fade"
     class:now={swapping}
     class:is-hidden={!imageShown || hidden}
+    {onpointerenter}
+    {onpointerleave}
+    {onfocusin}
+    {onfocusout}
     out:leave|global
   ></a>
 </Panel>
@@ -206,6 +223,7 @@
     count={highlights.length}
     {at}
     running={phase === 'done' && !still()}
+    paused={pointed || focused}
     hidden={!imageShown}
     onpick={show}
     onend={() => go(1)}
@@ -213,7 +231,13 @@
 {/if}
 
 <Panel area="band" inset class="on-band from-bottom">
+  <!-- (pointing at it, or the keyboard in it, only holds the time: not an interaction) -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
+    {onpointerenter}
+    {onpointerleave}
+    {onfocusin}
+    {onfocusout}
     class="highlight labelled"
     class:fade={phase === 'done'}
     class:now={swapping}

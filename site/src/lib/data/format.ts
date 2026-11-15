@@ -78,7 +78,7 @@ export function issueDetails(issue: Issue): Credit[] {
   const rows: Credit[] = [
     {label: 'Editors', value: editorsOf(issue).map((text) => ({text}))},
     {label: 'Graphic design', value: [{text: p.designedBy, href: p.designedByUrl}]},
-    {label: 'Publisher', value: [{text: 'Hatje Cantz', href: p.buyUrl}]},
+    ...(p.publisher ? [{label: 'Publisher', value: [{text: p.publisher, href: p.buyUrl}]}] : []),
     ...lines('Project management', p.projectManagement),
     ...lines('Copyediting', p.copyediting),
     ...lines('Proofreading', p.proofreading),
@@ -145,7 +145,8 @@ export const megabytes = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
  * the Chicago style as an article's (Marco, 15 Nov: "the complete and
  * correct citation, with DOI"): the editors, the first surname first;
  * the issue's title in quotes (not Issue 00's, which is the journal's
- * name); the journal in italics, the number and season; the publisher;
+ * name); the journal in italics, the number and season; the publisher
+ * and its city, as the issue gives them (none: left out);
  * the DOI as an address.
  *   Frikech, Sara, and Johanna Just, eds. “Chasing Water.” DELUS: Journal
  *   for Landscape and Urban Studies, no. 1 (Autumn 2024). Berlin: Hatje
@@ -156,10 +157,12 @@ export function issueCitationOf(issue: Issue, journal: string): Inline[] {
   const editors = editorsOf(issue);
   const by = nameList(editors.map((name, i) => (i ? name : surnameFirst(name))));
   const named = issue.title === 'DELUS' ? '' : ` “${issue.title}.”`;
+  const {publisher, publisherPlace} = issue.publication;
+  const house = publisher ? ` ${publisherPlace ? `${publisherPlace}: ` : ''}${publisher}.` : '';
   const doi = issue.publication.doi ? ` ${doiUrl(issue.publication.doi)}.` : '';
   return [
     `${by}, ${editors.length > 1 ? 'eds' : 'ed'}.${named} `,
     {em: journal},
-    `, no. ${issue.number} (${issue.date}). Berlin: Hatje Cantz.${doi}`
+    `, no. ${issue.number} (${issue.date}).${house}${doi}`
   ];
 }

@@ -1,4 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {plainTitle} from '../objects/text'
 
 const kinds = [
   {title: 'News', value: 'news'},
@@ -19,12 +20,23 @@ export const post = defineType({
       initialValue: 'news',
       validation: (r) => r.required(),
     }),
-    defineField({name: 'title', title: 'Title', type: 'string', validation: (r) => r.required()}),
+    // The title can have words in italics (an issue's title): one line of
+    // text with the Italic button. The URL name is made from its words.
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'titleText',
+      description: 'One line. Italics for the title of an issue or of a work.',
+      validation: (r) =>
+        r.custom((value?: unknown[]) =>
+          !plainTitle(value as never) ? 'Required' : (value?.length ?? 0) > 1 ? 'One line only' : true
+        ),
+    }),
     defineField({
       name: 'slug',
       title: 'URL name',
       type: 'slug',
-      options: {source: 'title'},
+      options: {source: (doc) => plainTitle(doc.title as never)},
       validation: (r) => r.required(),
     }),
     defineField({name: 'date', title: 'Date', type: 'date', validation: (r) => r.required()}),
@@ -45,7 +57,7 @@ export const post = defineType({
   preview: {
     select: {title: 'title', kind: 'kind', date: 'date', media: 'images.0'},
     prepare: ({title, kind, date, media}) => ({
-      title,
+      title: plainTitle(title),
       subtitle: [kinds.find((k) => k.value === kind)?.title, date].filter(Boolean).join(' · '),
       media,
     }),

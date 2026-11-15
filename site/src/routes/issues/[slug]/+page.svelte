@@ -17,8 +17,14 @@
     on a click: pointing at the word shows what it stands for, and it
     stays while the pointer goes down to it (anywhere in the column
     below the line); pointing back at the abstract, or leaving the
-    column, brings the contents back. Without a pointer (touch, the
-    keyboard) a tap or Enter shows it, and again hides it;
+    column, brings the contents back. **The pointer must rest on the
+    word a moment (--dwell-time) before it opens** (Marco, 15 Nov): a
+    quick pass over it, on the way from the abstract to the contents,
+    opens nothing. **Resting on PDF or Buy brings the contents back**
+    in the same way (they are not what is shown; a quick pass over them
+    — on Narrow they lie between Cite and the citation — changes
+    nothing). Without a pointer (touch, the keyboard) a tap or Enter
+    shows it, and again hides it;
     PDF — the open-access PDF (Marco, 15 Nov: before Buy, on the same
     line; no longer in the colophon), with the arrow (only if the issue
     has one);
@@ -108,15 +114,23 @@
   let switched = $state(false); // true once Colophon or Cite has been used
   // The words: on hover where there is a pointer; else a tap shows, a
   // second tap hides
+  // (after the pointer has rested on the word for --dwell-time)
+  let dwell: ReturnType<typeof setTimeout>;
   const point = (to: View) => (e: PointerEvent) => {
-    if (e.pointerType === 'mouse') view = to;
+    if (e.pointerType !== 'mouse') return;
+    clearTimeout(dwell);
+    dwell = setTimeout(() => (view = to), time('--dwell-time'));
   };
+  const unpoint = () => clearTimeout(dwell);
+  onDestroy(unpoint);
   const hovers = () => matchMedia('(hover: hover)').matches;
   const tap = (to: View) => () => {
     if (!hovers()) view = view === to ? 'contents' : to;
   };
   const toContents = (e: PointerEvent) => {
-    if (e.pointerType === 'mouse') view = 'contents';
+    if (e.pointerType !== 'mouse') return;
+    clearTimeout(dwell);
+    view = 'contents';
   };
   $effect(() => {
     const target = view;
@@ -348,23 +362,28 @@
             type="button"
             aria-pressed={view === 'colophon'}
             onpointerenter={point('colophon')}
+            onpointerleave={unpoint}
             onclick={tap('colophon')}>Colophon</button
           >
         </span>
         {#if data.citation}
           <span class="hover fade" class:active={view === 'cite'} style:--i={2}>
-            <button type="button" aria-pressed={view === 'cite'} onpointerenter={point('cite')} onclick={tap('cite')}
-              >Cite</button
+            <button
+              type="button"
+              aria-pressed={view === 'cite'}
+              onpointerenter={point('cite')}
+              onpointerleave={unpoint}
+              onclick={tap('cite')}>Cite</button
             >
           </span>
         {/if}
         {#if issue.publication.pdfUrl}
-          <span class="hover link stretched fade" style:--i={3}>
+          <span class="hover link stretched fade" style:--i={3} onpointerenter={point('contents')} onpointerleave={unpoint}>
             <a href={issue.publication.pdfUrl} {...opens(issue.publication.pdfUrl)}>PDF</a>
           </span>
         {/if}
         {#if issue.publication.buyUrl}
-          <span class="hover link stretched fade" style:--i={4}>
+          <span class="hover link stretched fade" style:--i={4} onpointerenter={point('contents')} onpointerleave={unpoint}>
             <a href={issue.publication.buyUrl} {...opens(issue.publication.buyUrl)}>Buy</a>
           </span>
         {/if}

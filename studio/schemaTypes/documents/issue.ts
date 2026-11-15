@@ -127,6 +127,9 @@ export const issue = defineType({
       group: 'publication',
       description: 'When the open-access PDF is hosted elsewhere (e.g. OAPEN), instead of a file above.',
     }),
+    // The publisher: the colophon's row and the end of the issue's citation ("Berlin: Hatje Cantz")
+    defineField({name: 'publisher', title: 'Publisher', type: 'string', group: 'publication', initialValue: 'Hatje Cantz'}),
+    defineField({name: 'publisherPlace', title: 'Publisher’s city', type: 'string', group: 'publication', initialValue: 'Berlin', description: 'For the citation: Berlin: Hatje Cantz'}),
     defineField({name: 'buyUrl', title: 'Hatje Cantz link', type: 'url', group: 'publication'}),
     defineField({
       name: 'availability',

@@ -15,6 +15,8 @@
   — the current one only its bar, the time gone.
   A click on a dot shows its highlight.
 
+  `paused`: the bar stands still where it is (the highlight is being
+  read: the pointer on it, or the keyboard in it) and goes on from there.
   `running`: the bar fills only while true (the intro over, nothing
   asked of the reader); with reduced motion it never fills, and the
   highlights don't move on by themselves.
@@ -27,6 +29,7 @@
     count,
     at,
     running = true,
+    paused = false,
     hidden = false,
     onpick,
     onend
@@ -34,6 +37,7 @@
     count: number;
     at: number;
     running?: boolean;
+    paused?: boolean;
     hidden?: boolean;
     onpick: (i: number) => void;
     onend: () => void;
@@ -54,7 +58,7 @@
         <span class="track">
           {#if i === at}
             {#key at}
-              <span class="bar" class:running onanimationend={onend}></span>
+              <span class="bar" class:running class:paused onanimationend={onend}></span>
             {/key}
           {/if}
         </span>
@@ -135,6 +139,9 @@
     animation-duration: var(--highlight-time);
     animation-timing-function: linear;
     animation-fill-mode: forwards;
+  }
+  .bar.paused {
+    animation-play-state: paused;
   }
   @keyframes fill {
     to {

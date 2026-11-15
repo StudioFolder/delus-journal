@@ -1,5 +1,5 @@
 import {figure} from './objects/figure'
-import {articleLink, simpleText, richText} from './objects/text'
+import {articleLink, simpleText, richText, titleText} from './objects/text'
 import {contribution} from './objects/contribution'
 import {issue} from './documents/issue'
 import {person} from './documents/person'
@@ -12,6 +12,7 @@ export const schemaTypes = [
   figure,
   articleLink,
   simpleText,
+  titleText,
   richText,
   contribution,
   issue,
