@@ -166,7 +166,7 @@
   <p class="label tags">
     {#each tags as tag (tag.text)}
       {#if tag.href}
-        <span class="hover" class:link={tag.external}><a href={tag.href} {...opens(tag.href)}>{tag.text}</a></span>
+        <span class="hover stretched" class:link={tag.external}><a href={tag.href} {...opens(tag.href)}>{tag.text}</a></span>
       {:else if tag.em}
         <span><em>{tag.text}</em></span>
       {:else}

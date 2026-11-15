@@ -140,7 +140,7 @@
     <p class="label tags">
       <span>{issueLabel(newestFirst[shown].number)}</span>
       {#if buy}
-        <span class="hover link"><a href={buy} {...opens(buy)}>Buy</a></span>
+        <span class="hover link stretched"><a href={buy} {...opens(buy)}>Buy</a></span>
       {:else if newestFirst[shown].publication.forthcoming}
         <span><em>forthcoming</em></span>
       {/if}

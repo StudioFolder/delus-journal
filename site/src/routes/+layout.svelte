@@ -379,6 +379,38 @@
     overflow-y: auto;
     scrollbar-width: none;
   }
+  /* The band's content, cut above the footer, doesn't end on a clean
+     line but fades out over its last 4 units (Marco, 15 Nov) — only
+     while there is more below: the fade follows the scrolling
+     (scroll-driven), so it is gone at the end of the scroll, and absent
+     where nothing scrolls. Desktop only (Narrow included). Browsers
+     without scroll-driven animations keep the clean cut */
+  @media (min-width: 768px) {
+    /* the cut 1 unit lower than the content's end at rest (Marco: "lower
+       it by 8px"), so the fade reaches a little further down */
+    .stage :global(.on-band.from-top) {
+      padding-bottom: calc(var(--foot-room) - var(--u));
+    }
+    .stage :global(.on-band.from-top > *) {
+      mask-image: linear-gradient(to bottom, #000 calc(100% - var(--band-fade)), transparent);
+      animation: band-fade linear both;
+      animation-timeline: scroll(self);
+    }
+  }
+  @property --band-fade {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+  @keyframes -global-band-fade {
+    from,
+    95% {
+      --band-fade: calc(4 * var(--u));
+    }
+    to {
+      --band-fade: 0px;
+    }
+  }
   .stage :global(.on-band.from-bottom) {
     align-items: flex-end;
     padding-bottom: var(--foot-room);

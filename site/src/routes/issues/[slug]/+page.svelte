@@ -81,7 +81,7 @@
   issue's cover: its place still to decide. No gallery, no grid.
 -->
 <script lang="ts">
-  import {onDestroy, untrack} from 'svelte';
+  import {onDestroy, tick, untrack} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
   import ViewSwitch from '#lib/grid/ViewSwitch.svelte';
   import {COVER_COLUMNS} from '#lib/grid/layouts.ts';
@@ -124,11 +124,45 @@
     switched = true;
     hidden = true;
     const timer = setTimeout(() => {
+      place(untrack(() => shown), target);
       shown = target;
       hidden = false;
     }, time('--fade-out-time'));
     return () => clearTimeout(timer);
   });
+
+  // With the contents scrolled, what replaces them (shorter) must not
+  // move the column: the abstract would come back under the pointer and
+  // close it again (Marco: "a bug with the hover … when the list is
+  // scrolled"). So, while it is out of sight: the space below keeps the
+  // contents' height (`keep`) and the column shows the colophon or the
+  // citation from its start, right under the words (at most where the
+  // words begin to stay); going back, the contents return where they
+  // were left.
+  let column = $state<HTMLElement>();
+  let labelled = $state<HTMLElement>();
+  let below = $state<HTMLElement>();
+  let keep = $state<number>(); // the contents' height, kept while they are away
+  let left = 0; // where the contents were scrolled to
+  function place(from: View, to: View) {
+    // (only where the column scrolls under a sticky number line: not on Phone)
+    if (!column || !labelled || !below || !matchMedia('(min-width: 768px)').matches) return;
+    if (from === 'contents') {
+      left = column.scrollTop;
+      keep = below.offsetHeight;
+    }
+    if (to === 'contents') {
+      keep = undefined;
+      tick().then(() => column && (column.scrollTop = left));
+      return;
+    }
+    // where the words begin to stay: under the abstract (and 2 units),
+    // less the number line's 4 units
+    const unit = parseFloat(getComputedStyle(column).getPropertyValue('--u')) || 8;
+    const top = column.getBoundingClientRect().top;
+    const stays = labelled.getBoundingClientRect().bottom - top + column.scrollTop + 2 * unit - 4 * unit;
+    column.scrollTop = Math.min(left, Math.max(0, stays));
+  }
 
   // Gallery or grid. The grid's rows (four images each) share the height
   // between the band's content top and bottom; from the fifth row on
@@ -288,6 +322,7 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="column"
+    bind:this={column}
     class:fade={!from.abstract}
     use:land={from.abstract}
     onpointerleave={toContents}
@@ -299,12 +334,15 @@
         >{#if issue.publication.forthcoming}<em>forthcoming</em>{:else}{issue.date}{/if}</span
       >
     </p>
-    <div class="labelled">
+    <div class="labelled" bind:this={labelled}>
       <p class="display" onpointerenter={toContents}><Inlines parts={issue.abstract} /></p>
     </div>
     <!-- The words: out of the abstract's block so that they can stay at
-         the top, under the number line, while the contents scroll -->
-    <p class="label tags words">
+         the top, under the number line, while the contents scroll.
+         A forthcoming issue has none: no colophon, citation, PDF or Buy
+         yet (Marco, 15 Nov) -->
+    {#if !issue.publication.forthcoming}
+      <p class="label tags words">
         <span class="hover fade" class:active={view === 'colophon'} style:--i={1}>
           <button
             type="button"
@@ -321,18 +359,25 @@
           </span>
         {/if}
         {#if issue.publication.pdfUrl}
-          <span class="hover link fade" style:--i={3}>
+          <span class="hover link stretched fade" style:--i={3}>
             <a href={issue.publication.pdfUrl} {...opens(issue.publication.pdfUrl)}>PDF</a>
           </span>
         {/if}
         {#if issue.publication.buyUrl}
-          <span class="hover link fade" style:--i={4}>
+          <span class="hover link stretched fade" style:--i={4}>
             <a href={issue.publication.buyUrl} {...opens(issue.publication.buyUrl)}>Buy</a>
           </span>
         {/if}
       </p>
+    {/if}
 
-    <div class="below fade" class:now={switched} class:is-hidden={hidden}>
+    <div
+      class="below fade"
+      class:now={switched}
+      class:is-hidden={hidden}
+      style:min-height={keep === undefined ? null : `${keep}px`}
+      bind:this={below}
+    >
       {#if shown === 'colophon'}
         <Credits rows={issueDetails(issue)} compact />
       {:else if shown === 'cite' && data.citation}

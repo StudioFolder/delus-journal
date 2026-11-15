@@ -601,6 +601,18 @@ dd {
 .link:hover::after {
   --lit: 1;
 }
+/* (A word with its arrow, as Buy and PDF: the word's link is stretched
+   over the arrow and the space before it (.stretched), so the whole is
+   one thing to point at and click — Marco, 15 Nov; a box of its own, so
+   that the stretched link covers the arrow too) */
+.link.stretched {
+  display: inline-block;
+}
+/* (the arrow, a mask, is painted as a layer of its own, over the
+   stretched link: the link goes above it) */
+.link.stretched a::after {
+  z-index: 1;
+}
 /* Beside small capitals (Buy, on an issue's page and on the home page)
    and in an issue's colophon (Credits, compact — Marco: "the same as the
    buy button"): the arrow 7px, its stroke 1px (8/7 in the 8-unit drawing
