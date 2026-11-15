@@ -57,11 +57,11 @@
 {/if}
 
 <style>
-  /* Content above stops before the newsletter: 12 units as every from-top
-     panel, plus the newsletter (7 units: title 2, gap 1, field 3 + 1) and
-     5 units of air (as between menu and content) */
+  /* Content above stops before the newsletter: the footer's room as every
+     from-top panel, plus the newsletter (7 units: title 2, gap 1, field
+     3 + 1) and 5 units of air (as between menu and content) */
   :global(.stage .on-band.from-top.above-newsletter) {
-    padding-bottom: calc(24 * var(--u));
+    padding-bottom: calc(var(--foot-room) + 12 * var(--u));
   }
 
   .newsletter {

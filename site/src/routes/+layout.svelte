@@ -140,6 +140,17 @@
     held = scrollY; // the new page's own place
   });
   const onkeydown = (e: KeyboardEvent) => e.key === 'Escape' && (menuOpen = false);
+
+  // The footer's height: one line, but two or three on Narrow screens
+  // (--foot; the band's content keeps clear of it: --foot-room)
+  let footHeight = $state(0);
+  // A menu left open closes when the screen changes kind (Phone, Narrow, wider)
+  onMount(() => {
+    const kinds = ['(max-width: 767px)', '(max-width: 1199px)'].map((q) => matchMedia(q));
+    const close = () => (menuOpen = false);
+    for (const kind of kinds) kind.addEventListener('change', close);
+    return () => kinds.forEach((kind) => kind.removeEventListener('change', close));
+  });
   $effect(() => {
     if (menuOpen && flows) return hold();
   });
@@ -200,11 +211,13 @@
   data-contrast={contrast.high ? 'high' : undefined}
   style:--items={nav.length + legal.length}
   style:--held="{held}px"
+  style:--foot={footHeight ? `${footHeight}px` : undefined}
 >
   <Panel area="band" inset class="band-bg">
-    <!-- Mobile only -->
+    <!-- Phone and Narrow screens only (on Narrow, not on the Small band) -->
     <button
       class="menu-button"
+      class:on-small={small}
       aria-label={menuOpen ? 'Close menu' : 'Open menu'}
       aria-expanded={menuOpen}
       onclick={toggle}
@@ -252,7 +265,7 @@
       {/each}
     </nav>
 
-    <footer>
+    <footer class:bare={bandCols < 10} bind:clientHeight={footHeight}>
       <a href="/">DELUS</a>
       <!-- Text that doesn't fit the band fades out instead of being cut.
            The tagline and the links lie in the same place: one fades out,
@@ -286,10 +299,15 @@
 {#if import.meta.env.DEV}<GridOverlay />{/if}
 
 <style>
+  /* --foot-room: what the footer takes at the bottom of the band — its
+     5 units from the bottom, its lines (one; two or three on Narrow
+     screens, measured: --foot), then 5 units of air: 12 units where it
+     is one line */
   .stage {
     position: fixed;
     inset: 0;
     background: var(--bg);
+    --foot-room: calc(10 * var(--u) + var(--foot, 2 * var(--u)));
   }
 
   .page {
@@ -345,7 +363,7 @@
   .stage :global(.on-band.from-top) {
     align-items: flex-start;
     padding-top: calc(12 * var(--u)); /* menu: 5 units + its line of 2; then 5 units of air */
-    padding-bottom: calc(12 * var(--u)); /* the same above the footer */
+    padding-bottom: var(--foot-room); /* above the footer, the same air */
   }
   /* On the background nothing frames the content: it scrolls the whole
      height of the screen and disappears at its very edges. What's inside
@@ -363,7 +381,7 @@
   }
   .stage :global(.on-band.from-bottom) {
     align-items: flex-end;
-    padding-bottom: calc(12 * var(--u)); /* footer: 5 units + its line of 2; then 5 units of air */
+    padding-bottom: var(--foot-room);
   }
   .stage :global(.on-band > *) {
     pointer-events: auto;
@@ -406,7 +424,8 @@
      below, as a descender. In the item's colour: quiet, full ink under
      the pointer and on the search page. The word stays in the page, for
      screen readers. It catches the pointer one unit around itself.
-     Not on Phone, where the menu is a list of words */
+     Not on Phone, where the menu is a list of words (on Narrow the
+     lens stays on the band's top line, out of the list: NARROW) */
   @media (min-width: 768px) {
     nav {
       right: var(--col);
@@ -527,10 +546,158 @@
   footer:has(:focus-visible) .line:not(.is-hidden) .links a {
     pointer-events: auto;
   }
+  /* Narrow screens: the tagline doesn't fit beside DELUS, so the footer
+     takes two lines — DELUS, then under it, from column 3, the tagline
+     (and, under the pointer, Imprint and Privacy). Where the band is too
+     narrow even for that, the tagline wraps, balanced */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    footer {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      justify-items: start;
+      row-gap: var(--u);
+      transition:
+        grid-template-rows var(--move),
+        row-gap var(--move);
+    }
+    .tagline {
+      white-space: normal;
+      text-wrap: balance;
+    }
+    /* Where the tagline is hidden (the Small band) its line folds away,
+       with the band: DELUS on the bottom line, as on the other screens */
+    .line {
+      min-height: 0;
+      overflow: hidden;
+    }
+    footer.bare {
+      grid-template-rows: auto 0fr;
+      row-gap: 0;
+    }
+  }
 
   .menu-button,
   .section {
     display: none;
+  }
+
+  /* ---------- MENU BUTTON: Phone and Narrow ----------
+     Two short lines one unit apart; open, they turn into a cross (an
+     icon changing state: --icon). It catches the pointer over the dot's
+     area (--dot-hit). Where it sits: in each screen's rules */
+  @media (max-width: 1199px) {
+    .menu-button {
+      --lines: calc(2 * var(--u)); /* the lines' length */
+      display: block;
+      position: absolute;
+      width: var(--dot-hit);
+      height: var(--dot-hit);
+      cursor: pointer;
+    }
+    .menu-button::before,
+    .menu-button::after {
+      content: '';
+      position: absolute;
+      left: calc((var(--dot-hit) - var(--lines)) / 2);
+      top: calc(50% - 0.75px);
+      width: var(--lines);
+      height: 1.5px;
+      background: var(--ink);
+      transition: transform var(--icon);
+    }
+    .menu-button::before {
+      transform: translateY(calc(var(--u) / -2));
+    }
+    .menu-button::after {
+      transform: translateY(calc(var(--u) / 2));
+    }
+    .menu-open .menu-button::before {
+      transform: rotate(45deg);
+    }
+    .menu-open .menu-button::after {
+      transform: rotate(-45deg);
+    }
+  }
+
+  /* ---------- Narrow: the menu behind the button ----------
+     The menu doesn't fit the band's line. In its place the menu button,
+     its lines from column 3 on the menu's line, and beside it, from
+     column 5, the name of the section on view (as on Phone); the Search
+     lens stays where it is on the other screens. Open: what the page has
+     on the band fades out, then the four sections cascade in in its
+     place, one a line. DELUS stays in the footer. Closed by the button,
+     Esc, a click on the page, going to a page. On the Small band "Back"
+     is there instead: no button, no name.
+     --shut: how far the band's content has faded for the menu (0–1), a
+     number on the page that its panels on the band follow */
+  @property --shut {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+  }
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .menu-button {
+      left: calc(var(--col) - (var(--dot-hit) - var(--lines)) / 2);
+      top: calc(6 * var(--u) - var(--dot-hit) / 2); /* on the menu's line */
+      transition: opacity var(--fade-time) ease var(--fade-out-time);
+    }
+    .menu-button.on-small {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fade-out-time) ease 0s;
+    }
+    .section {
+      display: block;
+      position: absolute;
+      top: calc(5 * var(--u));
+      left: calc(3 * var(--col));
+      font: var(--type-ui);
+      white-space: nowrap;
+    }
+    /* While the menu is open the name gives way, as on Phone */
+    .stage.menu-open .section {
+      opacity: 0;
+      transition: opacity var(--fade-out-time) ease 0s;
+    }
+    nav {
+      top: calc(12 * var(--u)); /* where the band's content starts */
+      flex-direction: column;
+      gap: var(--u);
+    }
+    /* The lens: back on the menu's line, against the band's right edge */
+    nav .glass {
+      position: absolute;
+      right: 0;
+      top: calc(-7 * var(--u));
+    }
+    .stage:not(.menu-open) nav .item:not(.glass) {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fade-out-time) ease 0s;
+    }
+    .stage:not(.menu-open) nav .item:not(.glass) a {
+      pointer-events: none;
+    }
+    .stage.menu-open nav .item:not(.is-hidden) {
+      opacity: 1;
+      transition:
+        opacity var(--fade-time) ease
+          calc(var(--fade-out-time) + var(--i, 0) * var(--cascade-step)),
+        --lit var(--hover);
+    }
+    .page {
+      transition: --shut var(--fade-time) ease var(--fade-out-time);
+    }
+    .stage.menu-open .page {
+      --shut: 1;
+      transition: --shut var(--fade-out-time) ease 0s;
+    }
+    .page :global(.on-band) {
+      opacity: calc(1 - var(--shut));
+    }
+    .stage.menu-open .page :global(.on-band *) {
+      pointer-events: none;
+    }
   }
 
   /* ---------- Mobile: the band becomes a header ---------- */
@@ -672,42 +839,11 @@
       padding-bottom: 0;
     }
 
-    /* Menu button: two short lines one unit apart; open, they turn into
-       a cross (an icon changing state: --icon). The lines' right end sits
-       --pad from the edge, like DELUS on the left; the button catches
-       the touch over the dot's area (--dot-hit). */
+    /* Menu button (drawn in MENU BUTTON, above): its lines' right end
+       sits --pad from the edge, like DELUS on the left */
     .menu-button {
-      --lines: calc(2 * var(--u)); /* the lines' length */
-      display: block;
-      position: absolute;
       right: calc(var(--pad) - (var(--dot-hit) - var(--lines)) / 2);
       top: calc((var(--header) - var(--dot-hit)) / 2);
-      width: var(--dot-hit);
-      height: var(--dot-hit);
-      cursor: pointer;
-    }
-    .menu-button::before,
-    .menu-button::after {
-      content: '';
-      position: absolute;
-      left: calc((var(--dot-hit) - var(--lines)) / 2);
-      top: calc(50% - 0.75px);
-      width: var(--lines);
-      height: 1.5px;
-      background: var(--ink);
-      transition: transform var(--icon);
-    }
-    .menu-button::before {
-      transform: translateY(calc(var(--u) / -2));
-    }
-    .menu-button::after {
-      transform: translateY(calc(var(--u) / 2));
-    }
-    .menu-open .menu-button::before {
-      transform: rotate(45deg);
-    }
-    .menu-open .menu-button::after {
-      transform: rotate(-45deg);
     }
 
     /* DELUS on the left of the header; tagline at the bottom of the open band */

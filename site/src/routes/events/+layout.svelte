@@ -178,6 +178,13 @@
     display: grid;
     grid-template-columns: calc(3 * var(--col)) auto;
   }
+  /* Narrow: the columns are too narrow for "Open call" on one line —
+     the date from column 8 */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .label {
+      grid-template-columns: calc(5 * var(--col)) auto;
+    }
+  }
   time {
     color: var(--ink-quiet);
     transition: opacity var(--hover);
