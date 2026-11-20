@@ -191,6 +191,7 @@
     gap: var(--u);
     font: var(--type-note);
     letter-spacing: normal;
+    overflow-wrap: anywhere; /* a long address breaks rather than leaving the column */
     color: var(--ink-quiet);
   }
   .n {

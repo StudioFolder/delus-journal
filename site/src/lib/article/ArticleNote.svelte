@@ -51,6 +51,7 @@
     font-style: normal;
     letter-spacing: normal;
     white-space: normal;
+    overflow-wrap: anywhere; /* a long address breaks rather than leaving the column */
     color: var(--ink-quiet);
     cursor: pointer;
   }

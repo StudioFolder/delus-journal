@@ -1,8 +1,10 @@
 import {articleHref, slugOf, type Credit} from './format.ts';
 import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
+import * as editorial00 from './articles/editorial00.ts';
 import * as editorial01 from './articles/editorial01.ts';
 import * as navel from './articles/navel.ts';
+import * as salted from './articles/salted.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
 // The abstracts are placeholders (the issue's title in italics, then
@@ -118,8 +120,7 @@ const contents0: Entry[] = [
     people: ['luiza-prado-de-o-martins'],
     page: 10,
     doi: '10.61608/9783775756372-001',
-    abstract:
-      'Luiza Prado de O. Martins shows how artefacts of domestic labour allow for unravelling relations of land, body and class within capitalist/colonialist frameworks. She brings us on a journey from biopolitics of coloniality studied through technology to a more personal and profound story exploring how land/body can be understood as part of each other.'
+    ...salted // the whole text, from the printed issue
   },
   {
     title: 'Rivers, Sturgeons and Dragons',
@@ -261,7 +262,7 @@ export const issues: Issue[] = [
     number: 0,
     title: 'DELUS',
     date: 'Autumn 2023',
-    editorial: {doi: '10.61608/9783775756372-fm002'}, // its text is not on the site yet
+    editorial: {page: 4, doi: '10.61608/9783775756372-fm002', ...editorial00}, // the whole text, from the printed issue
     abstract: [
       'Placeholder for the abstract of Issue 00, ',
       {em: 'DELUS'},
