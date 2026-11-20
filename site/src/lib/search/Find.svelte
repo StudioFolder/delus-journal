@@ -190,9 +190,9 @@
     margin-left: auto;
     cursor: pointer;
     --focus-offset: calc(var(--u) / 2);
-    transition: --lit var(--hover);
   }
-  .lens:hover {
+  /* (--lit doesn't inherit: it is set on the drawings themselves) */
+  .lens:hover span {
     --lit: 1;
   }
   .lens::after {
@@ -203,7 +203,9 @@
   .lens span {
     position: absolute;
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-quiet));
-    transition: opacity var(--icon);
+    transition:
+      opacity var(--icon),
+      --lit var(--hover);
   }
   .glass {
     inset: 0 calc(-0.5 * var(--u)) 0 0; /* the handle's end passes the edge by a hair */

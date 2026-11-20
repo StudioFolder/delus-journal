@@ -1,7 +1,7 @@
 <!--
-  What a reader can do with an article — two words, pure text, in the
-  small Styrene (--type-ui), quiet → full ink under the pointer (.hover),
-  one per line, one unit apart:
+  What a reader can do with an article — two words, pure text, in small
+  capitals (.label), quiet → full ink under the pointer (.hover), one per
+  line, one unit apart:
   - Download: the link to the article's PDF (`pdf`). Without one it is
     there but does nothing (for now: no article has its PDF yet).
   - Cite: copies the citation to the clipboard; the word then reads
@@ -10,7 +10,7 @@
   nothing can hover): under Download, the file and its size ("PDF file,
   3.1 MB"); under Cite, the citation (ending with its DOI), the journal
   in italics (Styrene has no italic file yet: slanted by the browser). In
-  the words' type (--type-ui), quiet, one unit under their word.
+  the small Styrene (--type-ui), quiet, one unit under their word.
   Opening, once the notes above have faded out, the room is made (the
   words rise), then the details fade in; closing, the reverse — never two
   at once. The page brings the notes back after (.band-notes.waits).
@@ -32,7 +32,7 @@
 
 <div class="actions" class:details>
   <div class="action">
-    <span class="hover">
+    <span class="hover label">
       {#if pdf}<a href={pdf} {...opens(pdf)}>Download</a>{:else}<span class="none">Download</span>{/if}
     </span>
     <div class="more">
@@ -44,7 +44,7 @@
     </div>
   </div>
   <div class="action">
-    <Cite citation={plain(citation)} />
+    <Cite class="label" citation={plain(citation)} />
     <div class="more">
       <div>
         <div class="text">

@@ -19,7 +19,7 @@
 <script lang="ts">
   import '#lib/styles.css';
   import {page} from '$app/state';
-  import {afterNavigate, onNavigate} from '$app/navigation';
+  import {afterNavigate, goto, onNavigate} from '$app/navigation';
   import {onMount} from 'svelte';
   import Panel from '#lib/grid/Panel.svelte';
   import GridOverlay from '#lib/grid/GridOverlay.svelte';
@@ -67,6 +67,43 @@
     {href: '/search/', label: 'Search', glass: true}
   ];
   const isActive = (href: string) => page.url.pathname.startsWith(href);
+
+  // The search, open: on the band its lens turns into a cross, which
+  // leads back to the page the search was opened from (`origin`; `at`:
+  // its place in the browser's history) — home, when the visit began on
+  // the search. Coming back to the search from one of its results, the
+  // origin is still the page before the search. Not on Phone, where
+  // Search is a word of the menu.
+  const searching = $derived(isActive('/search/'));
+  const place = () => history.state?.['sveltekit:metadata']?.historyIndex as number | undefined;
+  let origin: {href: string; at?: number} | undefined;
+  afterNavigate(({from, type}) => {
+    if (!searching || type === 'popstate') return;
+    const url = from?.url;
+    const at = place();
+    origin =
+      url && !url.pathname.startsWith('/search/')
+        ? {href: url.pathname + url.search, at: at === undefined ? at : at - 1}
+        : undefined;
+  });
+  let wide = $state(false); // not Phone
+  onMount(() => {
+    const phone = matchMedia('(max-width: 767px)');
+    const see = () => (wide = !phone.matches);
+    see();
+    phone.addEventListener('change', see);
+    return () => phone.removeEventListener('change', see);
+  });
+  const closes = $derived(searching && wide);
+  function lens(event: MouseEvent) {
+    if (!closes) return ready();
+    event.preventDefault();
+    // The page just before in the browser's history: one step back
+    // (it comes back as it was left); otherwise its address
+    const at = place();
+    if (origin?.at !== undefined && at === origin.at + 1) history.back();
+    else goto(origin?.href ?? '/');
+  }
 
   const band = $derived(current.layout.band);
   const bandCols = $derived(band[1] - band[0] + 1);
@@ -277,13 +314,21 @@
       {#each nav as item, i}
         <span
           class="item hover fade"
-          class:active={isActive(item.href)}
+          class:active={isActive(item.href) && !(item.glass && closes)}
           class:is-hidden={small}
           class:glass={item.glass}
+          class:closes={item.glass && closes}
           style:--i={i}
         >
-          <!-- (Search: the phone's keyboard is called in the tap — #lib/search/keyboard.ts) -->
-          <a href={item.href} onclick={item.glass ? ready : undefined}>{item.label}</a>
+          <!-- (Search: the phone's keyboard is called in the tap — #lib/search/keyboard.ts;
+               on the search page, off Phone, it closes the search: `lens`) -->
+          {#if item.glass}
+            <a href={item.href} aria-label={closes ? 'Close search' : undefined} onclick={lens}
+              >{item.label}<i class="cross" aria-hidden="true"></i></a
+            >
+          {:else}
+            <a href={item.href}>{item.label}</a>
+          {/if}
         </span>
       {/each}
       <!-- Phone only: Imprint and Privacy, after a break (on desktop they
@@ -464,7 +509,8 @@
   nav .is-hidden a {
     pointer-events: none;
   }
-  nav .legal {
+  nav .legal,
+  nav .cross {
     display: none;
   }
   /* Search: on the band, a lens in place of the word (drawn, stroke
@@ -504,6 +550,32 @@
       content: '';
       position: absolute;
       inset: calc(-1 * var(--u));
+    }
+    /* On the search page the lens gives way to a cross, which closes the
+       search (back to the page it was opened from). Drawn as the cross
+       that empties the search field, right under it, and of its size;
+       in the middle of the capitals' height; quiet, full ink under the
+       pointer, as that one (the item is not lit as the page on view while
+       it closes). The two cross-fade, as
+       every icon that changes state (ICONS: --icon) */
+    nav .glass .cross {
+      display: block;
+      position: absolute;
+      inset: 0 calc(-0.5 * var(--u)) 0 0;
+      background: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.25'%3E%3Cpath d='M2.5 5.375l7.25 7.25M9.75 5.375 2.5 12.625'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+      opacity: 0;
+    }
+    nav .glass a::before,
+    nav .glass .cross {
+      transition: opacity var(--icon);
+    }
+    nav .glass.closes a::before {
+      opacity: 0;
+    }
+    nav .glass.closes .cross {
+      opacity: 1;
     }
   }
 
