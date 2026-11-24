@@ -566,7 +566,7 @@ export const about = {
   // The colophon: Sanity's `credits` (label + value). Here each value is
   // a list of lines, some of them links.
   credits: [
-    {label: 'Editors-in-Chief', value: [{text: 'Sara Frikech'}, {text: 'Johanna Just'}]},
+    {label: 'Founding Editors', value: [{text: 'Sara Frikech'}, {text: 'Johanna Just'}]},
     {label: 'Art Direction', value: [{text: 'Studio Folder', href: 'https://studiofolder.it/'}]},
     {label: 'Publisher', value: [{text: 'Hatje Cantz', href: 'https://www.hatjecantz.com/'}]},
     {label: 'Contact', value: [{text: 'delus@arch.ethz.ch', href: 'mailto:delus@arch.ethz.ch'}]},
@@ -600,7 +600,7 @@ export const legal: LegalPage[] = [
     body: [
       {heading: 'Published by'},
       ['DELUS, Journal for Landscape and Urban Studies. ', lus, address],
-      {heading: 'Editors-in-Chief'},
+      {heading: 'Founding Editors'},
       'Sara Frikech and Johanna Just, responsible for the content of this site.',
       {heading: 'Contact'},
       [contact],
