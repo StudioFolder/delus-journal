@@ -317,7 +317,9 @@ export const issues: Issue[] = [
     // (the publisher's text; the issue's title in italics)
     abstract: [
       {em: 'Chasing Water'},
-      ' invites us to explore different manifestations of water. The term “chasing” highlights the role of water in shaping and sustaining landscapes and urban environments, and the ongoing efforts to direct its course. From the transformation of English moorland and marshland to intricate irrigation systems in the Mediterranean and to the ecological impact of water harvesting schemes in Chile and Australia, each contribution explores how water is tracked, obstructed, or contained. “Chasing Water” reflects the contradictory challenge of capturing, storing, and distributing the element in a world where it is theoretically abundant, but in many places inaccessible.'
+      ' invites us to explore different manifestations of water. The term “chasing” highlights the role of water in shaping and sustaining landscapes and urban environments, and the ongoing efforts to direct its course. From the transformation of English moorland and marshland to intricate irrigation systems in the Mediterranean and to the ecological impact of water harvesting schemes in Chile and Australia, each contribution explores how water is tracked, obstructed, or contained. ',
+      {em: 'Chasing Water'},
+      ' reflects the contradictory challenge of capturing, storing, and distributing the element in a world where it is theoretically abundant, but in many places inaccessible.'
     ],
     publication: {
       editedBy: editors,
