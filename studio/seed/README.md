@@ -47,3 +47,26 @@ this content is kept until the site reads from the CMS:
   (still placeholders on the site), the editorial, the abstracts of Issues
   00 and 01 themselves (placeholders on the site). A contribution's
   "Pages" holds its first page only.
+
+## Updating the contributions (once the issues are in the CMS)
+
+`update-contributions.mjs` writes the extracted contents into the CMS without
+replacing the issues: a contribution's text (with its footnotes), abstract,
+DOI, pages and type, and an editors' note's text and DOI. Covers, images,
+people, titles and anything else edited in the Studio stay as they are. Use
+it instead of the `--replace` import from now on.
+
+    cd studio
+    node seed/make-issues.mjs
+    npx sanity exec seed/update-contributions.mjs --with-user-token -- --dry-run
+    npx sanity exec seed/update-contributions.mjs --with-user-token -- 01-chasing-water/liquid-shadows
+
+- Without a name it does everything; with an issue's or an article's address
+  (`01-chasing-water`, `01-chasing-water/liquid-shadows`, `…/editorial`) only that.
+- `--dry-run` says what it would do, and changes nothing.
+- Only **empty** fields are filled: a field the CMS already has different is
+  kept and listed. `--force` overwrites it (careful: a text overwritten loses
+  the figures added to it in the Studio).
+- A contribution not in the CMS yet is added at the end of its issue (its
+  people must be in the CMS already: `people.ndjson`); an issue not in the
+  CMS yet is created whole.
