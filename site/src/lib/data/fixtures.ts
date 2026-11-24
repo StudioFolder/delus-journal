@@ -47,7 +47,9 @@ export type Inline = string | {em: string} | {link: string; href: string} | {not
 // its caption. No image yet: the site shows an empty box.
 // An image file: its address and its size in pixels (Sanity: an image's
 // asset; drawn by #lib/image/Picture.svelte, inside its box)
-export type Img = {url: string; width: number; height: number};
+// `alpha`: the image has a transparency (a cut-out, as Embroidered
+// Waterscapes' three): its box draws nothing behind it (Picture.svelte)
+export type Img = {url: string; width: number; height: number; alpha?: boolean};
 // (`image`: none until the figure has its file — its box is drawn all the same)
 export type Figure = {label?: string; ratio: number; caption: Inline[]; image?: Img};
 // A block: a paragraph (a plain string, or inline pieces), a quote
@@ -75,11 +77,11 @@ export type Contribution = {
   slug: string;
   people: string[];
   kind?: 'photoEssay';
-  // The figure that stands for the piece in its issue's contents (the
-  // issue page's gallery and grid): its place among the figures, 1 = the
-  // first. Without it, the first figure with an image (#lib/data/images.ts).
-  // CMS: a field of the contribution, once the site reads from it.
-  entry?: number;
+  // The image that stands for the piece in its issue's contents (the
+  // issue page's gallery and grid; CMS: Cover image — read from it, as the
+  // figures' images, below). Without it, its first figure with an image
+  // (#lib/data/images.ts).
+  cover?: Img;
   page?: number;
   pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
   pdfSize?: number; // its size in bytes (Sanity: the file's size)
@@ -100,7 +102,7 @@ export type Issue = {
   // contribution's (Sanity: the issue's Editorial field). Issue 01 only, so far.
   // `page`: its first page in print. `doi`: as a contribution's (Issue 00
   // has only that, so far).
-  editorial?: {page?: number; doi?: string; body?: Block[]; notes?: Inline[][]};
+  editorial?: {page?: number; doi?: string; body?: Block[]; notes?: Inline[][]; cover?: Img};
   publication: {
     editedBy: string; // "Editors"
     designedBy: string; // "Graphic design"
@@ -187,7 +189,6 @@ const contents1: Entry[] = [
     page: 8,
     doi: '10.61608/9783775758758-navel',
     kind: 'photoEssay',
-    entry: 3, // the tree (Marco, 24 Nov)
     ...navel // the whole piece, from the printed issue
   },
   {
@@ -378,9 +379,17 @@ const pictured = (piece: string, body?: Block[]) => {
     return image ? {figure: {...block.figure, image, ratio: Math.round((image.width / image.height) * 1000) / 1000}} : block;
   });
 };
+// The cover image of a piece (Cover image in the CMS) comes the same way,
+// as its "cover".
 for (const issue of issues) {
-  if (issue.editorial) issue.editorial.body = pictured(`${issue.slug}/editorial`, issue.editorial.body);
-  for (const c of issue.contributions) c.body = pictured(`${issue.slug}/${c.slug}`, c.body);
+  if (issue.editorial) {
+    issue.editorial.body = pictured(`${issue.slug}/editorial`, issue.editorial.body);
+    issue.editorial.cover = pictures[`${issue.slug}/editorial`]?.cover;
+  }
+  for (const c of issue.contributions) {
+    c.body = pictured(`${issue.slug}/${c.slug}`, c.body);
+    c.cover = pictures[`${issue.slug}/${c.slug}`]?.cover;
+  }
 }
 
 export const newestFirst = issues.toSorted((a, b) => b.number - a.number);

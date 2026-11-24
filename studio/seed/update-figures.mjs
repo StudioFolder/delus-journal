@@ -28,6 +28,12 @@
 // (the text was rearranged in the Studio) is reported, to be placed by hand.
 // An image already uploaded is not uploaded twice (the CMS knows a file
 // it has).
+//
+// A piece's cover image (the one that stands for it in the issue's
+// contents): <prefix>_entry.<jpg…> in its folder, if there is one, goes into
+// its Cover image field — only when that field is empty (or with --force).
+// Without such a file the field is left alone: to use one of the piece's
+// figures, pick it in the Studio (Select → Browse).
 import {createReadStream, existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 import {getCliClient} from 'sanity/cli';
@@ -88,6 +94,16 @@ for (const entry of figures) {
       continue;
     }
     const has = (key) => text.some((b) => b._key === key);
+    // the cover image, from <prefix>_entry
+    const cover = fileOf(entry.issue, piece.slug, 'entry');
+    if (cover.path && (!there.cover?.asset || force)) {
+      log.push(`  ${piece.slug} · cover image ${there.cover?.asset ? 'replaced' : 'set'} ← ${cover.file} (${mb(cover.path)})`);
+      n++;
+      if (!dry) {
+        const asset = {_type: 'reference', _ref: await upload(cover.path, cover.file)};
+        tx.patch(entry._id, (p) => p.set({[`${base}.cover`]: {_type: 'image', asset}}));
+      }
+    } else if (cover.path) log.push(`  ${piece.slug} · cover image: kept (already in the CMS)`);
     // where the last figure went, per paragraph: the next one of the same paragraph follows it
     const last = {};
     for (const f of piece.figures) {

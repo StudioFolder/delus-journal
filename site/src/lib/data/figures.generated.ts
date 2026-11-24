@@ -4,6 +4,13 @@
 import type {Img} from './fixtures.ts';
 
 export const pictures: Record<string, Record<string, Img>> = {
+  "01-chasing-water/editorial": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/ce30b4994cb446444d0a440beb95a0732fb5d615-2160x2160.jpg",
+      "width": 2160,
+      "height": 2160
+    }
+  },
   "01-chasing-water/navel-gazing": {
     "fig0": {
       "url": "https://cdn.sanity.io/images/485esptu/production/72a5ae014a1e19f9571a1a2b4d20dacb02d97887-3810x2132.jpg",
@@ -56,6 +63,26 @@ export const pictures: Record<string, Record<string, Img>> = {
       "url": "https://cdn.sanity.io/images/485esptu/production/b12228ba79ff5300cbe0492ce2c75c38dbb57b0f-8000x6106.jpg",
       "width": 8000,
       "height": 6106
+    }
+  },
+  "01-chasing-water/embroidered-waterscapes-unpacking-relationships-through-artisanal-map-making": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/f0a6ee9fcd29abc48394e087d7327770f6379561-1975x2500.png",
+      "width": 1975,
+      "height": 2500,
+      "alpha": true
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/6ab18d721afd69497fa43916ce7fe80165b27754-6569x4214.png",
+      "width": 6569,
+      "height": 4214,
+      "alpha": true
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/b106f3f0cbd537a11a33738247bab901864adca9-7728x4499.png",
+      "width": 7728,
+      "height": 4499,
+      "alpha": true
     }
   }
 };

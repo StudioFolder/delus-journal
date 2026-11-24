@@ -1,7 +1,8 @@
 // Asks the CMS which figures have an image, and writes what it answers to
 // src/lib/data/figures.generated.ts — the one thing the site reads from
 // Sanity so far (its texts still come from src/lib/data): the address and
-// the size of each image, per piece, by the figure's key (fig0, fig1 …:
+// the size of each image (and whether it has a transparency), per piece,
+// its cover image ("cover": the Cover image field) and its figures by the figure's key (fig0, fig1 …:
 // its place among the figures of its text; see studio/seed/update-figures.mjs).
 //
 // Run before every build and every `npm run dev` (package.json:
@@ -12,11 +13,13 @@ import {writeFileSync} from 'node:fs';
 
 const PROJECT = '485esptu';
 const DATASET = 'production';
-const figure = `{_key, "url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}`;
+const image = `"url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height, "alpha": asset->metadata.hasAlpha`;
+const figure = `{_key, ${image}}`;
 const query = `*[_type == "issue"] | order(number asc) {
   "issue": slug.current,
   "editorial": editorial.text[_type == "figure" && defined(asset)]${figure},
-  "pieces": contributions[]{"slug": slug.current, "figures": text[_type == "figure" && defined(asset)]${figure}}
+  "editorialCover": editorial.cover{${image}},
+  "pieces": contributions[]{"slug": slug.current, "figures": text[_type == "figure" && defined(asset)]${figure}, "cover": cover{${image}}}
 }`;
 const out = new URL('../src/lib/data/figures.generated.ts', import.meta.url);
 
@@ -27,13 +30,13 @@ try {
   const {result} = await response.json();
   const pictures = {};
   for (const issue of result) {
-    const pieces = [{slug: 'editorial', figures: issue.editorial}, ...(issue.pieces ?? [])];
+    const pieces = [{slug: 'editorial', figures: issue.editorial, cover: issue.editorialCover}, ...(issue.pieces ?? [])];
+    const img = (f) => ({url: f.url, width: f.width, height: f.height, ...(f.alpha && {alpha: true})});
     for (const piece of pieces) {
       const figures = (piece.figures ?? []).filter((f) => f.url && f.width && f.height);
-      if (figures.length)
-        pictures[`${issue.issue}/${piece.slug}`] = Object.fromEntries(
-          figures.map((f) => [f._key, {url: f.url, width: f.width, height: f.height}])
-        );
+      const cover = piece.cover?.url && piece.cover.width ? [['cover', img(piece.cover)]] : [];
+      if (figures.length || cover.length)
+        pictures[`${issue.issue}/${piece.slug}`] = Object.fromEntries([...figures.map((f) => [f._key, img(f)]), ...cover]);
     }
   }
   const n = Object.values(pictures).reduce((sum, p) => sum + Object.keys(p).length, 0);

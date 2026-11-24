@@ -57,6 +57,14 @@ export const contribution = defineType({
       },
       initialValue: 'essay',
     }),
+    defineField({
+      name: 'cover',
+      title: 'Cover image',
+      type: 'image',
+      description:
+        'The image that stands for the piece in the issue’s contents (the gallery and grid of the issue page). Empty: its first image. To use one of its images: Select → Browse, and pick it (it is not uploaded twice).',
+      fields: [defineField({name: 'alt', title: 'Alternative text', type: 'string', description: 'Short description for screen readers and search engines.'})],
+    }),
     defineField({name: 'pages', title: 'Pages', type: 'string', description: 'e.g. 15–17'}),
     defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
     defineField({
@@ -90,7 +98,7 @@ export const contribution = defineType({
     }),
   ],
   preview: {
-    select: {title: 'title', p0: 'people.0.name', p1: 'people.1.name', pages: 'pages', media: 'images.0'},
+    select: {title: 'title', p0: 'people.0.name', p1: 'people.1.name', pages: 'pages', media: 'cover'},
     prepare: ({title, p0, p1, pages, media}) => ({
       title,
       subtitle: [[p0, p1].filter(Boolean).join(', '), pages && `pp. ${pages}`].filter(Boolean).join(' · '),

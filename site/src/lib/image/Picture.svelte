@@ -21,6 +21,13 @@
     asked for here), by --lit-dim.
   The same in the dark and the light tone (Marco, 24 Nov: to be looked at
   again later).
+  - A CUT-OUT (`image.alpha`: a PNG with a transparency, as the objects
+    printed as silhouettes; Marco, 24 Nov: keep the transparency): its box
+    draws nothing behind it, so the object stands on the page's own
+    ground, in both tones — the box's tint would show through. Under the
+    pointer it only dims. In the wireframe the box is drawn as ever (the
+    picture isn't there). The smaller copy (`first`) goes once the full
+    one is in: two copies would show through each other at the edges.
 -->
 <script lang="ts">
   import {wire} from './wireframe.svelte.ts';
@@ -54,11 +61,12 @@
 </script>
 
 {#if image && !wire.on}
-  {#if first}
-    <img class="picture" {src} srcset={set} sizes={first} alt="" aria-hidden="true" />
+  {#if first && !(image.alpha && loaded)}
+    <img class="picture" class:cutout={image.alpha} {src} srcset={set} sizes={first} alt="" aria-hidden="true" />
   {/if}
   <img
     class="picture full"
+    class:cutout={image.alpha}
     class:loaded
     {src}
     srcset={set}
@@ -84,6 +92,10 @@
     object-fit: cover;
     filter: brightness(calc(1 - var(--lit) * var(--lit-dim)));
     pointer-events: none;
+  }
+  /* (the box's own rules draw its tint: this one, global, wins over them) */
+  :global(:has(> img.cutout)) {
+    background: none !important;
   }
   .full {
     opacity: 0;

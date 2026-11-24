@@ -73,6 +73,14 @@ export const issue = defineType({
       fields: [
         defineField({name: 'title', title: 'Title', type: 'string', initialValue: 'A Note from the Editors'}),
         defineField({name: 'authors', title: 'Authors', type: 'string'}),
+        defineField({
+          name: 'cover',
+          title: 'Cover image',
+          type: 'image',
+          description:
+            'The image that stands for the piece in the issue’s contents (the gallery and grid of the issue page). Empty: its first image. To use one of its images: Select → Browse, and pick it (it is not uploaded twice).',
+          fields: [defineField({name: 'alt', title: 'Alternative text', type: 'string', description: 'Short description for screen readers and search engines.'})],
+        }),
         defineField({name: 'text', title: 'Text', type: 'richText'}),
         defineField({name: 'doi', title: 'DOI', type: 'string', description: 'As registered by the publisher, without https://doi.org/ — e.g. 10.61608/9783775758758-001'}),
         defineField({
