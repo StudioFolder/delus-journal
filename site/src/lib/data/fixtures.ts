@@ -75,6 +75,11 @@ export type Contribution = {
   slug: string;
   people: string[];
   kind?: 'photoEssay';
+  // The figure that stands for the piece in its issue's contents (the
+  // issue page's gallery and grid): its place among the figures, 1 = the
+  // first. Without it, the first figure with an image (#lib/data/images.ts).
+  // CMS: a field of the contribution, once the site reads from it.
+  entry?: number;
   page?: number;
   pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
   pdfSize?: number; // its size in bytes (Sanity: the file's size)
@@ -182,6 +187,7 @@ const contents1: Entry[] = [
     page: 8,
     doi: '10.61608/9783775758758-navel',
     kind: 'photoEssay',
+    entry: 3, // the tree (Marco, 24 Nov)
     ...navel // the whole piece, from the printed issue
   },
   {
