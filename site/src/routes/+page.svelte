@@ -13,7 +13,11 @@
     full ink under the pointer (Buy ↗, Read), as on an issue's page.
   - Its image sits on the background, in the middle of the space to the
     right of the band (13 columns wide), in the proportions of the book
-    cover. For now an empty box. It is a link to the highlight's content
+    cover — or, where the highlight has an image with its file (an
+    article: lib/home/highlights.ts), in the image's own format, as large
+    as fits in that box, as the entries on an issue's page (24 Nov). An
+    issue's cover and a news item's images are not in the CMS yet: their
+    box stays empty. It is a link to the highlight's content
     (an issue, an article, a news item), lit under the pointer as every
     image that is a link. It follows the band: when the band
     shrinks, the image moves to the middle of the larger space.
@@ -65,6 +69,11 @@
   import Dots from '#lib/home/Dots.svelte';
   import {shown as shownOf, type Tag} from '#lib/home/highlights.ts';
   import {opens} from '#lib/type/links.ts';
+  import Picture from '#lib/image/Picture.svelte';
+
+  // How wide the image is on the screen (Picture: which file to ask for):
+  // the cover's box, 13 columns of 36; on mobile the column
+  const SIZES = '(max-width: 767px) 100vw, 36vw';
 
   // waiting: hidden, about to start · words: appearing in the middle ·
   // rising: moving to the top · done: the final state
@@ -208,6 +217,8 @@
     href={highlights[at].href}
     aria-label={highlights[at].name}
     class="image cover fade"
+    class:own={!!highlights[at].image}
+    style:--ratio={highlights[at].image?.ratio}
     class:now={swapping}
     class:is-hidden={!imageShown || hidden}
     {onpointerenter}
@@ -215,7 +226,10 @@
     {onfocusin}
     {onfocusout}
     out:leave|global
-  ></a>
+  >
+    <!-- (a new Picture for each highlight: it fades in once its own file has arrived) -->
+    {#key at}<Picture image={highlights[at].image?.image} sizes={SIZES} />{/key}
+  </a>
 </Panel>
 
 {#if highlights.length > 1}
@@ -276,7 +290,13 @@
     <div class="highlights" class:is-below={below}>
       {#each highlights as highlight}
         <section class="labelled">
-          <a href={highlight.href} aria-label={highlight.name} class="image cover"></a>
+          <a
+            href={highlight.href}
+            aria-label={highlight.name}
+            class="image cover"
+            class:own={!!highlight.image}
+            style:--ratio={highlight.image?.ratio}><Picture image={highlight.image?.image} sizes={SIZES} /></a
+          >
           {@render labels(highlight.tags)}
           <p class="display"><Inlines parts={highlight.text} /></p>
         </section>
@@ -296,7 +316,15 @@
      an issue's page) */
   a.image {
     display: block;
+    position: relative; /* holds its picture */
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
+  }
+  /* An image with its file: its own format (--ratio, width / height), as
+     large as fits in the cover's box, in the middle of it */
+  a.image.own {
+    aspect-ratio: var(--ratio);
+    width: calc(min(1, var(--ratio) / (var(--cover-ratio))) * 100%);
+    margin-inline: auto;
   }
   @media (hover: hover) {
     a.image:hover {
@@ -352,9 +380,13 @@
       display: grid;
       gap: calc(8 * var(--u));
     }
-    /* each highlight's image above its label and text */
+    /* each highlight's image above its label and text (one narrower
+       than the column starts at its left, with the text) */
     section .image {
       margin-bottom: var(--u);
+    }
+    section a.image.own {
+      margin-inline: 0;
     }
   }
 </style>
