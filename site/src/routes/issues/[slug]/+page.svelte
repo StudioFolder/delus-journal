@@ -323,7 +323,10 @@
   </div>
 </Panel>
 
-<ViewSwitch bind:grid what="images" onswitch={() => (changed = true)} />
+<!-- (no switch without images to show: a forthcoming issue has its cover alone) -->
+{#if data.contents.length}
+  <ViewSwitch bind:grid what="images" onswitch={() => (changed = true)} />
+{/if}
 
 <!-- Arriving from the search: the words found, marked in the abstract
      (this page's column: the one with the number line) -->
@@ -401,7 +404,7 @@
         <Credits rows={issueDetails(issue)} compact />
       {:else if shown === 'cite' && data.citation}
         <p class="citation"><Inlines parts={data.citation} sc={false} /></p>
-      {:else}
+      {:else if data.contents.length}
         <ol class="contents">
           {#each data.contents as entry, i (entry.href)}
             <li

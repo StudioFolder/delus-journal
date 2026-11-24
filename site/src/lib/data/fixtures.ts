@@ -19,8 +19,7 @@ import * as thirst from './articles/thirst.ts';
 import * as trap from './articles/trap.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
-// The abstracts are placeholders (the issue's title in italics, then
-// filler text, about as long as a real abstract).
+// The abstracts are the publisher's and the editors' texts (Marco, 24 Nov).
 // `publication`: the Publication fields of the CMS — the standard colophon
 // of every issue (Marco, 15 Nov): editors, the credits of the printed
 // issue as in its colophon, publisher, date, pages, format, language,
@@ -266,11 +265,9 @@ export const issues: Issue[] = [
     title: 'DELUS',
     date: 'Autumn 2023',
     editorial: {page: 4, doi: '10.61608/9783775756372-fm002', ...editorial00}, // the whole text, from the printed issue
-    abstract: [
-      'Placeholder for the abstract of Issue 00, ',
-      {em: 'DELUS'},
-      '. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
-    ],
+    // (the publisher's text, without its sentence naming the contributors)
+    abstract:
+      'The pilot issue of DELUS offers a range of diverse insights into landscape and urban questions. It introduces new methods to unpack multiple worlds and narrate manifold stories. As a collection, these contributions address the complex relations between humans, non-humans and their environment across time and space.',
     publication: {
       editedBy: editors,
       designedBy: 'Studio Folder',
@@ -301,10 +298,10 @@ export const issues: Issue[] = [
     title: 'Chasing Water',
     date: 'Autumn 2024',
     editorial: {page: 4, doi: '10.61608/9783775758758-note', ...editorial01}, // the whole text, from the printed issue
+    // (the publisher's text; the issue's title in italics)
     abstract: [
-      'Placeholder for the abstract of Issue 01, ',
       {em: 'Chasing Water'},
-      '. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.'
+      ' invites us to explore different manifestations of water. The term “chasing” highlights the role of water in shaping and sustaining landscapes and urban environments, and the ongoing efforts to direct its course. From the transformation of English moorland and marshland to intricate irrigation systems in the Mediterranean and to the ecological impact of water harvesting schemes in Chile and Australia, each contribution explores how water is tracked, obstructed, or contained. “Chasing Water” reflects the contradictory challenge of capturing, storing, and distributing the element in a world where it is theoretically abundant, but in many places inaccessible.'
     ],
     publication: {
       editedBy: editors,
@@ -334,10 +331,11 @@ export const issues: Issue[] = [
     number: 2,
     title: 'Season Creep',
     date: 'Spring 2027',
+    // (the editors' text; the issue's title in italics)
     abstract: [
-      'Placeholder for the abstract of Issue 02, ',
+      'As climate change reshapes seasonal rhythms, the temporal structures that once structured landscapes, bodies, and built environments begin to destabilize. ',
       {em: 'Season Creep'},
-      '. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.'
+      ' brings together reflections on phenological change, ecological precarity, and the uneven pace of transformation. Through writing, drawing, and documentation, the issue explores how seasonal knowledge—once rooted in cycles of cultivation, migration, and celebration—is being reconfigured, and traces what it means to inhabit a world where seasons no longer arrive as expected.'
     ],
     publication: {
       editedBy: editors,
