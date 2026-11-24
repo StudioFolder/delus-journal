@@ -72,6 +72,9 @@ export function entries(): Entry[] {
       by: '',
       text: lines(inline(issue.abstract))
     });
+    // A forthcoming issue is found by its own page alone: its pieces are
+    // not published yet (as on its page and in the Contributors list)
+    if (issue.publication.forthcoming) continue;
     list.push({
       href: editorialHref(issue),
       where,

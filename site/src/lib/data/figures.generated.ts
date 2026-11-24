@@ -4,6 +4,362 @@
 import type {Img} from './fixtures.ts';
 
 export const pictures: Record<string, Record<string, Img>> = {
+  "00-delus": {
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/06cf5047a3c506f515c7b25e162f6e2b962f2cd7-1555x1878.png",
+      "width": 1555,
+      "height": 1878,
+      "alpha": true
+    }
+  },
+  "00-delus/salted-waters-cooking-land-and-resistance": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/2eab6bc6fa8a9482239ab6d395175d9e560498d9-5000x2813.jpg",
+      "width": 5000,
+      "height": 2813
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/aa4464aaecbcfd3d545d376f7b43e0155f455523-4928x3264.jpg",
+      "width": 4928,
+      "height": 3264
+    }
+  },
+  "00-delus/rivers-sturgeons-and-dragons": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/018fce9c496b55c2586be2a23eca3735b0f70592-2268x4032.jpg",
+      "width": 2268,
+      "height": 4032
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/9ba4b44c7794d3adafaa3cf8adfe1d0165066a98-4032x3024.jpg",
+      "width": 4032,
+      "height": 3024
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/226543e854b16c84aa5dd5c195d628b94580aa36-4032x3024.jpg",
+      "width": 4032,
+      "height": 3024
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/a00f07ab4035cae9b36c272dcb2929632e200482-2372x3508.jpg",
+      "width": 2372,
+      "height": 3508
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/13256c72ac4d54e753c5146f6273ff127a807e1d-3024x4032.jpg",
+      "width": 3024,
+      "height": 4032
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/03b5ff68336cc94c9c19bc18b4944286c0d478cf-4032x3024.jpg",
+      "width": 4032,
+      "height": 3024
+    },
+    "fig6": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/784f43bbec2e6b4eea29dffcd0a757752ce6ef09-4032x3024.jpg",
+      "width": 4032,
+      "height": 3024
+    },
+    "fig7": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/433983fa5879dd5ee0f1c95b59452b6f8cd5b8d1-3324x2216.jpg",
+      "width": 3324,
+      "height": 2216
+    },
+    "fig8": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/0068617a2b67c672edbb2acdef905a218ae53c84-4640x2760.jpg",
+      "width": 4640,
+      "height": 2760
+    },
+    "fig9": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/ce25f6206c3e48d32e0f43d6fa1930a475419e25-1612x1072.jpg",
+      "width": 1612,
+      "height": 1072
+    },
+    "fig10": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/77d8e98bbccc97091c6fd0c967e78ca0674725ca-4899x2754.jpg",
+      "width": 4899,
+      "height": 2754
+    },
+    "fig11": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/6a52b910f3cd6239a5e6ec6a876cb51f4fd6601d-1321x955.jpg",
+      "width": 1321,
+      "height": 955
+    },
+    "fig12": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/efd385f90a6bd4dc23c4f765e6a2e1f80a9aa3ee-7686x6090.jpg",
+      "width": 7686,
+      "height": 6090
+    },
+    "fig13": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/a0d5a98e87d9d8f5043a0b827a935dcc8f6e4e9e-2318x3000.jpg",
+      "width": 2318,
+      "height": 3000
+    },
+    "fig14": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/3043547fc8647a72df0e1b81e5cabebf42b6244c-4032x3024.jpg",
+      "width": 4032,
+      "height": 3024
+    },
+    "fig15": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/81075450884f4b0a338e6f9b66a638664f91cfaa-899x800.jpg",
+      "width": 899,
+      "height": 800
+    },
+    "fig16": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/50b3d1ea3a09159f922885c5993e19408e7f10ea-586x1772.jpg",
+      "width": 586,
+      "height": 1772
+    },
+    "fig17": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/3339cf4d683c15f3c3d2fdfdf03b4390b7f8e017-5627x3587.jpg",
+      "width": 5627,
+      "height": 3587
+    },
+    "fig18": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/cc7498036481a5e074f5674700ae7f629a695847-4032x3024.jpg",
+      "width": 4032,
+      "height": 3024
+    },
+    "fig19": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/458fd0db6cb782f008b754bb08c1d38f72e1d2c7-2126x1439.jpg",
+      "width": 2126,
+      "height": 1439
+    },
+    "fig20": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/062a73a647d442ef6d735ee2a54878d5900b943b-4960x3310.jpg",
+      "width": 4960,
+      "height": 3310
+    },
+    "fig21": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/9796d7257056e20c3236ef48091a92f1fe71c9a6-2102x1500.jpg",
+      "width": 2102,
+      "height": 1500
+    },
+    "fig22": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/1fceb32edf5b2c6660f818f18a8f903140e792f5-976x1730.jpg",
+      "width": 976,
+      "height": 1730
+    },
+    "fig23": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/38842ad04c0e18d5eee3afe02a35c43402a3ee90-794x800.jpg",
+      "width": 794,
+      "height": 800
+    },
+    "fig24": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/02c1b2f50fd1dc19e6e90131d6c74303bab1f905-2268x4032.jpg",
+      "width": 2268,
+      "height": 4032
+    },
+    "fig25": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/4cb0150d6af068078677eef64d5297210f55b15c-1280x960.jpg",
+      "width": 1280,
+      "height": 960
+    },
+    "fig26": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/3f039796ce8bd63f14dde827b5b0ae64befdd2a4-2160x3840.jpg",
+      "width": 2160,
+      "height": 3840
+    },
+    "fig27": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/66d55ee3b084f2c7a67ace764ac5e8929e15d782-1200x856.jpg",
+      "width": 1200,
+      "height": 856
+    },
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/66d55ee3b084f2c7a67ace764ac5e8929e15d782-1200x856.jpg",
+      "width": 1200,
+      "height": 856
+    }
+  },
+  "00-delus/feminist-responses-to-the-prolonged-colonialities-of-exploited-landscapes": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/d2b85a3f151eee9defed1a8dacd7819aa72f1c0a-3456x1543.jpg",
+      "width": 3456,
+      "height": 1543
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c3cf496298900fc5bf140a5a849406768b9fc092-6000x4000.jpg",
+      "width": 6000,
+      "height": 4000
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/423937d7f69a45035c7602278aebb7caca408702-2496x1664.jpg",
+      "width": 2496,
+      "height": 1664
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/dad7b59402a4b944a183e636f80146261b7260d9-3456x2304.jpg",
+      "width": 3456,
+      "height": 2304
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/d9e7c1f03fc64606ae21c841f2d285d08b45a19e-7303x4316.png",
+      "width": 7303,
+      "height": 4316,
+      "alpha": true
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/0a020118cfd0eab851fc57fbc4fbfbf4ebbf16bd-7193x4254.png",
+      "width": 7193,
+      "height": 4254,
+      "alpha": true
+    },
+    "fig6": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/545ff7ec8056b2e4dea0b363d96e69794e441ce4-3509x3895.jpg",
+      "width": 3509,
+      "height": 3895
+    },
+    "fig7": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/aaa86e68324e1ebf69a0ea09175d644a5d1e7d49-1376x1083.jpg",
+      "width": 1376,
+      "height": 1083
+    }
+  },
+  "00-delus/melting-ecologies": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/d0233218657f520e14040bda7b346a9065268d7a-3244x4055.jpg",
+      "width": 3244,
+      "height": 4055
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/7b67f9231e893d5306026c0989ac7e1b4832c097-4648x5808.jpg",
+      "width": 4648,
+      "height": 5808
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/720fa7112eeba8fc9ae9102fd8d33df89f2385d1-3724x5600.jpg",
+      "width": 3724,
+      "height": 5600
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/f822518612e70245686eee15da191a973bbbecf2-4912x7360.jpg",
+      "width": 4912,
+      "height": 7360
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/0df155ec630b44be927babf17929a444d686e9f7-1632x3072.jpg",
+      "width": 1632,
+      "height": 3072
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/082ffd62bbc5e227523bde5d41ed57ea05f3a38f-2500x3000.jpg",
+      "width": 2500,
+      "height": 3000
+    },
+    "fig6": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/cf579ddc6ccb85cae4e72dadc3e1d27463e8c9f0-2500x3000.jpg",
+      "width": 2500,
+      "height": 3000
+    },
+    "fig7": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/05bf7d0366c5c0b02fd583d3f1b340315166c7e0-2820x4512.jpg",
+      "width": 2820,
+      "height": 4512
+    },
+    "fig8": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/573061f95412b0c80b9a1122e546cf07f157b692-4000x3200.jpg",
+      "width": 4000,
+      "height": 3200
+    }
+  },
+  "00-delus/speculative-ecologies-the-future-of-urban-wastelands": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/d57530156064df219d532c9a07aae80d0608ee6f-5472x3648.jpg",
+      "width": 5472,
+      "height": 3648
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c8536f60117478b4319e200b28876d3f1c885ad1-4864x3648.jpg",
+      "width": 4864,
+      "height": 3648
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/527408bc3c5d694adea99ada5d25976420ae8f2d-5472x3648.jpg",
+      "width": 5472,
+      "height": 3648
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/7b3f89bd698ea687cc7254336b4166788cf12369-3648x4864.jpg",
+      "width": 3648,
+      "height": 4864
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/51b5cdab9d79240f3a70afa605103737616b06e4-3648x4864.jpg",
+      "width": 3648,
+      "height": 4864
+    }
+  },
+  "00-delus/the-trap-of-time-prototyping-a-summer-school": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/7a8a585a97e23ffd598c829115733814ef172b48-718x392.svg",
+      "width": 718,
+      "height": 392,
+      "alpha": true
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/a717c7540b7cc1a174772ac0afde2ce1b4414ad2-614x593.svg",
+      "width": 614,
+      "height": 593,
+      "alpha": true
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c7917943ac42b997fb107c513d42c418ed27a0fb-468x537.svg",
+      "width": 468,
+      "height": 537,
+      "alpha": true
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/60850e14e5657b91bd187af81cba04a2a6a2ad5f-484x357.svg",
+      "width": 484,
+      "height": 357,
+      "alpha": true
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/4ee22c5d70cb139acebeb02304507800d80f3a3b-557x453.svg",
+      "width": 557,
+      "height": 453,
+      "alpha": true
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/983452a3a188efec85f815d92824664df6e8b2a6-615x672.svg",
+      "width": 615,
+      "height": 672,
+      "alpha": true
+    },
+    "fig6": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/a6371f2bcb1749eacbcb68a42cd79c79e9790884-5640x3760.jpg",
+      "width": 5640,
+      "height": 3760
+    },
+    "fig7": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/fd04d74721017c535212956fdb33f963a21556b2-2126x1594.jpg",
+      "width": 2126,
+      "height": 1594
+    },
+    "fig8": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/3fd4f37dd45238b1c7d7a3f3a757eba0cc752a65-1196x1034.jpg",
+      "width": 1196,
+      "height": 1034
+    },
+    "fig9": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/47a3cdd8abb334c03e4feccd0b2d8ce094f808dc-2880x1612.jpg",
+      "width": 2880,
+      "height": 1612
+    },
+    "fig10": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/0ee7483df60bd740f5bc7c56a2b9e86c99f3f2f7-1710x1284.jpg",
+      "width": 1710,
+      "height": 1284
+    }
+  },
+  "01-chasing-water": {
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/9dcb0deb3f2330a3eb8da8afe444961c83a6191c-1557x1880.png",
+      "width": 1557,
+      "height": 1880,
+      "alpha": true
+    }
+  },
   "01-chasing-water/editorial": {
     "fig0": {
       "url": "https://cdn.sanity.io/images/485esptu/production/ce30b4994cb446444d0a440beb95a0732fb5d615-2160x2160.jpg",
@@ -171,9 +527,9 @@ export const pictures: Record<string, Record<string, Img>> = {
       "height": 2048
     },
     "fig1": {
-      "url": "https://cdn.sanity.io/images/485esptu/production/a46b36fa0ee7251287d6e1a5f5aaacfe95690339-407x220.svg",
-      "width": 407,
-      "height": 220,
+      "url": "https://cdn.sanity.io/images/485esptu/production/b11a8e0dfbb3a046ad91611b357d0a709acfb24b-451x264.svg",
+      "width": 451,
+      "height": 264,
       "alpha": true
     },
     "fig2": {
@@ -207,6 +563,11 @@ export const pictures: Record<string, Record<string, Img>> = {
       "url": "https://cdn.sanity.io/images/485esptu/production/677f63f009ee9c5fbe6867c783e9050d557a97a0-1338x1699.jpg",
       "width": 1338,
       "height": 1699
+    },
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/e581a6344e962609562133b60cd01b03d350f494-7087x7034.jpg",
+      "width": 7087,
+      "height": 7034
     }
   },
   "01-chasing-water/bordoclima-new-calligraphies-of-fluid-borders": {
@@ -288,6 +649,14 @@ export const pictures: Record<string, Record<string, Img>> = {
       "url": "https://cdn.sanity.io/images/485esptu/production/55c5f350265598c76458ef25cbddce385b60a522-3008x2000.jpg",
       "width": 3008,
       "height": 2000
+    }
+  },
+  "02-season-creep": {
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/cba70fe9a26a8865dbcda5d4937bebc470771c71-1793x2152.png",
+      "width": 1793,
+      "height": 2152,
+      "alpha": true
     }
   }
 };

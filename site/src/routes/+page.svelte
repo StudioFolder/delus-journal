@@ -233,7 +233,7 @@
     out:leave|global
   >
     <!-- (a new Picture for each highlight: it fades in once its own file has arrived) -->
-    {#key at}<Picture image={highlights[at].image?.image} sizes={SIZES} />{/key}
+    {#key at}<Picture image={highlights[at].image?.image} sizes={SIZES} eager />{/key}
   </a>
 </Panel>
 

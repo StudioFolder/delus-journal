@@ -16,6 +16,10 @@
   - `first`: the `sizes` of a smaller copy of the same image already on
     the page (a figure's miniature, when the figure opens large): that
     copy is drawn at once, under the full one, so the box is never empty.
+  - `eager`: asked for at once and before the others (the image a page
+    opens on: the home's highlight, an issue's cover) — every other image
+    waits until it is near the screen.
+  - Without JavaScript it is simply there (app.html, noscript).
   - Under the pointer it dims slightly, softly — as the empty box takes a
     touch of ink: it follows the box's own --lit (which doesn't inherit:
     asked for here), by --lit-dim.
@@ -88,6 +92,7 @@
     width={image.width}
     height={image.height}
     loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
     decoding="async"
     onload={() => (loaded = true)}
     use:there
