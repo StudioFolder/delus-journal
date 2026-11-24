@@ -1,6 +1,8 @@
 <!--
   Contributors: everyone who has contributed to an issue, with the
-  issue(s) they appear in.
+  issue(s) they appear in — published issues only: a forthcoming issue's
+  contributors are not here until it is out, and it is not among the
+  issues of someone also in an earlier one (Marco, 24 Nov).
   The band for this URL is set in #lib/grid/layouts.ts.
 
   A table on the band under the menu: names from column 3, issues from
@@ -22,8 +24,14 @@
   import {leave} from '#lib/motion/leave.ts';
   import {time} from '#lib/motion/time.ts';
   import {still} from '#lib/motion/still.ts';
-  import {articleOf, people} from '#lib/data/fixtures.ts';
+  import {articleOf, issues, people as everyone} from '#lib/data/fixtures.ts';
   import {issueNumber} from '#lib/data/format.ts';
+
+  // Only the published issues count
+  const out = new Set(issues.filter((x) => !x.publication.forthcoming).map((x) => x.number));
+  const people = everyone
+    .map((person) => ({...person, issues: person.issues.filter((n) => out.has(n))}))
+    .filter((person) => person.issues.length);
 
   type Order = 'name' | 'issue';
   const byName = (a: (typeof people)[number], b: (typeof people)[number]) =>
