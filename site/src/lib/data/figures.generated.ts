@@ -3,4 +3,32 @@
 // ("<issue>/<piece>"), by the figure's key.
 import type {Img} from './fixtures.ts';
 
-export const pictures: Record<string, Record<string, Img>> = {};
+export const pictures: Record<string, Record<string, Img>> = {
+  "01-chasing-water/the-draining-of-the-fens-enclosures-resistance-and-wilderness": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/ebdee8585108032614042e8e716cdf60dc6467dc-3024x4032.jpg",
+      "width": 3024,
+      "height": 4032
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/4ee6ca8e60f7049c10c2f0085d4fa2d1c82ff600-6006x4962.jpg",
+      "width": 6006,
+      "height": 4962
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/a7ab5db460144fd698f9c0042cdf759af3442c81-1260x865.jpg",
+      "width": 1260,
+      "height": 865
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/726e4fc3022c491aa55025a6ba97e8cf57eccb3a-8000x6995.jpg",
+      "width": 8000,
+      "height": 6995
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/b12228ba79ff5300cbe0492ce2c75c38dbb57b0f-8000x6106.jpg",
+      "width": 8000,
+      "height": 6106
+    }
+  }
+};

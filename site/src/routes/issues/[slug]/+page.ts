@@ -19,8 +19,8 @@ export const entries: EntryGenerator = () => issues.map((x) => ({slug: x.slug}))
 // address and the names of its people. First comes the editorial, as in
 // print: the editors' note (editorialTitle), by the issue's editors, at its own
 // address (CMS: the issue's Editorial field).
-// Each entry has a "cover image" (for now only its proportions:
-// #lib/data/images.ts).
+// Each entry has a "cover image" (for now its first figure with a file,
+// else an empty box: #lib/data/images.ts).
 // A forthcoming issue has no table of contents (Marco, 24 Nov: its
 // contributions are not published yet): the page shows its abstract and,
 // to the right, its cover alone.
@@ -37,7 +37,7 @@ export const load: PageLoad = ({params}) => {
         .join(', ')
     }))
   ];
-  const contents = issue.publication.forthcoming ? [] : rows.map((row, i) => ({...row, image: entryImage(i)}));
+  const contents = issue.publication.forthcoming ? [] : rows.map((row, i) => ({...row, image: entryImage(issue, i)}));
   // How to cite the issue (not before it is published): inline pieces
   const citation = issue.publication.forthcoming ? undefined : issueCitationOf(issue, journal);
   // The page's head: "Issue 01, Chasing Water" (Issue 00's title is the journal's name)

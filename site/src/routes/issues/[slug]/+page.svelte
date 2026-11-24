@@ -41,7 +41,8 @@
 
   GALLERY — the space to the right of the band scrolls sideways: after
   the cover comes one image for each entry of the contents (its "cover
-  image", to be chosen in the CMS; for now an empty box), each in the
+  image", to be chosen in the CMS; for now its first figure with a
+  file, else an empty box), each in the
   cover's place, one at a time: at rest the page is as it was. Images
   come in any format, upright or lying: each is as large as fits in the
   cover's box.
@@ -100,10 +101,17 @@
   import Inlines from '#lib/article/Inlines.svelte';
   import Credits from '#lib/type/Credits.svelte';
   import Found from '#lib/search/Found.svelte';
+  import Picture from '#lib/image/Picture.svelte';
   import {issueDetails, issueLabel} from '#lib/data/format.ts';
 
   let {data} = $props();
   const issue = $derived(data.issue);
+
+  // How wide the entries' images are on the screen (for Picture: which
+  // file to ask for): the cover's box, 13 columns of 36; a cell of the
+  // grid, as the figures' grid in an article. (On Phone: 12 units high,
+  // so as wide as their format makes them — given where they are drawn.)
+  const SIZES = {gallery: '36vw', grid: '(max-width: 1439px) 22vw, 16vw'};
 
   // Contents, colophon or citation, below the abstract. The change
   // follows a moment later: what is there fades out, changes, fades in
@@ -298,7 +306,8 @@
             onpointerleave={rest}
             onfocusout={rest}
             out:leave|global
-          ></a>
+            ><Picture image={entry.image.image} sizes={SIZES.gallery} /></a
+          >
         </div>
       {/each}
     </div>
@@ -316,7 +325,8 @@
             onpointerleave={rest}
             onfocusin={() => (hold(), (towards = null), (at = i + 1))}
             onfocusout={rest}
-          ></a>
+            ><Picture image={entry.image.image} sizes={SIZES.grid} /></a
+          >
         </div>
       {/each}
     </div>
@@ -418,7 +428,9 @@
               onfocusin={() => (hold(), show(i + 1))}
               onfocusout={rest}
             >
-              <span class="image" style:--ratio={entry.image.ratio} aria-hidden="true"></span>
+              <span class="image" style:--ratio={entry.image.ratio} aria-hidden="true"
+                ><Picture image={entry.image.image} sizes="{Math.ceil(96 * entry.image.ratio)}px" /></span
+              >
               <span class="title"><a href={entry.href}>{entry.title}</a></span>
               <span class="by">{entry.by}</span>
             </li>
@@ -514,6 +526,7 @@
   /* An entry's image keeps its own format (--ratio, width / height), as
      large as fits in the cover's box */
   a.cover {
+    position: relative; /* holds its picture */
     aspect-ratio: var(--ratio);
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
   }
@@ -609,7 +622,7 @@
   }
   /* Phone only: each entry's image, small, above its title — 12 units
      high, as wide as its own format makes it (--ratio, width / height),
-     2 units above the title; an empty box for now, as the cover. Lit
+     2 units above the title; its picture (else an empty box). Lit
      with its title (a touch of the ink colour, softly: --lit, as the
      gallery's images on desktop) */
   .entry .image {
@@ -625,6 +638,7 @@
     }
     .entry .image {
       display: block;
+      position: relative; /* holds its picture */
       width: calc(12 * var(--u) * var(--ratio));
       height: calc(12 * var(--u));
       margin-bottom: calc(2 * var(--u));
