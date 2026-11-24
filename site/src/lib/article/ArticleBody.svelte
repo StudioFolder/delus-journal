@@ -358,12 +358,18 @@
   /* A chapter title (Sanity: the Heading style): the quote's type in
      small capitals (Styrene B's own), centred on the text and half as
      wide (8 columns), so a long title takes two lines; two lines of
-     space above it, one line below, before the chapter starts */
+     space above it, one line below, before the chapter starts.
+     Its own lines are closer than the text's (Marco, 24 Nov): one unit
+     less each, small capitals needing less room; half a unit above and
+     below makes up for it, so a title of one line takes the text's line
+     as before and nothing around it moves */
   h2 {
     width: calc(8 * var(--col));
     justify-self: center;
     margin: calc(4 * var(--u)) 0 0;
+    padding-block: calc(var(--u) / 2);
     font: var(--type-quote);
+    line-height: calc(1lh - var(--u));
     font-variant-caps: all-small-caps;
     letter-spacing: 0.02em;
     text-align: center;
