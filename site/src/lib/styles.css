@@ -77,6 +77,7 @@
   /* An image under the pointer stands out from the background by this
      much of the ink colour (figures of an article, images of an issue) */
   --lit-tint: 6%;
+  --lit-dim: 0.08; /* how much an image dims under the pointer (Picture.svelte) */
   --dot: var(--u);
   --dot-hit: calc(5 * var(--u));
   --dot-edge: calc((var(--dot-hit) - var(--dot)) / 2);

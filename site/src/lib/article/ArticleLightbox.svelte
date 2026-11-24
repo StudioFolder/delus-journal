@@ -54,6 +54,7 @@
   import {still} from '#lib/motion/still.ts';
   import {word} from '#lib/pointer/word.svelte.ts';
   import Inlines from './Inlines.svelte';
+  import Picture from '#lib/image/Picture.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
   let {
@@ -225,7 +226,12 @@
           role="img"
           aria-label={figure.label ? `Figure ${figure.label}` : 'Image'}
           style:transform={place || null}
-        ></div>
+        >
+          <!-- (its miniature's copy first, so it is there from the first instant) -->
+          {#key figure}
+            <Picture image={figure.image} sizes="(max-width: 767px) 100vw, 56vw" first="(max-width: 767px) 62vw, 12vw" eager />
+          {/key}
+        </div>
       </div>
       <p class="caption fade now" class:is-hidden={phase !== 'open'}>
         <Inlines parts={figure.caption} />
@@ -253,7 +259,8 @@
               style:--ratio={each.ratio}
               onclick={tap(() => pick(each))}
               use:word={phase === 'grid' ? 'Open' : ''}
-            ></button>
+              ><Picture image={each.image} sizes="(max-width: 1439px) 22vw, 16vw" /></button
+            >
           </div>
         {/each}
       </div>
@@ -320,6 +327,7 @@
      colour, which it loses on the way — only where there is a hover
      (on a touch screen the miniature never had it) */
   .image {
+    position: relative; /* holds its picture */
     aspect-ratio: var(--ratio);
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));
     transform-origin: 0 0;
@@ -358,6 +366,7 @@
     pointer-events: none; /* (the grid itself: GRIDS OF IMAGES in styles.css) */
   }
   .thumb {
+    position: relative; /* holds its picture */
     display: block;
     aspect-ratio: var(--ratio);
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));

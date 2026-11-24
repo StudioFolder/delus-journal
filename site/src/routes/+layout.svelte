@@ -33,6 +33,7 @@
   import {hold} from '#lib/motion/hold.ts';
   import {time} from '#lib/motion/time.ts';
   import {ready} from '#lib/search/keyboard.ts';
+  import * as wireframe from '#lib/image/wireframe.svelte.ts';
   import {side, watch} from '#lib/pointer/side.svelte.ts';
   import {site, home, legal, issues} from '#lib/data/fixtures.ts';
   import {brief, pageTitle, sections} from '#lib/head/head.ts';
@@ -176,7 +177,9 @@
     away = false;
     held = scrollY; // the new page's own place
   });
-  const onkeydown = (e: KeyboardEvent) => e.key === 'Escape' && (menuOpen = false);
+  // (W: the wireframe, when the address asked for it — #lib/image/wireframe)
+  const onkeydown = (e: KeyboardEvent) => (e.key === 'Escape' ? (menuOpen = false) : wireframe.key(e));
+  onMount(() => wireframe.arm(import.meta.env.DEV));
 
   // The footer's height: one line, but two or three on Narrow screens
   // (--foot; the band's content keeps clear of it: --foot-room)

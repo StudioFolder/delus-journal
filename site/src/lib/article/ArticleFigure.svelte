@@ -1,6 +1,6 @@
 <!--
-  A figure of an article — for now an empty box in its proportions (as
-  every image on the site) and its caption: the letter the text refers
+  A figure of an article — a box in its proportions (as every image on
+  the site), its picture in it once it has one (Picture.svelte), and its caption: the letter the text refers
   to (FIG. A) in the small Styrene, full ink, then the caption in the
   notes' type (--type-note), quiet, its text starting 3 units in — as a
   note. A figure the text doesn't refer to has no letter: its caption
@@ -34,6 +34,7 @@
 <script lang="ts">
   import Acronyms from '#lib/type/Acronyms.svelte';
   import {word} from '#lib/pointer/word.svelte.ts';
+  import Picture from '#lib/image/Picture.svelte';
   import type {Figure} from '#lib/data/fixtures.ts';
 
   let {
@@ -44,6 +45,12 @@
     photo = false,
     onopen
   }: {figure: Figure; id: number; top?: number; photo?: boolean; covered?: boolean; onopen?: (miniature: HTMLElement) => void} = $props();
+
+  // How wide the image is on the screen (for Picture: which file to ask for)
+  const SIZES = {
+    miniature: '(max-width: 767px) 62vw, 12vw', // two thirds of the column; 4 columns of 36
+    photo: '(max-width: 767px) 90vw, (max-width: 1439px) 22vw, 16vw' // the column; a cell of the grid
+  };
 
   // A word on its own can't tell an article from a letter ("A Mapp"), so
   // only words with two capitals in a row go in small capitals (RA, UK)
@@ -84,7 +91,11 @@
       if (e.detail) e.currentTarget.blur();
       onopen?.(e.currentTarget);
     }}
-  ></button>
+    ><Picture
+      image={figure.image}
+      sizes={photo ? SIZES.photo : SIZES.miniature}
+    /></button
+  >
   {#if figure.label || words.length}
   <figcaption>
     {#if figure.label}<span class="n">{figure.label}</span>{/if}{#each words as word, i (i)}{#if word.n < 0}{' '}{:else}<span
@@ -116,6 +127,7 @@
     }
   }
   .image {
+    position: relative; /* holds its picture */
     display: block;
     width: 100%;
     background: color-mix(in srgb, var(--ink) calc(var(--lit) * var(--lit-tint)), var(--band));

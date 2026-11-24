@@ -44,7 +44,11 @@ export type Inline = string | {em: string} | {link: string; href: string} | {not
 // a visual essay) —,
 // its proportions (width / height; Sanity knows them from the image) and
 // its caption. No image yet: the site shows an empty box.
-export type Figure = {label?: string; ratio: number; caption: Inline[]};
+// An image file: its address and its size in pixels (Sanity: an image's
+// asset; drawn by #lib/image/Picture.svelte, inside its box)
+export type Img = {url: string; width: number; height: number};
+// (`image`: none until the figure has its file — its box is drawn all the same)
+export type Figure = {label?: string; ratio: number; caption: Inline[]; image?: Img};
 // A block: a paragraph (a plain string, or inline pieces), a quote
 // (Sanity: the Quote style), a chapter title (Sanity: the Heading style)
 // or a figure (Sanity: an image between two paragraphs), placed after the
