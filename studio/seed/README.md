@@ -52,7 +52,8 @@ this content is kept until the site reads from the CMS:
 
 `update-contributions.mjs` writes the extracted contents into the CMS without
 replacing the issues: a contribution's text (with its footnotes), abstract,
-DOI, pages and type, and an editors' note's text and DOI. Covers, images,
+DOI, pages and type, an editors' note's text and DOI, and the issue's own
+abstract. Covers, images,
 people, titles and anything else edited in the Studio stay as they are. Use
 it instead of the `--replace` import from now on.
 

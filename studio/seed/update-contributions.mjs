@@ -1,6 +1,6 @@
 // Writes the extracted contents into the CMS without replacing the issues:
 // a contribution's text (with its footnotes), abstract, DOI, pages and type,
-// and an editors' note's text and DOI. Everything else is left as it is —
+// an editors' note's text and DOI, and the issue's own abstract. Everything else is left as it is —
 // covers, images, people, titles and anything edited in the Studio.
 //
 // It reads seed/issues.ndjson, so generate that first:
@@ -80,6 +80,8 @@ for (const doc of docs) {
     log.push(`  ${label}: ${empty(there) ? 'filled' : 'overwritten'}`);
     tx.patch(doc._id, (p) => p.set({[path]: here}));
   };
+
+  fill('abstract', doc.abstract, now.abstract, 'issue abstract');
 
   const keys = new Set((now.contributions ?? []).map((c) => c._key));
   for (const c of doc.contributions) {
