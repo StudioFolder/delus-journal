@@ -1,14 +1,21 @@
 import {articleHref, slugOf, type Credit} from './format.ts';
+import * as bordoclima from './articles/bordoclima.ts';
 import * as breit from './articles/breit.ts';
+import * as dam from './articles/dam.ts';
+import * as desal from './articles/desal.ts';
 import * as editorial00 from './articles/editorial00.ts';
 import * as editorial01 from './articles/editorial01.ts';
+import * as embroidered from './articles/embroidered.ts';
 import * as feminist from './articles/feminist.ts';
+import * as liquid from './articles/liquid.ts';
 import * as melting from './articles/melting.ts';
+import * as mentalk from './articles/mentalk.ts';
 import * as navel from './articles/navel.ts';
 import * as redoute from './articles/redoute.ts';
 import * as rivers from './articles/rivers.ts';
 import * as salted from './articles/salted.ts';
 import * as speculative from './articles/speculative.ts';
+import * as thirst from './articles/thirst.ts';
 import * as trap from './articles/trap.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
@@ -186,16 +193,15 @@ const contents1: Entry[] = [
     people: ['akshar-gajjar', 'bhavya-jain'],
     page: 24,
     doi: '10.61608/9783775758758-002',
-    abstract:
-      'Akshar Gajjar and Bhavya Jain urge us to behold a nineteenth-century pashmina shawl, a masterpiece intricately charting Srinagar’s waterways. They juxtapose artisanal insight and colonial mapping, advocating an embroidered ethos. Through threads and layered textiles, they defy the hegemony of Cartesian water cartography.'
+    ...embroidered // the whole text, from the printed issue
   },
   {
     title: 'Liquid Shadows',
     people: ['valentina-noce'],
     page: 32,
     doi: '10.61608/9783775758758-003',
-    abstract:
-      'Valentina Noce ventures into the eerie realm of water, drawing parallels to Pascal’s abyss. Through ‘Liquid Shadows,’ she creates a digital odyssey, exploring water’s unsettling essence, mysterious allure and haunting ambiguity.'
+    kind: 'photoEssay',
+    ...liquid // the whole piece, from the printed issue
   },
   {
     title: 'Not a Drop Is Lost',
@@ -210,40 +216,36 @@ const contents1: Entry[] = [
     people: ['elnaz-najar-najafi', 'negar-sanaan-bensi'],
     page: 50,
     doi: '10.61608/9783775758758-005',
-    abstract:
-      'Elnaz Najar Najafi and Negar Sanaan Bensi delve into the historical and cultural perceptions of thirst and its impact on settlements and cultivation within the deserts of the Iranian Plateau. By challenging the negative connotations associated with thirst and exploring the innovative water management techniques of inhabitants, they reveal how thirst has been a positive driving force for imagination, care and the nurturing of life in arid environments.'
+    ...thirst // the whole text, from the printed issue
   },
   {
     title: 'Men Talk but the Women Fetch the Water',
     people: ['stavroula-michael'],
     page: 58,
     doi: '10.61608/9783775758758-006',
-    abstract:
-      'Stavroula Michael examines the coloniality of water infrastructures in Cyprus during late British colonialism and the early years of independence, highlighting how these systems perpetuated systemic inequalities. She unearths hidden histories of water attending neglected narratives of women and their relationships to material constructions such as village fountains.'
+    ...mentalk // the whole text, from the printed issue
   },
   {
     title: 'Bordoclima: New Calligraphies of Fluid Borders',
     people: ['lucia-rebolino', 'federica-pessotto'],
     page: 66,
     doi: '10.61608/9783775758758-007',
-    abstract:
-      'Lucia Rebolino and Federica Pessotto challenge the notion of fixed borders within contemporary geopolitics by conceptualizing them as dynamic entities. Their approach advocates the sovereignty of water in shaping borders and proposes a fluid understanding characterized by constant change and permeability.'
+    kind: 'photoEssay',
+    ...bordoclima // the whole piece, from the printed issue
   },
   {
     title: 'Desalination and a New Environmental Public',
     people: ['linda-schilling-cuellar'],
     page: 74,
     doi: '10.61608/9783775758758-008',
-    abstract:
-      'Linda Schilling Cuellar tackles the complexities surrounding water management in Chile, questioning the polarizing allure of desalination. She reveals the multifaceted implications of landscape solutionism – technological interventions, privatization debates and ecological repercussions. In her exploration, water emerges as a critical lifeline amidst the ever-pressing climate crisis.'
+    ...desal // the whole text, from the printed issue
   },
   {
     title: 'Dam Circumsonic',
     people: ['oskar-frederick-johanson'],
     page: 82,
     doi: '10.61608/9783775758758-009',
-    abstract:
-      'Oskar Frederick Johanson delves into the sonic environment of Warragamba Dam, a metaphor for broader water management issues in Australia. Through the lens of the Dyarubbin/Hawkesbury-Nepean watershed, embodied by the dam, he reveals the melodious yet dissonant complexities of controlling water amidst colonial legacies, urbanization pressures and environmental risks.'
+    ...dam // the whole text, from the printed issue
   }
 ];
 const contents2: Entry[] = [
