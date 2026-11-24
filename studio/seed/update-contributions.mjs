@@ -40,6 +40,25 @@ const docs = readFileSync(new URL('issues.ndjson', import.meta.url), 'utf8')
 
 const client = getCliClient({apiVersion: '2025-01-01'});
 const empty = (v) => v == null || (Array.isArray(v) && !v.length) || v === '';
+// The same content, whatever the order of its fields and the keys of its pieces
+const canon = (v) =>
+  Array.isArray(v)
+    ? v.map(canon)
+    : v && typeof v === 'object'
+      ? Object.fromEntries(Object.keys(v).filter((k) => k !== '_key').sort().map((k) => [k, canon(v[k])]))
+      : v;
+const same = (a, b) => JSON.stringify(canon(a)) === JSON.stringify(canon(b));
+// The words of a text field (or the value itself), to show where two differ
+const words = (v) =>
+  Array.isArray(v) ? v.map((b) => (b.children ?? []).map((c) => c.text).join('')).join('\n') : String(v);
+function where(a, b) {
+  const [x, y] = [words(a), words(b)];
+  if (x === y) return 'same words, different formatting (italics, links or notes)';
+  let i = 0;
+  while (x[i] === y[i]) i++;
+  const cut = (s) => JSON.stringify(s.slice(Math.max(0, i - 20), i + 30));
+  return `here ${cut(x)} · CMS ${cut(y)}`;
+}
 let changes = 0;
 
 for (const doc of docs) {
@@ -56,8 +75,8 @@ for (const doc of docs) {
   const tx = client.transaction();
   const log = [];
   const fill = (path, here, there, label) => {
-    if (empty(here) || JSON.stringify(here) === JSON.stringify(there)) return;
-    if (!empty(there) && !force) return log.push(`  ${label}: kept — the CMS has a different one (--force to overwrite)`);
+    if (empty(here) || same(here, there)) return;
+    if (!empty(there) && !force) return log.push(`  ${label}: kept, differs — ${where(here, there)}`);
     log.push(`  ${label}: ${empty(there) ? 'filled' : 'overwritten'}`);
     tx.patch(doc._id, (p) => p.set({[path]: here}));
   };
