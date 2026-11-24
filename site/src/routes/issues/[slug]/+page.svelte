@@ -52,7 +52,8 @@
   keyboard) slides the gallery to its image, as pointing at a row does on the issues list. The title of
   the image on view is in full ink in the contents (which scroll to show
   it, unless the pointer is on them); the image is the link to its
-  article, as its title. With the pointer neither on an entry nor on an
+  article, as its title: over it the pointer is the word Read (use:word,
+  #lib/pointer; Marco, 24 Nov). With the pointer neither on an entry nor on an
   image, after a short pause (--return-time) the gallery goes back to
   the cover and no title is in full ink — only where a pointer can
   hover: on a touch screen the gallery stays where it is left.
@@ -102,6 +103,8 @@
   import Credits from '#lib/type/Credits.svelte';
   import Found from '#lib/search/Found.svelte';
   import Picture from '#lib/image/Picture.svelte';
+  import PointerWord from '#lib/pointer/PointerWord.svelte';
+  import {word} from '#lib/pointer/word.svelte.ts';
   import {issueDetails, issueLabel} from '#lib/data/format.ts';
 
   let {data} = $props();
@@ -302,6 +305,7 @@
             style:--ratio={entry.image.ratio}
             href={entry.href}
             aria-label={entry.title}
+            use:word={'Read'}
             onpointerenter={hold}
             onpointerleave={rest}
             onfocusout={rest}
@@ -321,6 +325,7 @@
             style:--ratio={entry.image.ratio}
             href={entry.href}
             aria-label={entry.title}
+            use:word={grid ? 'Read' : ''}
             onpointerenter={() => (hold(), (towards = null), (at = i + 1))}
             onpointerleave={rest}
             onfocusin={() => (hold(), (towards = null), (at = i + 1))}
@@ -332,6 +337,7 @@
     </div>
   </div>
 </Panel>
+<PointerWord />
 
 <!-- (no switch without images to show: a forthcoming issue has its cover alone) -->
 {#if data.contents.length}
