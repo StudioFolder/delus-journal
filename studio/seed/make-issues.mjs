@@ -145,3 +145,45 @@ for (const d of docs) {
       `${d.contributions.filter((c) => c.abstract).length} abstracts, ${texts.length} full texts, ${notes} notes`
   );
 }
+
+// The figures of the texts — left out of the texts above — for
+// update-figures.mjs, which puts them into the CMS with their image
+// files: seed/figures.json. Each figure: the block of the text it follows
+// (`after`: that block's key, as written above; none = before the text),
+// its place among the figures of its text (`n`: its key in the CMS is
+// fig<n>), its letter, its caption, and the end of its file's name
+// (`file`: the letter, or — without a letter — its number, as in the
+// images folder's checklists).
+const figuresOf = (body = []) => {
+  const out = [];
+  let blocks = 0;
+  let plain = 0;
+  for (const b of body) {
+    if (typeof b === 'string' || Array.isArray(b) || !('figure' in b)) {
+      blocks++;
+      continue;
+    }
+    const f = b.figure;
+    const n = out.length;
+    out.push({
+      n,
+      after: blocks ? `b${blocks - 1}` : null,
+      file: f.label ?? String(++plain).padStart(2, '0'),
+      ...(f.label && {label: f.label}),
+      ...(f.caption?.length && {caption: simple(f.caption, `fig${n}-`)})
+    });
+  }
+  return out;
+};
+const figures = issues
+  .filter((issue) => !issue.publication.forthcoming)
+  .map((issue) => ({
+    _id: `issue-${issue.slug}`,
+    issue: issue.slug,
+    pieces: [
+      {slug: 'editorial', figures: figuresOf(issue.editorial?.body)},
+      ...issue.contributions.map((c) => ({slug: c.slug, figures: figuresOf(c.body)}))
+    ].filter((p) => p.figures.length)
+  }));
+writeFileSync(new URL('figures.json', import.meta.url), JSON.stringify(figures, null, 1) + '\n');
+console.log(`figures.json: ${figures.flatMap((i) => i.pieces.flatMap((p) => p.figures)).length} figures`);

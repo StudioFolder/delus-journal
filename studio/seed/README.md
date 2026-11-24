@@ -70,3 +70,23 @@ it instead of the `--replace` import from now on.
 - A contribution not in the CMS yet is added at the end of its issue (its
   people must be in the CMS already: `people.ndjson`); an issue not in the
   CMS yet is created whole.
+
+## The figures and their images (once the texts are in the CMS)
+
+`update-figures.mjs` uploads the images and places each figure in the text
+of its contribution, after the paragraph it follows on the site, with its
+letter and caption. It reads `figures.json` (written by `make-issues.mjs`)
+and the images folder (`00_Materials/images`: files named as its
+checklists say).
+
+    cd studio
+    node seed/make-issues.mjs
+    npx sanity exec seed/update-figures.mjs --with-user-token -- 01-chasing-water/the-draining-of-the-fens-enclosures-resistance-and-wilderness --dry-run
+    npx sanity exec seed/update-figures.mjs --with-user-token -- 01-chasing-water/the-draining-of-the-fens-enclosures-resistance-and-wilderness
+
+- One piece, one issue (`01-chasing-water`) or nothing (everything).
+- It can be run again as more files arrive: it adds what is missing and
+  leaves a figure already in the CMS as it is (`--force` replaces its image,
+  letter and caption).
+- The site shows an image once it has been built again after this (any
+  push; its build asks the CMS which figures have an image).

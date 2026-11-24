@@ -1,4 +1,5 @@
 import {articleHref, slugOf, type Credit} from './format.ts';
+import {pictures} from './figures.generated.ts';
 import * as bordoclima from './articles/bordoclima.ts';
 import * as breit from './articles/breit.ts';
 import * as dam from './articles/dam.ts';
@@ -356,6 +357,26 @@ export const issues: Issue[] = [
 ];
 
 // The issues, newest first: the order of every list of them
+// THE FIGURES' IMAGES — the one thing read from the CMS so far
+// (figures.generated.ts, written by scripts/figures.mjs before a build):
+// a figure that has its file there gets it, and takes the file's own
+// proportions (it is shown whole). A figure is matched by its place among
+// the figures of its text: fig0, fig1 … (its key in the CMS).
+const pictured = (piece: string, body?: Block[]) => {
+  const files = pictures[piece];
+  if (!files || !body) return body;
+  let n = 0;
+  return body.map((block) => {
+    if (typeof block !== 'object' || Array.isArray(block) || !('figure' in block)) return block;
+    const image = files[`fig${n++}`];
+    return image ? {figure: {...block.figure, image, ratio: Math.round((image.width / image.height) * 1000) / 1000}} : block;
+  });
+};
+for (const issue of issues) {
+  if (issue.editorial) issue.editorial.body = pictured(`${issue.slug}/editorial`, issue.editorial.body);
+  for (const c of issue.contributions) c.body = pictured(`${issue.slug}/${c.slug}`, c.body);
+}
+
 export const newestFirst = issues.toSorted((a, b) => b.number - a.number);
 
 // The contributors of Issues 0, 1 and 2 (the same entries as studio/seed/people.ndjson).

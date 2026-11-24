@@ -1,0 +1,2652 @@
+[
+ {
+  "_id": "issue-00-delus",
+  "issue": "00-delus",
+  "pieces": [
+   {
+    "slug": "salted-waters-cooking-land-and-resistance",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b1",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "The Councils of the Pluriversal",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s1",
+          "text": ". Artwork. Luiza Prado de O. Martins, 2019.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b25",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "The Councils of the Pluriversal",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s1",
+          "text": ". Artwork. Luiza Prado de O. Martins, 2019.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "rivers-sturgeons-and-dragons",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b2",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "A Russian sturgeon (",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s1",
+          "text": "Acipenser gueldenstaedtii",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s2",
+          "text": ") from the hatchery on the Danube Island. Photograph. Christina Gruber, 2020.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b2",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Kilometer Zero. Where the river meets the sea. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b2",
+      "file": "03",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Danube Delta. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b3",
+      "file": "04",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Sturgeon Anatomy. Drawing. Christina Gruber, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b5",
+      "file": "05",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Pre-historic view of the Austrian Danube region resembling a swamp landscape. Collage. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 5,
+      "after": "b5",
+      "file": "06",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig5-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig5-p0s0",
+          "text": "Muddy Reflections of the Danube. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 6,
+      "after": "b6",
+      "file": "07",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig6-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig6-p0s0",
+          "text": "Muddy Reflections of the Danube. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 7,
+      "after": "b7",
+      "file": "08",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig7-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig7-p0s0",
+          "text": "The bony scutes of ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig7-p0s1",
+          "text": "Acipenser gueldenstaedtii",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig7-p0s2",
+          "text": ", one of the five remaining Danube sturgeons. Photograph. Thomas Friedrich, 2018.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 8,
+      "after": "b8",
+      "file": "09",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig8-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig8-p0s0",
+          "text": "Combined map of the Danube, Danube sturgeons and Danube dragons. Thomas Friedrich and Christina Gruber, 2022 (sturgeons); Paula Cohen and Christina Gruber, 2017 (dragons); Studio Folder, 2023 (basemap).",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 9,
+      "after": "b10",
+      "file": "10",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig9-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig9-p0s0",
+          "text": "Fishermen of the Volga River, Russia, with their impressive catch of beluga sturgeons. Unknown source, 1924. Retrieved from: imgur.com/gallery/nuSzb.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 10,
+      "after": "b11",
+      "file": "11",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig10-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig10-p0s0",
+          "text": "Beluga (",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig10-p0s1",
+          "text": "Huso huso",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig10-p0s2",
+          "text": "). Photograph. Thomas Friedrich, 2018.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 11,
+      "after": "b11",
+      "file": "12",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig11-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig11-p0s0",
+          "text": "Beluga catch in the Wallachian lowlands using sturgeon fences. Etching by Jakob Alt. In: Alt and Ermini (1824), Institute of Hydrobiology and Water Management BOKU Vienna, 2014.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 12,
+      "after": "b12",
+      "file": "13",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig12-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig12-p0s0",
+          "text": "Sfanthu Georghe, painting of George killing a dragon in the Lipovan village, Slava Cercheza in the Danube Delta. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 13,
+      "after": "b12",
+      "file": "14",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig13-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig13-p0s0",
+          "text": "Das Buch von Kaiser Sigismund",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig13-p0s1",
+          "text": ", folio 89r, King Sigismund and a number of German princes in a large boat, fishing for sturgeon in the River Waag, as two large fish lurk underneath the boat’s keel. Eberhard Windeck, ca. 1440–50.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 14,
+      "after": "b12",
+      "file": "15",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig14-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig14-p0s0",
+          "text": "Sturgeon fresco, Italian church in the Po region. Photograph. Thomas Wolkinger, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 15,
+      "after": "b12",
+      "file": "16",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig15-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig15-p0s0",
+          "text": "Meso-/Neolithic stone sturgeon sculpture from Lepenski Vir at the Iron Gates, around 6 700–8 500 years old. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 16,
+      "after": "b12",
+      "file": "17",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig16-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig16-p0s0",
+          "text": "Eve and the Dragon",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig16-p0s1",
+          "text": ", Cathédrale Notre-Dame, Reims. Photograph. Vassil, 2007.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 17,
+      "after": "b13",
+      "file": "18",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig17-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig17-p0s0",
+          "text": "Hydropower Plant Aschach, Austria. Photograph. FOTO:FORTEPAN/ Drobni Nándor, 1964, (CC BY-SA 3.0).",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 18,
+      "after": "b14",
+      "file": "19",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig18-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig18-p0s0",
+          "text": "A view onto the submerged Ada Kaleh island. Photograph. Christina Gruber, 2017.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 19,
+      "after": "b15",
+      "file": "20",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig19-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig19-p0s0",
+          "text": "Plans for channelization of the Danube in Vienna by the Danube Regulation Commission between 1870 and 1875. In: Raimund Hinkel, ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig19-p0s1",
+          "text": "Wien XXI. Floridsdorf. Das Heimatbuch.",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig19-p0s2",
+          "text": " Vienna, 1994.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 20,
+      "after": "b16",
+      "file": "21",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig20-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig20-p0s0",
+          "text": "Monitoring, artificial reproduction, tagging, acoustic telemetry, release of juvenile sturgeons into the Danube. Photograph. LIFE Sterlet, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 21,
+      "after": "b16",
+      "file": "22",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig21-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig21-p0s0",
+          "text": "Monitoring, artificial reproduction, tagging, acoustic telemetry, release of juvenile sturgeons into the Danube. Photograph. LIFE Sterlet, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 22,
+      "after": "b17",
+      "file": "23",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig22-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig22-p0s0",
+          "text": "Sturgeon reproduction, larvae in their hatching jars, sturgeon conservation of a white sturgeon from a pond. Photograph. Christina Gruber, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 23,
+      "after": "b17",
+      "file": "24",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig23-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig23-p0s0",
+          "text": "Sturgeon reproduction, larvae in their hatching jars, sturgeon conservation of a white sturgeon from a pond. Photograph. Christina Gruber, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 24,
+      "after": "b17",
+      "file": "25",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig24-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig24-p0s0",
+          "text": "Sturgeon reproduction, larvae in their hatching jars, sturgeon conservation of a white sturgeon from a pond. Photograph. Christina Gruber, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 25,
+      "after": "b17",
+      "file": "26",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig25-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig25-p0s0",
+          "text": "Sturgeon reproduction, larvae in their hatching jars, sturgeon conservation of a white sturgeon from a pond. Photograph. Christina Gruber, 2021.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 26,
+      "after": "b19",
+      "file": "27",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig26-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig26-p0s0",
+          "text": "LIFE Sterlet hatchery container on the Danube Island in Vienna. Photograph. Christina Gruber, 2019.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 27,
+      "after": "b19",
+      "file": "28",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig27-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig27-p0s0",
+          "text": "Juvenile sterlet in the hands of the caretaker. Photograph. Christina Gruber, 2020.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "feminist-responses-to-the-prolonged-colonialities-of-exploited-landscapes",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b2",
+      "file": "B",
+      "label": "B",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "The landscape of Malmberget in 2022. Photograph. Karin Reisinger, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b9",
+      "file": "D",
+      "label": "D",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Participatory lecture in Gällivare Folkets Hus in 2019. Photograph. Ann Maudsley, 2019.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b9",
+      "file": "E",
+      "label": "E",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Karin Reisinger, installation in the ArkDes archives 2018, part of the symposium ‘Architectural History at ArkDes’ organized by Christina Pech and Mikael Andersson. December 18, 2018. Photograph. Karin Reisinger, 2018.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b13",
+      "file": "C",
+      "label": "C",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Dismantling architectures of Malmberget in 2022. Photograph. Karin Reisinger, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b18",
+      "file": "F",
+      "label": "F",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Lifelike Appendix to the Archive No. 1",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig4-p0s1",
+          "text": ", 2018–19, Karin Reisinger. Drawing. Architect Folke Hederus, 1957, commissioned by LKAB. Accessible at ArkDes Collections. Photograph. ArkDes/Björn Strömfeldt.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 5,
+      "after": "b18",
+      "file": "G",
+      "label": "G",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig5-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig5-p0s0",
+          "text": "Lifelike Appendix to the Archive No. 1",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig5-p0s1",
+          "text": ", 2018–19, Karin Reisinger. Drawing. Architect Folke Hederus, 1958, commissioned by LKAB. Accessible at ArkDes Collections. Photograph. ArkDes/Björn Strömfeldt.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 6,
+      "after": "b20",
+      "file": "H",
+      "label": "H",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig6-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig6-p0s0",
+          "text": "Ungkarlsbostäder",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig6-p0s1",
+          "text": " [flats for young men]. Drawing. Architect Folke Hederus, 1957. Accessible at ArkDes Collections. Photograph. ArkDes/Björn Strömfeldt.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 7,
+      "after": "b20",
+      "file": "A",
+      "label": "A",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig7-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig7-p0s0",
+          "text": "Area of Malmberget. Photograph. Lennart Nilsson, 1950 (approximate date). © Lennart Nilsson, LKAB, Gällivare Bildarkiv.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "melting-ecologies",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b11",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b11",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b11",
+      "file": "03",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig2-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b11",
+      "file": "04",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig3-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b11",
+      "file": "05",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig4-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 5,
+      "after": "b11",
+      "file": "06",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig5-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig5-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig5-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 6,
+      "after": "b11",
+      "file": "07",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig6-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig6-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig6-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 7,
+      "after": "b11",
+      "file": "08",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig7-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig7-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig7-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 8,
+      "after": "b11",
+      "file": "09",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig8-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig8-p0s0",
+          "text": "Melting Ecologies",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig8-p0s1",
+          "text": ". Artwork. Institute for Postnatural Studies/Matteo Guarnaccia, 2022.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "speculative-ecologies-the-future-of-urban-wastelands",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b1",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Berlin Ostkreuz wasteland. Former wasteland at Glasbläserallee, Berlin. Photograph. Sandra Jasper, 2015.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b7",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Berlin Pankow railway wasteland. The 34-hectare railway wasteland in Pankow harbours the last natterjack toads in Berlin. Photograph. Sandra Jasper, 2020.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b13",
+      "file": "03",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Berlin Südgelände Nature Park. Natur-Park Südgelände, Berlin. Biodiverse meadows in a former railway wasteland. Photograph. Sandra Jasper, 2015.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b18",
+      "file": "04",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Berlin Wilmersdorf interstitial space. Wild flower meadow on a boulevard, Berlin. Photograph. Sandra Jasper, 2020.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b24",
+      "file": "05",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Berlin Südgelände Nature Park. Natur-Park Südgelände, Berlin. Biodiverse meadows in a former railway wasteland. Photograph. Sandra Jasper, 2015.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "the-trap-of-time-prototyping-a-summer-school",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "01"
+     },
+     {
+      "n": 1,
+      "after": "b7",
+      "file": "02"
+     },
+     {
+      "n": 2,
+      "after": "b9",
+      "file": "03"
+     },
+     {
+      "n": 3,
+      "after": "b11",
+      "file": "04"
+     },
+     {
+      "n": 4,
+      "after": "b13",
+      "file": "05"
+     },
+     {
+      "n": 5,
+      "after": "b14",
+      "file": "06"
+     },
+     {
+      "n": 6,
+      "after": "b15",
+      "file": "07",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig6-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig6-p0s0",
+          "text": "Public Lecture by Yásnaya Elena Aguilar Gil during Materia Abierta’s 2019 programme.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 7,
+      "after": "b15",
+      "file": "08",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig7-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig7-p0s0",
+          "text": "Visit to El Cerro Gordo in Ecaptepec, Mexico City with members of MACE (Museo Arte Contemporáneo Ecatepec).",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 8,
+      "after": "b16",
+      "file": "09",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig8-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig8-p0s0",
+          "text": "Performance resulting from Vaginal Davis’s workshop during Materia Abierta’s 2019 programme.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 9,
+      "after": "b16",
+      "file": "10",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig9-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig9-p0s0",
+          "text": "Still from Maximiliano Mamani’s performance “El orden de las rosas,” commissioned as part of Materia Abierta’s 2021 programme.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 10,
+      "after": "b17",
+      "file": "11",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig10-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig10-p0s0",
+          "text": "Materia Abierta’s participants at Calpulli Tecalco in San Pedro Atocpan, Milpa Alta.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "issue-01-chasing-water",
+  "issue": "01-chasing-water",
+  "pieces": [
+   {
+    "slug": "editorial",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Earth, like a blue marble nestled in the palm of the universe. NASA, AS17-148-22727, 1972.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "navel-gazing",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "01"
+     },
+     {
+      "n": 1,
+      "after": "b0",
+      "file": "02"
+     },
+     {
+      "n": 2,
+      "after": "b0",
+      "file": "03"
+     },
+     {
+      "n": 3,
+      "after": "b0",
+      "file": "04"
+     },
+     {
+      "n": 4,
+      "after": "b0",
+      "file": "05"
+     }
+    ]
+   },
+   {
+    "slug": "the-draining-of-the-fens-enclosures-resistance-and-wilderness",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b4",
+      "file": "A",
+      "label": "A",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "“A true report of certaine wonderfull overflowing of Waters, now lately in Summerset-shire, Norfolke, and other places of England,” London, 1607. British Library.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b10",
+      "file": "B",
+      "label": "B",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Map of Cambridge and the Isle of Ely, Engraved by William Hole for ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s1",
+          "text": "Drayton’s Poly Olbion",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s2",
+          "text": ", 1622. British Library.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b17",
+      "file": "C",
+      "label": "C",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "“Aliens, or a Mixed Crew: A Study in the Fen Country,” Robert Walker Macbeth RA, (1848–1910).",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b20",
+      "file": "D",
+      "label": "D",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "“A Mapp of the Great Levell, Representing it as it lay Drowned,” ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig3-p0s1",
+          "text": "The History of Imbanking and Drayning of Divers Fenns and Marshes",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig3-p0s2",
+          "text": " (London, 1662). The William Andrew Clark Memorial Library.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b20",
+      "file": "E",
+      "label": "E",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "“The Map of the Great Levell Drayned,” ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig4-p0s1",
+          "text": "The History of Imbanking and Drayning of Divers Fenns and Marshes",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig4-p0s2",
+          "text": " (London, 1662). The William Andrew Clark Memorial Library.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "embroidered-waterscapes-unpacking-relationships-through-artisanal-map-making",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "A",
+      "label": "A",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Woven and embroidered Kashmiri map shawl. London, Victoria and Albert Museum, South & South East Asia Collections, Gift of Mrs Estelle Fuller through The Art Fund, IS.31-1970.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b3",
+      "file": "B",
+      "label": "B",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "John George Bartholomew, 1860–1920, “Srinagar and its Environs,” Plate 54, ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s1",
+          "text": "Constable’s Hand Atlas of India",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s2",
+          "text": ". David Rumsey Historical Map Collection, David Rumsey Map Center, Stanford Libraries.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b18",
+      "file": "C",
+      "label": "C",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Embroidered tapestry engaging the various elements of land and waterscapes by Akshar Gajjar. Image by authors.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "liquid-shadows",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Collage. Sabotage Practice / Valentina Noce, 2024.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b0",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Collage. Sabotage Practice / Valentina Noce, 2024.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b0",
+      "file": "03",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Collage. Sabotage Practice / Valentina Noce, 2024.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b0",
+      "file": "04",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Collage. Sabotage Practice / Valentina Noce, 2024.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b0",
+      "file": "05",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Collage. Sabotage Practice / Valentina Noce, 2024.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "not-a-drop-is-lost",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b3",
+      "file": "B",
+      "label": "B",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Terraced landscape of Banyalbufar stretching from the mountains to the sea. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b22",
+      "file": "H",
+      "label": "H",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "A water reservoir built next to an existing dry stone wall. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b22",
+      "file": "C",
+      "label": "C",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Map showing the flow of water from the source to the sea through a network of channels and reservoirs. Maria Antònia Carbonero Gamundí, ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig2-p0s1",
+          "text": "L’espai de l’Aigua",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig2-p0s2",
+          "text": ", (Palma de Mallorca: Consell Insular de Mallorca, 1992), 238–39.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b26",
+      "file": "A",
+      "label": "A",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "A water reservoir surrounded by gardens and agricultural fields. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b29",
+      "file": "G",
+      "label": "G",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Water flowing into a reservoir. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 5,
+      "after": "b29",
+      "file": "E",
+      "label": "E",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig5-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig5-p0s0",
+          "text": "Ceramic watergate. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 6,
+      "after": "b29",
+      "file": "F",
+      "label": "F",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig6-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig6-p0s0",
+          "text": "Retrofitting of the irrigation channels with plastic tubes. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 7,
+      "after": "b43",
+      "file": "D",
+      "label": "D",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig7-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig7-p0s0",
+          "text": "Drying tomatoes in the attic of a tomato gardener. Photo: Chair of Being Alive, 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "on-thirst-anecdotes-on-chasing-the-waters",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b13",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Tabas deserts, Iran, view towards a ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s1",
+          "text": "qanāt",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s2",
+          "text": " with palms planted in the furnaces of the vertical shafts, photograph by authors.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b19",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Grafting a melon seed in a camelthorn’s taproot.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b19",
+      "file": "03",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Grafting melon in camelthorns, Zali village, Esfarāyen, Iran. Photograph by Ahmad Nikgoftar.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b27",
+      "file": "04",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Chale-sonbak, Band-e-Rig, Kāshān, Iran. Photographs courtesy of @Injairanas.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "men-talk-but-the-women-fetch-the-water",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b9",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "“A water-carrier” as photographed by John Thomson, ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s1",
+          "text": "c.",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig0-p0s2",
+          "text": " 1878, courtesy of the University of St Andrews Libraries and Museums.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b22",
+      "file": "D",
+      "label": "D",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Photograph of a fountain inscribed “ER 1956,” designating the year of construction and Queen Elizabeth as the benefactor of this Turkish Cypriot village in the Mesaoria plains. Source: PIO photographic archive, under the folder “Water Supply and Irrigation 1950s,” reference no. 28A-0055-0002, captioned “Mora village water supply.”",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b26",
+      "file": "A",
+      "label": "A",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "“Kaimakli women at the fountain, for water and gossip,” postcard, Kaimakli, Nicosia 1930. Photographer: Haigaz Mangoian, Source: ©The Leventis Municipal Museum of Nicosia, LMMN: /1988/131,4.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b28",
+      "file": "B",
+      "label": "B",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Pyrgos Tyllirias Water Development Works, completed in 1960, designed and constructed by the WDD, Source: PIO “Water Supply and Irrigation 1950s” folder, reference no. 28A-0109-0007",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "bordoclima-new-calligraphies-of-fluid-borders",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Land that sleeps underwater. The liquid layer of the globe, subject to flooding and bathymetry, serves as the locus of the helix and a territorial palimpsest of human traces that decompose while breaking down into liquid.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b4",
+      "file": "02",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "The master plan of the Balkans. A mapping of ecological and social fragilities and holograms of conflict, interacting with the fluid dimension of the border. The boundary rejects linear and static logic and includes elements outside the visible geopolitical realm, such as water and air boundaries. In so doing, it introduces the concept of a fluid border on the map; related geopolitical phenomena can be traced back to graphic semiology.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b4",
+      "file": "03",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Cards from the atmosphere. Air borders are virtual limits in space, yet they fall under state jurisdiction and are regulated by international agreements and treaties similar to those used to govern territories. Alternative cartographies of the air can enable the modelling of its dynamics, creating future scenarios and producing alternative projects suspended in the biosphere.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b4",
+      "file": "04",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Albania–Montenegro fluid border",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b4",
+      "file": "05",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "Croatia–Bosnia Herzegovina fluid border",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 5,
+      "after": "b4",
+      "file": "06",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig5-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig5-p0s0",
+          "text": "Velika Kladusa – Glina River. The river acts as a moving ecological corridor used by migrants to travel along the border. This town, located in Bosnia, is marked by a severe migration crisis that has long affected the Balkan Route.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 6,
+      "after": "b4",
+      "file": "07",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig6-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig6-p0s0",
+          "text": "Slavonski Brod – Sava River. This fragmented spot in Croatia is characterized by a hybrid fluid regime, composed of both natural liquid overflows and gas emissions from the air pollution of the old oil refinery in the Bosnian town of Bosanski Brod.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 7,
+      "after": "b4",
+      "file": "08",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig7-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig7-p0s0",
+          "text": "A new topography of the border. This fragmented spot in Croatia exhibits a hybrid fluid regime, marked by overflows in both liquid and gas forms, caused by water flooding and the pervasive air pollution stemming from the old oil refinery in the Bosnian town of Bosanski Brod, which expands as a gradient over the border.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "desalination-and-a-new-environmental-public",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b8",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "Stranded auxiliary platform for positioning the desalination plant’s intake and discharge pipelines belonging to Minera Los Pelambres, Los Vilos, Chile. Photo: Linda Schilling Cuellar, August 2023.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "slug": "dam-circumsonic",
+    "figures": [
+     {
+      "n": 0,
+      "after": "b0",
+      "file": "A",
+      "label": "A",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig0-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig0-p0s0",
+          "text": "The gates and dam wall of Warragamba Dam, 2023. Photo: Oskar Johanson.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "after": "b23",
+      "file": "C",
+      "label": "C",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig1-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig1-p0s0",
+          "text": "Burragorang Valley clear-felled, ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s1",
+          "text": "c.",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig1-p0s2",
+          "text": " 1945–55. The area that has been cleared represents the predicted water level of the reservoir. Image: Sydney Water/WaterNSW archives.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "after": "b23",
+      "file": "D",
+      "label": "D",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig2-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig2-p0s0",
+          "text": "Graves marked to be re-interred, Burragorang Valley, ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig2-p0s1",
+          "text": "c.",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig2-p0s2",
+          "text": " 1945–55. The edge of the trees above represents the future water level. Image: Sydney Water/WaterNSW archives.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 3,
+      "after": "b25",
+      "file": "B",
+      "label": "B",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig3-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig3-p0s0",
+          "text": "Warragamba Dam under construction, showing the concrete modules or ‘blocks,’ ",
+          "marks": []
+         },
+         {
+          "_type": "span",
+          "_key": "fig3-p0s1",
+          "text": "c.",
+          "marks": [
+           "em"
+          ]
+         },
+         {
+          "_type": "span",
+          "_key": "fig3-p0s2",
+          "text": " 1950–60. Image: Sydney Water/WaterNSW archives.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 4,
+      "after": "b32",
+      "file": "F",
+      "label": "F",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig4-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig4-p0s0",
+          "text": "A memorial cube of large-aggregate concrete, representative of the material out of which Warragamba Dam is constructed. Photo: Oskar Johanson.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 5,
+      "after": "b33",
+      "file": "01",
+      "caption": [
+       {
+        "_type": "block",
+        "_key": "fig5-p0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+         {
+          "_type": "span",
+          "_key": "fig5-p0s0",
+          "text": "The southern wall of the dam spillway. After a major storm event, part of the sandstone wall collapsed and was refaced and reinforced by these terraces of concrete. Photo: Oskar Johanson.",
+          "marks": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+]

@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "figures": "node scripts/figures.mjs",
+    "predev": "node scripts/figures.mjs",
     "dev": "vite dev",
+    "prebuild": "node scripts/figures.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
