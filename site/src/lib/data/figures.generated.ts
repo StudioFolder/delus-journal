@@ -36,6 +36,11 @@ export const pictures: Record<string, Record<string, Img>> = {
       "url": "https://cdn.sanity.io/images/485esptu/production/8e4ca15f7ee95d3eafaaa1a2ed54c32d9b31c241-3816x2130.jpg",
       "width": 3816,
       "height": 2130
+    },
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c317a0719383476ec5c5a1ceaa3e94daaae120bf-2575x3460.jpg",
+      "width": 2575,
+      "height": 3460
     }
   },
   "01-chasing-water/the-draining-of-the-fens-enclosures-resistance-and-wilderness": {
@@ -83,6 +88,206 @@ export const pictures: Record<string, Record<string, Img>> = {
       "width": 7728,
       "height": 4499,
       "alpha": true
+    }
+  },
+  "01-chasing-water/liquid-shadows": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/20adf3909e66b3295b026206eb07301c861dfb7d-1725x2835.jpg",
+      "width": 1725,
+      "height": 2835
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/22c871b181b3672b53e117fa8a0677d2dd62e885-1725x2835.jpg",
+      "width": 1725,
+      "height": 2835
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/926d2d020fbf3f0b92a7511b9234a844da0aa248-1725x2835.jpg",
+      "width": 1725,
+      "height": 2835
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/61b3e339feee3d01627c43f5041d5f037a2c77c7-1725x2835.jpg",
+      "width": 1725,
+      "height": 2835
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/537ff0e93bc76eca325379d4071a89d68e3d2f47-1725x2835.jpg",
+      "width": 1725,
+      "height": 2835
+    }
+  },
+  "01-chasing-water/not-a-drop-is-lost": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/90e8bf3516ff0b170315e455b1c9b48a1a8cc6e6-7087x4698.jpg",
+      "width": 7087,
+      "height": 4698
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/7288778ffb10e42d237e3521cd20662261ea1c64-2075x3130.jpg",
+      "width": 2075,
+      "height": 3130
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/05d817bad363efb936118c6b77afcddba27ac4da-8000x5516.jpg",
+      "width": 8000,
+      "height": 5516
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/2619df53aebd1ea1a012aef7c30fbc7102968f07-2075x3130.jpg",
+      "width": 2075,
+      "height": 3130
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/fe3edc1b14eadc8b4ffc6b55b4b3aa233cc3430e-2075x3130.jpg",
+      "width": 2075,
+      "height": 3130
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/5b97b858908779768bb3b090c25666f2b5c74937-3024x4032.jpg",
+      "width": 3024,
+      "height": 4032
+    },
+    "fig6": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/60d81663c09bf13e38862beab8f89b6bf9421bba-2075x3130.jpg",
+      "width": 2075,
+      "height": 3130
+    },
+    "fig7": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/78b1304c7a60c41405df94e046bd7889e81c492a-4000x6000.jpg",
+      "width": 4000,
+      "height": 6000
+    },
+    "cover": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/2619df53aebd1ea1a012aef7c30fbc7102968f07-2075x3130.jpg",
+      "width": 2075,
+      "height": 3130
+    }
+  },
+  "01-chasing-water/on-thirst-anecdotes-on-chasing-the-waters": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/6538537546cb55e441fece875e221fa7b6940ac6-1536x2048.jpg",
+      "width": 1536,
+      "height": 2048
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/a46b36fa0ee7251287d6e1a5f5aaacfe95690339-407x220.svg",
+      "width": 407,
+      "height": 220,
+      "alpha": true
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/b7f03b606cddf6b5f65d23ccff4d0cb72465a70c-4288x2848.jpg",
+      "width": 4288,
+      "height": 2848
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/40599994e45b5dd8c9d162cb6e2cee2c6917a41e-3507x4960.jpg",
+      "width": 3507,
+      "height": 4960
+    }
+  },
+  "01-chasing-water/men-talk-but-the-women-fetch-the-water": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/bfab860b6bbdc368dc32b9e1c38d2bc3c874a8c3-7087x7057.jpg",
+      "width": 7087,
+      "height": 7057
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/e581a6344e962609562133b60cd01b03d350f494-7087x7034.jpg",
+      "width": 7087,
+      "height": 7034
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/aadecdb32e79d06dca0f97d26b9678a20f3d78ce-1638x1085.jpg",
+      "width": 1638,
+      "height": 1085
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/677f63f009ee9c5fbe6867c783e9050d557a97a0-1338x1699.jpg",
+      "width": 1338,
+      "height": 1699
+    }
+  },
+  "01-chasing-water/bordoclima-new-calligraphies-of-fluid-borders": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c82c4fd220f802134225908751d97d848eceec2c-2133x2134.jpg",
+      "width": 2133,
+      "height": 2134
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/2c59353126e22e4993a8df9a7e0c47f3b0df9b7a-3390x2363.jpg",
+      "width": 3390,
+      "height": 2363
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/2f2e6bb4190f60c9245200be4b4d8bc40bb9f8e6-4960x7016.jpg",
+      "width": 4960,
+      "height": 7016
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/85e94287409d576c37362a31769f7317d20c48b9-2480x3508.jpg",
+      "width": 2480,
+      "height": 3508
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/7d30ce08d5075d1ae35b0ddc9e06668296aa3628-2480x3508.jpg",
+      "width": 2480,
+      "height": 3508
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/b97bbb8c87eb8ed1d93818d80d9479d5045a1a17-3390x2363.jpg",
+      "width": 3390,
+      "height": 2363
+    },
+    "fig6": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/f050b5b469f0eccd3199c1626b7d7bcb4849982c-3390x2363.jpg",
+      "width": 3390,
+      "height": 2363
+    },
+    "fig7": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/bebf18cf7c13adc1f1d3b7a0d21a527e832d184a-3390x2363.jpg",
+      "width": 3390,
+      "height": 2363
+    }
+  },
+  "01-chasing-water/desalination-and-a-new-environmental-public": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/600da0d5c49a7ffff747c984b1f40e9c9a5affbe-8000x4500.jpg",
+      "width": 8000,
+      "height": 4500
+    }
+  },
+  "01-chasing-water/dam-circumsonic": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/9ba901af0bc115b6ccccaed67a6bc9902f9d0afd-2000x3008.jpg",
+      "width": 2000,
+      "height": 3008
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/fcc747746d4afd70b1e28325c02871c8f18582fe-2638x2092.jpg",
+      "width": 2638,
+      "height": 2092
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/5ca9eff79dd76d934dfedb3a008b93d9824db371-8000x6348.jpg",
+      "width": 8000,
+      "height": 6348
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/3760a0dd6abfa72432a9ee63afe309152805250e-2171x1524.jpg",
+      "width": 2171,
+      "height": 1524
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/d30cdb01a54e769c188b9091fb3e26e3a6d7a902-2000x3008.jpg",
+      "width": 2000,
+      "height": 3008
+    },
+    "fig5": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/55c5f350265598c76458ef25cbddce385b60a522-3008x2000.jpg",
+      "width": 3008,
+      "height": 2000
     }
   }
 };
