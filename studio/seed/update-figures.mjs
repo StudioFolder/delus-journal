@@ -58,7 +58,7 @@ const figures = JSON.parse(readFileSync(new URL('figures.json', import.meta.url)
 const client = getCliClient({apiVersion: '2025-01-01'});
 
 // The file of a figure: <folder of the piece>/<prefix>_<letter or number>.<jpg…>
-const KINDS = /\.(jpe?g|png|tiff?|webp)$/i;
+const KINDS = /\.(jpe?g|png|tiff?|webp|svg)$/i; // (an SVG: a drawing exported from the print PDF)
 function fileOf(issue, slug, end) {
   const piece = manifest.issues.find((x) => x.slug === issue)?.pieces.find((x) => x.slug === slug);
   if (!piece) return {};

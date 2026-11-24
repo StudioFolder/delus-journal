@@ -28,6 +28,13 @@
     pointer it only dims. In the wireframe the box is drawn as ever (the
     picture isn't there). The smaller copy (`first`) goes once the full
     one is in: two copies would show through each other at the edges.
+  - A DRAWING (an SVG exported from the print PDF: black lines on nothing)
+    lies on a sheet of the light tone's ground, in both tones (Marco,
+    24 Nov: in the dark tone, a white ground under the whole image) — in
+    the light tone the sheet is the page itself; in the dark one it keeps
+    the lines readable. The sheet carries `data-tone="light"`, so its
+    colour is the light tone's --bg (no colour of its own). It fades in
+    and dims with the drawing.
 -->
 <script lang="ts">
   import {wire} from './wireframe.svelte.ts';
@@ -43,7 +50,9 @@
 
   // The widths asked of the image server: steps up to the file's own
   const STEPS = [240, 320, 480, 640, 800, 1024, 1280, 1600, 2000, 2560, 3200, 4000];
-  const served = (url: string) => url.includes('cdn.sanity.io');
+  // (an SVG — a drawing exported from the print PDF — is sharp at any size:
+  // it is loaded as it is, never through the image server's widths)
+  const served = (url: string) => url.includes('cdn.sanity.io') && !url.endsWith('.svg');
   const at = (url: string, w: number) => `${url}?w=${w}&fit=max&auto=format&q=85`;
   const set = $derived.by(() => {
     if (!image || !served(image.url)) return undefined;
@@ -51,6 +60,7 @@
     if (image.width <= STEPS[STEPS.length - 1]) widths.push(image.width);
     return widths.map((w) => `${at(image.url, w)} ${w}w`).join(', ');
   });
+  const vector = $derived(image?.url.endsWith('.svg') ?? false);
   const src = $derived(image && (served(image.url) ? at(image.url, Math.min(image.width, 1280)) : image.url));
 
   let loaded = $state(false);
@@ -63,6 +73,9 @@
 {#if image && !wire.on}
   {#if first && !(image.alpha && loaded)}
     <img class="picture" class:cutout={image.alpha} {src} srcset={set} sizes={first} alt="" aria-hidden="true" />
+  {/if}
+  {#if vector}
+    <span class="picture full sheet" class:loaded data-tone="light" aria-hidden="true"></span>
   {/if}
   <img
     class="picture full"
@@ -96,6 +109,9 @@
   /* (the box's own rules draw its tint: this one, global, wins over them) */
   :global(:has(> img.cutout)) {
     background: none !important;
+  }
+  .sheet {
+    background: var(--bg);
   }
   .full {
     opacity: 0;
