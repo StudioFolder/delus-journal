@@ -1,10 +1,15 @@
 import {articleHref, slugOf, type Credit} from './format.ts';
-import * as redoute from './articles/redoute.ts';
 import * as breit from './articles/breit.ts';
 import * as editorial00 from './articles/editorial00.ts';
 import * as editorial01 from './articles/editorial01.ts';
+import * as feminist from './articles/feminist.ts';
+import * as melting from './articles/melting.ts';
 import * as navel from './articles/navel.ts';
+import * as redoute from './articles/redoute.ts';
+import * as rivers from './articles/rivers.ts';
 import * as salted from './articles/salted.ts';
+import * as speculative from './articles/speculative.ts';
+import * as trap from './articles/trap.ts';
 
 // The issues. `date` is how the issue is dated in print (season and year).
 // The abstracts are placeholders (the issue's title in italics, then
@@ -63,7 +68,7 @@ export type Contribution = {
   pdf?: string; // the address of the article's PDF (Sanity: a file; none yet)
   pdfSize?: number; // its size in bytes (Sanity: the file's size)
   doi?: string; // as registered by the publisher, without https://doi.org/ (shown under Cite)
-  abstract?: string;
+  abstract?: string | Inline[]; // plain, or pieces when it has italics
   body?: Block[];
   notes?: Inline[][];
 };
@@ -127,40 +132,36 @@ const contents0: Entry[] = [
     people: ['christina-gruber'],
     page: 16,
     doi: '10.61608/9783775756372-002',
-    abstract:
-      'Christina Gruber follows sturgeons in the Danube to investigate the evolution of dragon myths along the stream, asking whether the majestic fish can help re-calibrate the relationship between bodies of water and human bodies.'
+    ...rivers // the whole text, from the printed issue
   },
   {
     title: 'Feminist Responses to the Prolonged Colonialities of Exploited Landscapes',
     people: ['karin-reisinger'],
     page: 34,
     doi: '10.61608/9783775756372-003',
-    abstract:
-      'In conversation with Karin Reisinger, we reflect on historical research methods combined with participatory formats. She brings out marginalized voices and material relations and examines the prolonged coloniality of exploited mining landscapes in the peripheries of northern Sweden.'
+    ...feminist // the whole text, from the printed issue
   },
   {
     title: 'Melting Ecologies',
     people: ['institute-for-postnatural-studies'],
     page: 46,
     doi: '10.61608/9783775756372-004',
-    abstract:
-      'The Institute for Postnatural Studies employs storytelling and artistic research methods to challenge the aesthetic qualities of a melting world – taking as a starting point the concept of postnature as a framework for creation.'
+    kind: 'photoEssay',
+    ...melting // the whole piece, from the printed issue
   },
   {
     title: 'Speculative Ecologies: The Future of Urban Wastelands',
     people: ['sandra-jasper'],
     page: 56,
     doi: '10.61608/9783775756372-005',
-    abstract:
-      'In conversation with Sandra Jasper, we delve into acoustic and cinematographic research methods to gain new perspectives on urban ecologies and to unpack more-than-human histories of so-called wastelands in Berlin.'
+    ...speculative // the whole text, from the printed issue
   },
   {
     title: 'The Trap of Time: Prototyping a Summer School',
     people: ['federico-perez-villoro'],
     page: 66,
     doi: '10.61608/9783775756372-006',
-    abstract:
-      'Federico Pérez Villoro tests alternate curricula with Materia Abierta, a summer school in Mexico City, reiterating learning models and offering a space to reflect on the ethics of the present and the future.'
+    ...trap // the whole text, from the printed issue
   }
 ];
 const contents1: Entry[] = [

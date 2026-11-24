@@ -58,8 +58,8 @@ const lines = (...parts: (string | undefined)[]) =>
     .join('\n')
     .normalize('NFC');
 
-const textOf = (x: {abstract?: string; body?: Block[]; notes?: Inline[][]}) =>
-  lines(x.abstract, ...(x.body ?? []).map(block), ...(x.notes ?? []).map(plain));
+const textOf = (x: {abstract?: string | Inline[]; body?: Block[]; notes?: Inline[][]}) =>
+  lines(x.abstract && inline(x.abstract), ...(x.body ?? []).map(block), ...(x.notes ?? []).map(plain));
 
 export function entries(): Entry[] {
   const list: Entry[] = [];

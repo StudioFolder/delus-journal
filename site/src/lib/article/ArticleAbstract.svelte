@@ -5,9 +5,11 @@
   differently later.
 -->
 <script lang="ts">
-  import Acronyms from '#lib/type/Acronyms.svelte';
+  import Inlines from './Inlines.svelte';
+  import type {Inline} from '#lib/data/fixtures.ts';
 
-  let {text}: {text: string} = $props();
+  // plain, or pieces when it has italics
+  let {text}: {text: string | Inline[]} = $props();
 </script>
 
-<p class="abstract display"><Acronyms {text} /></p>
+<p class="abstract display"><Inlines parts={text} /></p>
