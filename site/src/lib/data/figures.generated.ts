@@ -4,6 +4,33 @@
 import type {Img} from './fixtures.ts';
 
 export const pictures: Record<string, Record<string, Img>> = {
+  "01-chasing-water/navel-gazing": {
+    "fig0": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/72a5ae014a1e19f9571a1a2b4d20dacb02d97887-3810x2132.jpg",
+      "width": 3810,
+      "height": 2132
+    },
+    "fig1": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c8bb8f9d5167e452934d47b9e7d1a9ef6e2ea920-5241x6920.jpg",
+      "width": 5241,
+      "height": 6920
+    },
+    "fig2": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/c317a0719383476ec5c5a1ceaa3e94daaae120bf-2575x3460.jpg",
+      "width": 2575,
+      "height": 3460
+    },
+    "fig3": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/e6579c27109d6a069771d246b6d5cfb548d378e3-1305x1726.jpg",
+      "width": 1305,
+      "height": 1726
+    },
+    "fig4": {
+      "url": "https://cdn.sanity.io/images/485esptu/production/8e4ca15f7ee95d3eafaaa1a2ed54c32d9b31c241-3816x2130.jpg",
+      "width": 3816,
+      "height": 2130
+    }
+  },
   "01-chasing-water/the-draining-of-the-fens-enclosures-resistance-and-wilderness": {
     "fig0": {
       "url": "https://cdn.sanity.io/images/485esptu/production/ebdee8585108032614042e8e716cdf60dc6467dc-3024x4032.jpg",
