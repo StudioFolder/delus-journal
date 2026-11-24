@@ -4,6 +4,10 @@
   - A paragraph: in the reading type (--type-reading, 24/32 Louize), with
     italics and acronyms in small capitals; a line break typed in it (a
     new line without space, as in the printed issue) is kept.
+    In a conversation (`conversation`: an interview), the speaker's name that opens a paragraph — in
+    capitals, followed by an em space: JOHANNA JUST, then JJ — is in
+    Styrene B, as the letter that opens a figure's caption: capitals in
+    --type-ui (Marco, 24 Nov); the em space stays in Louize.
   - A quote (Sanity: the Quote style): in Styrene B, optically the same
     size, on the same line (--type-quote), indented three columns, as in
     the Figma layout; line breaks typed in it (verse) are kept.
@@ -69,10 +73,20 @@
     blocks: Block[];
     notes?: Inline[][];
     photos?: boolean; // a photo essay: the figures large, in the column
+    conversation?: boolean; // an interview: the speakers' names in Styrene
     onview?: (numbers: number[]) => void; // the note numbers on the screen, in order
     onfigure?: (figure: Figure, miniature: HTMLElement) => void; // a figure was clicked: to see it larger
   };
-  let {blocks, notes = [], photos = false, onview, onfigure}: Props = $props();
+  let {blocks, notes = [], photos = false, conversation = false, onview, onfigure}: Props = $props();
+
+  // An interview's speaker opening a paragraph: capitals, then an em space
+  const speakerAt = /^(\p{Lu}[\p{Lu}\p{M} .'’-]*)(?=\u2003)/u;
+  function speaker(block: string | Inline[]): [string, Inline[]] | null {
+    const list = typeof block === 'string' ? [block] : block;
+    const first = list[0];
+    const name = typeof first === 'string' ? first.match(speakerAt)?.[1] : undefined;
+    return name ? [name, [(first as string).slice(name.length), ...list.slice(1)]] : null;
+  }
 
   // Which note numbers are on the screen: told to the page at every change
   let body: HTMLElement;
@@ -310,7 +324,12 @@
 <div class="body" bind:this={body} onmouseover={point} onmouseout={leave} onfocusin={point} onfocusout={leave} onclick={tap}>
   {#each blocks as block, i (i)}
     {#if typeof block === 'string' || Array.isArray(block)}
-      <p data-block={i}><Inlines parts={block} /></p>
+      {@const said = conversation ? speaker(block) : null}
+      {#if said}
+        <p data-block={i}><span class="speaker">{said[0]}</span><Inlines parts={said[1]} /></p>
+      {:else}
+        <p data-block={i}><Inlines parts={block} /></p>
+      {/if}
     {:else if 'quote' in block}
       <blockquote data-block={i}><Inlines parts={block.quote} sc={false} /></blockquote>
     {:else if 'figure' in block}
@@ -353,6 +372,11 @@
   }
   p {
     white-space: pre-line;
+  }
+  .speaker {
+    font: var(--type-ui);
+    line-height: inherit; /* the text's line */
+    letter-spacing: normal;
   }
   blockquote {
     margin: 0;

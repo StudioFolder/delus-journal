@@ -26,7 +26,8 @@
   (fixtures.ts for now; later chosen by the editors). Scrolling moves to
   the next or the previous one: text and image fade out, then the new
   ones fade in; the statement stays. One scroll gesture = one step; also
-  the up/down arrow keys, Page Up/Down, and a swipe on touch screens.
+  the arrow keys (up/down and left/right, 24 Nov), Page Up/Down, and a
+  swipe on touch screens.
   They also move on by themselves (Marco, 15 Nov): each stays
   --highlight-time, shown by the dots on the footer's line
   (lib/home/Dots.svelte: one per highlight, the current one longer, with
@@ -155,9 +156,13 @@
   // One scroll gesture = one step (motion/wheel.ts)
   const stepper = steps(go);
   const onwheel = stepper.wheel;
+  // Not while typing (the search field), nor with a modifier (Alt+← is
+  // the browser's back)
   function onkeydown(e: KeyboardEvent) {
-    if (e.key === 'ArrowDown' || e.key === 'PageDown') go(1);
-    if (e.key === 'ArrowUp' || e.key === 'PageUp') go(-1);
+    if (e.altKey || e.metaKey || e.ctrlKey) return;
+    if ((e.target as Element).closest?.('input, textarea, [contenteditable]')) return;
+    if (['ArrowDown', 'ArrowRight', 'PageDown'].includes(e.key)) go(1);
+    if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) go(-1);
   }
   let touchY = 0;
   const ontouchstart = (e: TouchEvent) => (touchY = e.touches[0].clientY);

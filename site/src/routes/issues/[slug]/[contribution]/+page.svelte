@@ -230,6 +230,7 @@
           blocks={data.contribution.body}
           notes={data.contribution.notes}
           photos={data.contribution.kind === 'photoEssay'}
+          conversation={data.contribution.kind === 'conversation'}
           onview={(numbers) => (onView = numbers)}
           onfigure={(figure, miniature) => ((swapped = true), lightbox.show(figure, miniature))}
         />

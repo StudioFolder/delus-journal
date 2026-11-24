@@ -47,11 +47,13 @@ export const contribution = defineType({
       name: 'kind',
       title: 'Type',
       type: 'string',
-      description: 'A photo essay — images first — is shown with all its images together in a grid after the text, instead of small beside the text.',
+      description:
+        'A photo essay — images first — is shown with all its images together in a grid after the text, instead of small beside the text. A conversation (an interview) has its speakers’ names in the sans serif: write each name in capitals at the start of the paragraph, followed by an em space — in full the first time (JOHANNA JUST), then as initials (JJ).',
       options: {
         list: [
           {title: 'Essay', value: 'essay'},
           {title: 'Photo essay', value: 'photoEssay'},
+          {title: 'Conversation', value: 'conversation'},
         ],
         layout: 'radio',
       },

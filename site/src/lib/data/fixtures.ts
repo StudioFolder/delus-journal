@@ -70,13 +70,14 @@ export type Block =
 // (`body`; Sanity: the contribution's `text` — two essays of Issue 01 have it, the others
 // show title and abstract only) and its notes (`notes[0]` = note 1).
 // `kind`: a photo essay — images first — has a layout of its own (the
-// images large, in the column; see the article's page). Anything else
-// is an essay (Sanity: the contribution's Type).
+// images large, in the column; see the article's page); a conversation
+// (an interview) has its speakers' names in Styrene (ArticleBody).
+// Anything else is an essay (Sanity: the contribution's Type).
 export type Contribution = {
   title: string;
   slug: string;
   people: string[];
-  kind?: 'photoEssay';
+  kind?: 'photoEssay' | 'conversation';
   // The image that stands for the piece in its issue's contents (the
   // issue page's gallery and grid; CMS: Cover image — read from it, as the
   // figures' images, below). Without it, its first figure with an image
@@ -158,6 +159,7 @@ const contents0: Entry[] = [
     people: ['karin-reisinger'],
     page: 34,
     doi: '10.61608/9783775756372-003',
+    kind: 'conversation',
     ...feminist // the whole text, from the printed issue
   },
   {
@@ -173,6 +175,7 @@ const contents0: Entry[] = [
     people: ['sandra-jasper'],
     page: 56,
     doi: '10.61608/9783775756372-005',
+    kind: 'conversation',
     ...speculative // the whole text, from the printed issue
   },
   {
