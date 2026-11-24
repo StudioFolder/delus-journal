@@ -33,7 +33,9 @@
     editors' note): while the pointer is on it (or the keyboard), the
     image of that article — the one of the issue's contents — shows as a
     miniature in the same margin, as a figure: one column after the
-    text, 4 columns wide, its top level with the link's line. It comes
+    text, 4 columns wide, its top level with the link's line, in the
+    image's own format (its Cover image in the CMS, else its first figure
+    with a file: data/images.ts; an empty box while it has none). It comes
     and goes softly, as every hover effect; it is not a link itself.
     Where it would lie on a figure of the text, it wins: that figure
     fades out for as long as the miniature is there.
@@ -59,8 +61,9 @@
   import ArticleFigure from './ArticleFigure.svelte';
   import {time} from '#lib/motion/time.ts';
   import ArticleNote from './ArticleNote.svelte';
-  import type {Block, Figure, Inline} from '#lib/data/fixtures.ts';
+  import type {Block, Figure, Img, Inline} from '#lib/data/fixtures.ts';
   import {imageAt} from '#lib/data/images.ts';
+  import Picture from '#lib/image/Picture.svelte';
 
   type Props = {
     blocks: Block[];
@@ -165,7 +168,7 @@
   // A LINK TO AN ARTICLE — the miniature of its image, in the margin,
   // while the link is pointed at (see above). `preview` stays while it
   // fades out.
-  let preview = $state<{ratio: number; top: number}>();
+  let preview = $state<{ratio: number; top: number; image?: Img}>();
   let previewed = $state(false);
   let miniature = $state<HTMLElement>();
   let covered = $state<number[]>([]); // the blocks whose figure it lies on
@@ -181,7 +184,7 @@
     const from = block.getBoundingClientRect().top;
     const top =
       from - body.getBoundingClientRect().top + Math.floor((r.top + r.height / 2 - from) / line) * line + unit;
-    preview = {ratio: image.ratio, top};
+    preview = {ratio: image.ratio, top, image: image.image};
     previewed = true;
     // The figures it lies on give way (only where it is shown)
     await tick();
@@ -332,7 +335,10 @@
       aria-hidden="true"
       style:top="{preview.top}px"
       style:aspect-ratio={preview.ratio}
-    ></div>
+    >
+      <!-- (4 columns of 36; a new Picture for each article: it fades in once its file is there) -->
+      {#key preview.image?.url}<Picture image={preview.image} sizes="12vw" eager />{/key}
+    </div>
   {/if}
 </div>
 

@@ -34,6 +34,11 @@
 // its Cover image field — only when that field is empty (or with --force).
 // Without such a file the field is left alone: to use one of the piece's
 // figures, pick it in the Studio (Select → Browse).
+//
+// An issue's cover (24 Nov): DELUS<nn>_cover.<png…> in the issue's folder
+// (00-delus/DELUS00_cover.png) goes into the issue's Cover field — only
+// when it has no image yet (or with --force); its caption and alt text
+// are kept. Asked for with the issue (00-delus) or alone (00-delus/cover).
 import {createReadStream, existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 import {getCliClient} from 'sanity/cli';
@@ -155,6 +160,29 @@ for (const entry of figures) {
   changes += n;
   if (n && !dry) await tx.commit({autoGenerateArrayKeys: false});
 }
+// The issues' covers
+for (const issue of readdirSync(ROOT).filter((d) => /^\d\d-/.test(d) && statSync(join(ROOT, d)).isDirectory())) {
+  if (wanted.length && !wanted.some(([i, s]) => i === issue && (!s || s === 'cover'))) continue;
+  const name = `DELUS${issue.slice(0, 2)}_cover`;
+  const file = readdirSync(join(ROOT, issue)).find((f) => KINDS.test(f) && f.replace(KINDS, '') === name);
+  if (!file) continue;
+  const path = join(ROOT, issue, file);
+  const now = await client.getDocument(`issue-${issue}`);
+  if (!now) {
+    console.log(`${issue}: not in the CMS`);
+    continue;
+  }
+  if (now.cover?.asset && !force) {
+    console.log(`${issue} · cover: kept (already in the CMS)`);
+    continue;
+  }
+  console.log(`${issue} · cover ${now.cover?.asset ? 'replaced' : 'set'} ← ${file} (${mb(path)})`);
+  changes++;
+  if (dry) continue;
+  const asset = {_type: 'reference', _ref: await upload(path, file)};
+  await client.patch(now._id).setIfMissing({cover: {_type: 'figure'}}).set({'cover.asset': asset}).commit();
+}
+
 console.log(
   (dry ? `\nDry run: ${changes} figure(s) would be placed or changed.` : `\nDone: ${changes} figure(s).`) +
     (missing ? ` ${missing} without a file yet.` : '')

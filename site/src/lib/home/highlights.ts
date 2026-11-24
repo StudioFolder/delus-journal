@@ -10,9 +10,9 @@
 // Its image is a link to it (`href`; `name`: for those who can't see it).
 // The image (`image`): an article's is its entry image, as on its issue's
 // page (its Cover image in the CMS, else its first figure with a file:
-// data/images.ts), in its own format. An issue's will be its cover, a news
-// item's its first image — none in the CMS yet (24 Nov): their box stays
-// empty, in the proportions of the book cover.
+// data/images.ts), in its own format; an issue's is its cover (its Cover in
+// the CMS). A news item's will be its first image — none in the CMS yet
+// (24 Nov): its box stays empty, in the proportions of the book cover.
 import {issues, posts, type Highlight, type Img, type Inline} from '#lib/data/fixtures.ts';
 import {entryImage} from '#lib/data/images.ts';
 import {articleHref, editorialHref, editorialTitle, fullDate, issueLabel, plainText} from '#lib/data/format.ts';
@@ -83,6 +83,7 @@ export function shown(highlight: Highlight): Shown {
           : [])
     ],
     text: issue.abstract,
+    image: issue.cover && {ratio: Math.round((issue.cover.width / issue.cover.height) * 1000) / 1000, image: issue.cover},
     href: `/issues/${issue.slug}/`,
     name: `${number.text}, ${issue.title}`
   };

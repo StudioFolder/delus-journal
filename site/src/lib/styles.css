@@ -445,8 +445,10 @@ dd {
 }
 
 /* A cover: the box an issue's cover image fills, in the proportions of
-   the book. For now an empty box */
+   the book. The image (the issue's Cover in the CMS) is drawn in it by
+   Picture (24 Nov): the box holds it; without one it stays empty */
 .cover {
+  position: relative;
   width: 100%;
   aspect-ratio: var(--cover-ratio);
   background: var(--band);

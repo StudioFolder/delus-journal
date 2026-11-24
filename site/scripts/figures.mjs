@@ -3,7 +3,8 @@
 // Sanity so far (its texts still come from src/lib/data): the address and
 // the size of each image (and whether it has a transparency), per piece,
 // its cover image ("cover": the Cover image field) and its figures by the figure's key (fig0, fig1 …:
-// its place among the figures of its text; see studio/seed/update-figures.mjs).
+// its place among the figures of its text; see studio/seed/update-figures.mjs);
+// and each issue's cover (the issue's Cover field), as "<issue>" → "cover".
 //
 // Run before every build and every `npm run dev` (package.json:
 // prebuild, predev), or by hand: npm run figures.
@@ -17,6 +18,7 @@ const image = `"url": asset->url, "width": asset->metadata.dimensions.width, "he
 const figure = `{_key, ${image}}`;
 const query = `*[_type == "issue"] | order(number asc) {
   "issue": slug.current,
+  "issueCover": cover{${image}},
   "editorial": editorial.text[_type == "figure" && defined(asset)]${figure},
   "editorialCover": editorial.cover{${image}},
   "pieces": contributions[]{"slug": slug.current, "figures": text[_type == "figure" && defined(asset)]${figure}, "cover": cover{${image}}}
@@ -32,6 +34,7 @@ try {
   for (const issue of result) {
     const pieces = [{slug: 'editorial', figures: issue.editorial, cover: issue.editorialCover}, ...(issue.pieces ?? [])];
     const img = (f) => ({url: f.url, width: f.width, height: f.height, ...(f.alpha && {alpha: true})});
+    if (issue.issueCover?.url && issue.issueCover.width) pictures[issue.issue] = {cover: img(issue.issueCover)};
     for (const piece of pieces) {
       const figures = (piece.figures ?? []).filter((f) => f.url && f.width && f.height);
       const cover = piece.cover?.url && piece.cover.width ? [['cover', img(piece.cover)]] : [];

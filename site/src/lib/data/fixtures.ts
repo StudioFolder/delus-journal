@@ -98,6 +98,7 @@ export type Issue = {
   title: string;
   date: string;
   abstract: string | Inline[]; // plain text, or with italics
+  cover?: Img; // the cover (the issue's Cover in the CMS: figures.generated.ts)
   // The editorial ("A Note from the Editors"): its text and notes, as a
   // contribution's (Sanity: the issue's Editorial field). Issue 01 only, so far.
   // `page`: its first page in print. `doi`: as a contribution's (Issue 00
@@ -380,8 +381,9 @@ const pictured = (piece: string, body?: Block[]) => {
   });
 };
 // The cover image of a piece (Cover image in the CMS) comes the same way,
-// as its "cover".
+// as its "cover"; so does the issue's own cover (its Cover).
 for (const issue of issues) {
+  issue.cover = pictures[issue.slug]?.cover;
   if (issue.editorial) {
     issue.editorial.body = pictured(`${issue.slug}/editorial`, issue.editorial.body);
     issue.editorial.cover = pictures[`${issue.slug}/editorial`]?.cover;

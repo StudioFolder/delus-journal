@@ -292,7 +292,7 @@
           aria-label="Cover of {issue.title}"
           use:land={from.cover}
           out:leave|global
-        ></div>
+        ><Picture image={issue.cover} sizes={SIZES.gallery} eager /></div>
       </div>
       {#each data.contents as entry, i (entry.href)}
         <div class="slide">

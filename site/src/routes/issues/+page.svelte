@@ -49,6 +49,12 @@
   import {newestFirst} from '#lib/data/fixtures.ts';
   import {issueLabel, issueNumber} from '#lib/data/format.ts';
   import {opens} from '#lib/type/links.ts';
+  import Picture from '#lib/image/Picture.svelte';
+
+  // How wide a cover is on the screen (Picture: which file to ask for):
+  // 13 columns of 36 in the row; in the grid, at most half the space
+  // right of the band; on mobile 80% of the screen
+  const SIZES = {row: '(max-width: 767px) 80vw, 36vw', grid: '30vw'};
 
   const step = COVER_COLUMNS + 1; // from one cover to the next: its width + one column
 
@@ -103,7 +109,7 @@
         aria-label="Cover of {issue.title}"
         onpointerenter={() => (at = i)}
         use:carry={grid ? `hidden-cover:${issue.slug}` : `cover:${issue.slug}`}
-      ></div>
+      ><Picture image={issue.cover} sizes={SIZES.row} /></div>
     {/each}
   </div>
 </Panel>
@@ -119,7 +125,7 @@
             role="img"
             aria-label="Cover of {issue.title}"
             onpointerenter={() => (at = i)}
-          ></div>
+          ><Picture image={issue.cover} sizes={SIZES.grid} /></div>
         {/if}
       </div>
     {/each}
@@ -179,7 +185,7 @@
           class="cover"
           href="/issues/{issue.slug}/"
           aria-label="{issueLabel(issue.number)}, {issue.title}"
-        ></a>
+        ><Picture image={issue.cover} sizes={SIZES.row} /></a>
       {/each}
     </div>
   </div>
